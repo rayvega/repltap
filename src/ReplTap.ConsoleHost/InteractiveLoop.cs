@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ReplTap
+namespace ReplTap.ConsoleHost
 {
     public class InteractiveLoop
     {

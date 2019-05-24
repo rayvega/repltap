@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ReplTap.Core\ReplTap.Core.csproj" />
+    <ProjectReference Include="..\ReplTap.ConsoleHost\ReplTap.ConsoleHost.csproj" />
   </ItemGroup>
 
 </Project>
