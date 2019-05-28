@@ -16,7 +16,10 @@ namespace ReplTap.ConsoleHost
 
                 if (input.Key == ConsoleKey.Backspace)
                 {
-                    buffer.Length--;
+                    if (buffer.Length > 0)
+                    {
+                        buffer.Length--;
+                    }
                 }
                 else
                 {
