@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using ReplTap.ConsoleHost;
 
 namespace ReplTap
 {
