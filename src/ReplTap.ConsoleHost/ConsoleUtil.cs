@@ -14,16 +14,24 @@ namespace ReplTap.ConsoleHost
             {
                 input = Console.ReadKey(true);
 
-                if (input.Key == ConsoleKey.Backspace)
+                switch (input.Key)
                 {
-                    if (buffer.Length > 0)
+                    case ConsoleKey.Tab:
+                        Console.WriteLine("\nTODO: implement autocomplete");
+                        break;
+                    case ConsoleKey.Backspace:
                     {
-                        buffer.Length--;
+                        if (buffer.Length > 0)
+                        {
+                            buffer.Length--;
+                        }
+
+                        break;
                     }
-                }
-                else
-                {
-                    buffer.Append(input.KeyChar);
+
+                    default:
+                        buffer.Append(input.KeyChar);
+                        break;
                 }
 
                 ClearLine();
