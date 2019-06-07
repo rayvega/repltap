@@ -1,12 +1,13 @@
 using System;
 using System.Text;
-using ReplTap.Core;
+using System.Threading.Tasks;
+using ReplTap.Core.Completions;
 
 namespace ReplTap.ConsoleHost
 {
     public static class ConsoleUtil
     {
-        public static string ReadLine(string prompt)
+        public static async Task<string> ReadLine(string prompt)
         {
             var buffer = new StringBuilder();
             ConsoleKeyInfo input;
@@ -20,7 +21,7 @@ namespace ReplTap.ConsoleHost
                     case ConsoleKey.Tab:
                     {
                         var currentCode = buffer.ToString();
-                        WriteAllCompletions(currentCode);
+                        await WriteAllCompletions(currentCode);
                         
                         break;
                     }
@@ -50,11 +51,11 @@ namespace ReplTap.ConsoleHost
             return line;
         }
 
-        private static void WriteAllCompletions(string code)
+        private static async Task WriteAllCompletions(string code)
         {
-            Console.WriteLine("\nTODO: implement autocomplete");
-            
-            var completions = CompletionsProvider.GetCompletions(code);
+            var completions = await CompletionsProvider.GetCompletions(code);
+
+            Console.WriteLine();
             
             foreach (var completion in completions)
             {

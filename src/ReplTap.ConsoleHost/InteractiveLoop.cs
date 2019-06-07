@@ -12,7 +12,7 @@ namespace ReplTap.ConsoleHost
             while (true)
             {
                 Console.Write($"{Prompt} ");
-                var input = ConsoleUtil.ReadLine(Prompt);
+                var input = await ConsoleUtil.ReadLine(Prompt);
                 Console.WriteLine($"{Prompt} {input}");
 
                 var output = await ReplEngine.Execute(input);
