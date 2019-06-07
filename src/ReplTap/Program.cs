@@ -6,7 +6,7 @@ namespace ReplTap
 {
     public class Program
     {
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             Console.WriteLine("repltap - C# interactive repl");
 

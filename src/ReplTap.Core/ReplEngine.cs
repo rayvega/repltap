@@ -1,20 +1,20 @@
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using System.Threading.Tasks;
 
-namespace ReplTap
+namespace ReplTap.Core
 {
-    public class ReplEngine
+    public static class ReplEngine
     {
-        private static ScriptState<object> state;
+        private static ScriptState<object> _state;
 
         public static async Task<string> Execute(string code)
         {
-            state = state == null
+            _state = _state == null
                 ? await CSharpScript.RunAsync(code)
-                : await state.ContinueWithAsync(code);
+                : await _state.ContinueWithAsync(code);
 
-            var output = state.ReturnValue?.ToString();
+            var output = _state.ReturnValue?.ToString();
 
             return output;
         }
