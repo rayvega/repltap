@@ -1,11 +1,13 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
+using ReplTap.Core.Completions;
 
 namespace ReplTap.ConsoleHost
 {
-    public class ConsoleUtil
+    public static class ConsoleUtil
     {
-        public static string ReadLine(string prompt)
+        public static async Task<string> ReadLine(string prompt)
         {
             var buffer = new StringBuilder();
             ConsoleKeyInfo input;
@@ -14,16 +16,29 @@ namespace ReplTap.ConsoleHost
             {
                 input = Console.ReadKey(true);
 
-                if (input.Key == ConsoleKey.Backspace)
+                switch (input.Key)
                 {
-                    if (buffer.Length > 0)
+                    case ConsoleKey.Tab:
                     {
-                        buffer.Length--;
+                        var currentCode = buffer.ToString();
+                        await WriteAllCompletions(currentCode);
+                        
+                        break;
                     }
-                }
-                else
-                {
-                    buffer.Append(input.KeyChar);
+                    
+                    case ConsoleKey.Backspace:
+                    {
+                        if (buffer.Length > 0)
+                        {
+                            buffer.Length--;
+                        }
+
+                        break;
+                    }
+
+                    default:
+                        buffer.Append(input.KeyChar);
+                        break;
                 }
 
                 ClearLine();
@@ -34,6 +49,18 @@ namespace ReplTap.ConsoleHost
             var line = buffer.ToString();
 
             return line;
+        }
+
+        private static async Task WriteAllCompletions(string code)
+        {
+            var completions = await CompletionsProvider.GetCompletions(code);
+
+            Console.WriteLine();
+            
+            foreach (var completion in completions)
+            {
+                Console.WriteLine(completion);
+            }
         }
 
         private static void ClearLine()
