@@ -23,7 +23,9 @@ namespace ReplTap.ConsoleHost
                 }
                 catch (Exception exception)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(exception.Message);
+                    Console.ResetColor();
                 }
             }
             
