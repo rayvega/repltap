@@ -1,13 +1,14 @@
 using System;
 using System.Threading.Tasks;
+using ReplTap.Core;
 
 namespace ReplTap.ConsoleHost
 {
-    public class InteractiveLoop
+    public static class InteractiveLoop
     {
         private const string Prompt = ">";
 
-        public async static Task Run()
+        public static async Task Run()
         {
             while (true)
             {
@@ -18,6 +19,8 @@ namespace ReplTap.ConsoleHost
                 var output = await ReplEngine.Execute(input);
                 Console.WriteLine(output);
             }
+            
+            // ReSharper disable once FunctionNeverReturns
         }
     }
 }

@@ -65,7 +65,7 @@ namespace ReplTap.ConsoleHost
 
         private static void ClearLine()
         {
-            int cursor = Console.CursorTop;
+            var cursor = Console.CursorTop;
             Console.SetCursorPosition(0, cursor);
             Console.Write(new string(' ', Console.WindowWidth));
             Console.SetCursorPosition(0, cursor);
