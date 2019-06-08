@@ -19,7 +19,9 @@ namespace ReplTap.ConsoleHost
                     Console.WriteLine($"{Prompt} {input}");
 
                     var output = await ReplEngine.Execute(input);
+                    Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine(output);
+                    Console.ResetColor();
                 }
                 catch (Exception exception)
                 {
