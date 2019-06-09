@@ -8,7 +8,10 @@ namespace ReplTap
         public static ServiceProvider GetServiceProvider()
         {
             var service = new ServiceCollection();
+            
             service.AddSingleton<IInteractiveLoop, InteractiveLoop>();
+            service.AddSingleton<IConsoleUtil, ConsoleUtil>();
+            
             var provider = service.BuildServiceProvider();
             
             return provider;

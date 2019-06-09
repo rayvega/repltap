@@ -5,9 +5,14 @@ using ReplTap.Core.Completions;
 
 namespace ReplTap.ConsoleHost
 {
-    public static class ConsoleUtil
+    public interface IConsoleUtil
     {
-        public static async Task<string> ReadLine(string prompt)
+        Task<string> ReadLine(string prompt);
+    }
+
+    public class ConsoleUtil : IConsoleUtil
+    {
+        public async Task<string> ReadLine(string prompt)
         {
             var buffer = new StringBuilder();
             ConsoleKeyInfo input;

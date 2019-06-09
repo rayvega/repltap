@@ -11,6 +11,13 @@ namespace ReplTap.ConsoleHost
 
     public class InteractiveLoop : IInteractiveLoop
     {
+        private readonly IConsoleUtil _consoleUtil;
+
+        public InteractiveLoop(IConsoleUtil consoleUtil)
+        {
+            _consoleUtil = consoleUtil;
+        }
+
         private const string Prompt = ">";
 
         public async Task Run()
@@ -20,7 +27,7 @@ namespace ReplTap.ConsoleHost
                 try
                 {
                     Console.Write($"{Prompt} ");
-                    var input = await ConsoleUtil.ReadLine(Prompt);
+                    var input = await _consoleUtil.ReadLine(Prompt);
                     Console.WriteLine($"{Prompt} {input}");
 
                     var output = await ReplEngine.Execute(input);
