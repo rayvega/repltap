@@ -4,11 +4,16 @@ using Microsoft.CodeAnalysis.Scripting;
 
 namespace ReplTap.Core
 {
-    public static class ReplEngine
+    public interface IReplEngine
+    {
+        Task<string> Execute(string code);
+    }
+
+    public class ReplEngine : IReplEngine
     {
         private static ScriptState<object> _state;
 
-        public static async Task<string> Execute(string code)
+        public async Task<string> Execute(string code)
         {
             _state = _state == null
                 ? await CSharpScript.RunAsync(code)
