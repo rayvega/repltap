@@ -15,6 +15,7 @@ namespace ReplTap
             service.AddSingleton<IConsoleUtil, ConsoleUtil>();
             service.AddSingleton<IReplEngine, ReplEngine>();
             service.AddSingleton<ICompletionsProvider, CompletionsProvider>();
+            service.AddSingleton<IRoslynCompletionsProvider, RoslynCompletionsProvider>();
             
             var provider = service.BuildServiceProvider();
             
