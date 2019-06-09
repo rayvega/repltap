@@ -5,7 +5,9 @@ namespace ReplTap.ConsoleHost
     public interface IConsole
     {
         void Write(string text);
-        void WriteLine(string text);
+        void WriteLine(string text = "");
+        ConsoleKeyInfo ReadKey(bool intercept);
+        void ClearLine();
         ConsoleColor ForegroundColor { get; set; }
         void ResetColor();
     }
@@ -17,9 +19,29 @@ namespace ReplTap.ConsoleHost
             Console.Write(text);
         }
 
-        public void WriteLine(string text)
+        public void WriteLine(string text = "")
         {
+            if (text == string.Empty)
+            {
+                Console.WriteLine();
+                
+                return;
+            }
+            
             Console.WriteLine(text);
+        }
+
+        public ConsoleKeyInfo ReadKey(bool intercept)
+        {
+           return Console.ReadKey(intercept);
+        }
+
+        public void ClearLine()
+        {
+            var cursor = Console.CursorTop;
+            Console.SetCursorPosition(0, cursor);
+            Console.Write(new string(' ', Console.WindowWidth));
+            Console.SetCursorPosition(0, cursor);
         }
 
         public ConsoleColor ForegroundColor
