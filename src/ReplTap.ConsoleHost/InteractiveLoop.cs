@@ -4,11 +4,16 @@ using ReplTap.Core;
 
 namespace ReplTap.ConsoleHost
 {
-    public static class InteractiveLoop
+    public interface IInteractiveLoop
+    {
+        Task Run();
+    }
+
+    public class InteractiveLoop : IInteractiveLoop
     {
         private const string Prompt = ">";
 
-        public static async Task Run()
+        public async Task Run()
         {
             while (true)
             {
