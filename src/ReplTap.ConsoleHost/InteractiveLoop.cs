@@ -11,11 +11,13 @@ namespace ReplTap.ConsoleHost
 
     public class InteractiveLoop : IInteractiveLoop
     {
+        private readonly IConsole _console;
         private readonly IConsoleUtil _consoleUtil;
         private readonly IReplEngine _replEngine;
 
-        public InteractiveLoop(IConsoleUtil consoleUtil, IReplEngine replEngine)
+        public InteractiveLoop(IConsole console, IConsoleUtil consoleUtil, IReplEngine replEngine)
         {
+            _console = console;
             _consoleUtil = consoleUtil;
             _replEngine = replEngine;
         }
@@ -28,20 +30,20 @@ namespace ReplTap.ConsoleHost
             {
                 try
                 {
-                    Console.Write($"{Prompt} ");
+                    _console.Write($"{Prompt} ");
                     var input = await _consoleUtil.ReadLine(Prompt);
-                    Console.WriteLine($"{Prompt} {input}");
+                    _console.WriteLine($"{Prompt} {input}");
 
                     var output = await _replEngine.Execute(input);
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    Console.WriteLine(output);
-                    Console.ResetColor();
+                    _console.ForegroundColor = ConsoleColor.Gray;
+                    _console.WriteLine(output);
+                    _console.ResetColor();
                 }
                 catch (Exception exception)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(exception.Message);
-                    Console.ResetColor();
+                    _console.ForegroundColor = ConsoleColor.Red;
+                    _console.WriteLine(exception.Message);
+                    _console.ResetColor();
                 }
             }
             
