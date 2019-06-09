@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ReplTap.ConsoleHost;
 using ReplTap.Core;
+using ReplTap.Core.Completions;
 
 namespace ReplTap
 {
@@ -13,6 +14,7 @@ namespace ReplTap
             service.AddSingleton<IInteractiveLoop, InteractiveLoop>();
             service.AddSingleton<IConsoleUtil, ConsoleUtil>();
             service.AddSingleton<IReplEngine, ReplEngine>();
+            service.AddSingleton<ICompletionsProvider, CompletionsProvider>();
             
             var provider = service.BuildServiceProvider();
             
