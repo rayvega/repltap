@@ -4,21 +4,35 @@ using ReplTap.Core;
 
 namespace ReplTap.ConsoleHost
 {
-    public static class InteractiveLoop
+    public interface IInteractiveLoop
     {
+        Task Run();
+    }
+
+    public class InteractiveLoop : IInteractiveLoop
+    {
+        private readonly IConsoleUtil _consoleUtil;
+        private readonly IReplEngine _replEngine;
+
+        public InteractiveLoop(IConsoleUtil consoleUtil, IReplEngine replEngine)
+        {
+            _consoleUtil = consoleUtil;
+            _replEngine = replEngine;
+        }
+
         private const string Prompt = ">";
 
-        public static async Task Run()
+        public async Task Run()
         {
             while (true)
             {
                 try
                 {
                     Console.Write($"{Prompt} ");
-                    var input = await ConsoleUtil.ReadLine(Prompt);
+                    var input = await _consoleUtil.ReadLine(Prompt);
                     Console.WriteLine($"{Prompt} {input}");
 
-                    var output = await ReplEngine.Execute(input);
+                    var output = await _replEngine.Execute(input);
                     Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine(output);
                     Console.ResetColor();

@@ -7,9 +7,14 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace ReplTap.Core.Completions
 {
-    public static class RoslynCompletionsProvider
+    public interface IRoslynCompletionsProvider
     {
-        public static async Task<CompletionList> GetCompletions(string code)
+        Task<CompletionList> GetCompletions(string code);
+    }
+
+    public class RoslynCompletionsProvider : IRoslynCompletionsProvider
+    {
+        public async Task<CompletionList> GetCompletions(string code)
         {
             // based on: https://www.strathweb.com/2018/12/using-roslyn-c-completion-service-programmatically/
             

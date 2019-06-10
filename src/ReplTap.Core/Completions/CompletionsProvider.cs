@@ -4,11 +4,23 @@ using System.Threading.Tasks;
 
 namespace ReplTap.Core.Completions
 {
-    public static class CompletionsProvider
+    public interface ICompletionsProvider
     {
-        public static async Task<IEnumerable<string>> GetCompletions(string code)
+        Task<IEnumerable<string>> GetCompletions(string code);
+    }
+
+    public class CompletionsProvider : ICompletionsProvider
+    {
+        private readonly IRoslynCompletionsProvider _roslynCompletionsProvider;
+
+        public CompletionsProvider(IRoslynCompletionsProvider roslynCompletionsProvider)
         {
-            var results = await RoslynCompletionsProvider.GetCompletions(code);
+            _roslynCompletionsProvider = roslynCompletionsProvider;
+        }
+
+        public async Task<IEnumerable<string>> GetCompletions(string code)
+        {
+            var results = await _roslynCompletionsProvider.GetCompletions(code);
 
             var completions = results.Items.Select(item => item.DisplayText);
             

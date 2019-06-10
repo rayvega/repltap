@@ -5,9 +5,21 @@ using ReplTap.Core.Completions;
 
 namespace ReplTap.ConsoleHost
 {
-    public static class ConsoleUtil
+    public interface IConsoleUtil
     {
-        public static async Task<string> ReadLine(string prompt)
+        Task<string> ReadLine(string prompt);
+    }
+
+    public class ConsoleUtil : IConsoleUtil
+    {
+        private readonly ICompletionsProvider _completionsProvider;
+
+        public ConsoleUtil(ICompletionsProvider completionsProvider)
+        {
+            _completionsProvider = completionsProvider;
+        }
+
+        public async Task<string> ReadLine(string prompt)
         {
             var buffer = new StringBuilder();
             ConsoleKeyInfo input;
@@ -51,9 +63,9 @@ namespace ReplTap.ConsoleHost
             return line;
         }
 
-        private static async Task WriteAllCompletions(string code)
+        private async Task WriteAllCompletions(string code)
         {
-            var completions = await CompletionsProvider.GetCompletions(code);
+            var completions = await _completionsProvider.GetCompletions(code);
 
             Console.WriteLine();
             
