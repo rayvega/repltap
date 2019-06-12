@@ -14,11 +14,14 @@ namespace ReplTap.ConsoleHost
         private readonly IConsole _console;
         private readonly IConsoleReader _consoleReader;
         private readonly IReplEngine _replEngine;
+        private readonly IConsoleWriter _consoleWriter;
 
-        public InteractiveLoop(IConsole console, IConsoleReader consoleReader, IReplEngine replEngine)
+        public InteractiveLoop(IConsole console, IConsoleReader consoleReader, IConsoleWriter consoleWriter,
+            IReplEngine replEngine)
         {
             _console = console;
             _consoleReader = consoleReader;
+            _consoleWriter = consoleWriter;
             _replEngine = replEngine;
         }
 
@@ -35,15 +38,11 @@ namespace ReplTap.ConsoleHost
                     _console.WriteLine($"{Prompt} {input}");
 
                     var output = await _replEngine.Execute(input);
-                    _console.ForegroundColor = ConsoleColor.Gray;
-                    _console.WriteLine(output);
-                    _console.ResetColor();
+                    _consoleWriter.WriteOutput(output);
                 }
                 catch (Exception exception)
                 {
-                    _console.ForegroundColor = ConsoleColor.Red;
-                    _console.WriteLine(exception.Message);
-                    _console.ResetColor();
+                    _consoleWriter.WriteError(exception.Message);
                 }
             }
             
