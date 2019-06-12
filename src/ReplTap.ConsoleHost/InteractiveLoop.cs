@@ -12,13 +12,13 @@ namespace ReplTap.ConsoleHost
     public class InteractiveLoop : IInteractiveLoop
     {
         private readonly IConsole _console;
-        private readonly IConsoleUtil _consoleUtil;
+        private readonly IConsoleReader _consoleReader;
         private readonly IReplEngine _replEngine;
 
-        public InteractiveLoop(IConsole console, IConsoleUtil consoleUtil, IReplEngine replEngine)
+        public InteractiveLoop(IConsole console, IConsoleReader consoleReader, IReplEngine replEngine)
         {
             _console = console;
-            _consoleUtil = consoleUtil;
+            _consoleReader = consoleReader;
             _replEngine = replEngine;
         }
 
@@ -31,7 +31,7 @@ namespace ReplTap.ConsoleHost
                 try
                 {
                     _console.Write($"{Prompt} ");
-                    var input = await _consoleUtil.ReadLine(Prompt);
+                    var input = await _consoleReader.ReadLine(Prompt);
                     _console.WriteLine($"{Prompt} {input}");
 
                     var output = await _replEngine.Execute(input);
