@@ -12,10 +12,12 @@ namespace ReplTap.ConsoleHost
 
     public class ConsoleUtil : IConsoleUtil
     {
+        private readonly IConsole _console;
         private readonly ICompletionsProvider _completionsProvider;
 
-        public ConsoleUtil(ICompletionsProvider completionsProvider)
+        public ConsoleUtil(IConsole console, ICompletionsProvider completionsProvider)
         {
+            _console = console;
             _completionsProvider = completionsProvider;
         }
 
@@ -26,7 +28,7 @@ namespace ReplTap.ConsoleHost
 
             do
             {
-                input = Console.ReadKey(true);
+                input = _console.ReadKey(true);
 
                 switch (input.Key)
                 {
@@ -53,8 +55,8 @@ namespace ReplTap.ConsoleHost
                         break;
                 }
 
-                ClearLine();
-                Console.Write($"{prompt} {buffer}");
+                _console.ClearLine();
+                _console.Write($"{prompt} {buffer}");
 
             } while (input.Key != ConsoleKey.Enter);
 
@@ -67,20 +69,12 @@ namespace ReplTap.ConsoleHost
         {
             var completions = await _completionsProvider.GetCompletions(code);
 
-            Console.WriteLine();
+            _console.WriteLine();
             
             foreach (var completion in completions)
             {
-                Console.WriteLine(completion);
+                _console.WriteLine(completion);
             }
-        }
-
-        private static void ClearLine()
-        {
-            var cursor = Console.CursorTop;
-            Console.SetCursorPosition(0, cursor);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, cursor);
         }
     }
 }
