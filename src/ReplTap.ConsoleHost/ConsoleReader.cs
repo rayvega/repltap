@@ -5,17 +5,17 @@ using ReplTap.Core.Completions;
 
 namespace ReplTap.ConsoleHost
 {
-    public interface IConsoleUtil
+    public interface IConsoleReader
     {
         Task<string> ReadLine(string prompt);
     }
 
-    public class ConsoleUtil : IConsoleUtil
+    public class ConsoleReader : IConsoleReader
     {
         private readonly IConsole _console;
         private readonly ICompletionsProvider _completionsProvider;
 
-        public ConsoleUtil(IConsole console, ICompletionsProvider completionsProvider)
+        public ConsoleReader(IConsole console, ICompletionsProvider completionsProvider)
         {
             _console = console;
             _completionsProvider = completionsProvider;
