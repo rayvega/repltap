@@ -11,16 +11,18 @@ namespace ReplTap.Core.Tests
         public async Task Execute_Should_Run_Code_On_Initial()
         {
             // arrange
-            var expectedReturnValue = "test value";
-            var code = $"var testVariable = \"{expectedReturnValue}\"; testVariable";
+            var expectedOutput = "test output";
+            var code = $"var testVariable = \"{expectedOutput}\"; testVariable";
             
             var engine = new ReplEngine();
             
             // act
-            var returnValue  = await engine.Execute(code);
+            var result  = await engine.Execute(code);
             
             // assert
-            Assert.That(returnValue, Is.EqualTo(expectedReturnValue));
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Output, Is.EqualTo(expectedOutput));
+            Assert.That(result.State, Is.EqualTo(OutputState.Valid));
         }
         
         
@@ -28,21 +30,24 @@ namespace ReplTap.Core.Tests
         public async Task Execute_Should_Run_Code_On_Continue()
         {
             // arrange
-            const string expectedFirstReturnValue = null;
-            const string expectedSecondReturnValue = "test value";
+            const string expectedFirstOuput = null;
+            const string expectedSecondOutput = "test value";
             
-            var firstCode = $"var testVariable = \"{expectedSecondReturnValue}\";";
+            var firstCode = $"var testVariable = \"{expectedSecondOutput}\";";
             var secondCode = "testVariable";
             
             var engine = new ReplEngine();
             
             // act
-            var firstReturnValue  = await engine.Execute(firstCode);
-            var secondReturnValue  = await engine.Execute(secondCode);
+            var firstResult  = await engine.Execute(firstCode);
+            var secondResult  = await engine.Execute(secondCode);
             
             // assert
-            Assert.That(firstReturnValue, Is.EqualTo(expectedFirstReturnValue));
-            Assert.That(secondReturnValue, Is.EqualTo(expectedSecondReturnValue));
+            Assert.That(firstResult.Output, Is.EqualTo(expectedFirstOuput));
+            Assert.That(firstResult.State, Is.EqualTo(OutputState.Valid));
+            
+            Assert.That(secondResult.Output, Is.EqualTo(expectedSecondOutput));
+            Assert.That(secondResult.State, Is.EqualTo(OutputState.Valid));
         }
         
         [Test]
@@ -62,23 +67,26 @@ namespace ReplTap.Core.Tests
         public async Task Execute_Should_Continue_With_Same_State_After_Throwing_Exception()
         {
             // arrange
-            const string expectedFirstReturnValue = null;
-            const string expectedSecondReturnValue = "test value";
+            const string expectedFirstResult = null;
+            const string expectedSecondResult = "test value";
             
-            var firstCode = $"var testVariable = \"{expectedSecondReturnValue}\";";
+            var firstCode = $"var testVariable = \"{expectedSecondResult}\";";
             var invalidCode = "var";
             var secondCode = "testVariable";
             
             var engine = new ReplEngine();
             
             // act && assert
-            var firstReturnValue  = await engine.Execute(firstCode);
+            var firstResult  = await engine.Execute(firstCode);
             Assert.ThrowsAsync<CompilationErrorException>(async () => await engine.Execute(invalidCode));
-            var secondReturnValue  = await engine.Execute(secondCode);
+            var secondResult  = await engine.Execute(secondCode);
             
             // assert
-            Assert.That(firstReturnValue, Is.EqualTo(expectedFirstReturnValue));
-            Assert.That(secondReturnValue, Is.EqualTo(expectedSecondReturnValue));
+            Assert.That(firstResult.Output, Is.EqualTo(expectedFirstResult));
+            Assert.That(firstResult.State, Is.EqualTo(OutputState.Valid));
+            
+            Assert.That(secondResult.Output, Is.EqualTo(expectedSecondResult));
+            Assert.That(secondResult.State, Is.EqualTo(OutputState.Valid));
         }
     }
 }

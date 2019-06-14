@@ -39,8 +39,8 @@ namespace ReplTap.ConsoleHost
                     var input = await _consoleReader.ReadLine(Prompt);
                     _console.WriteLine($"{Prompt} {input}");
 
-                    var output = await _replEngine.Execute(input);
-                    _consoleWriter.WriteOutput(output);
+                    var result = await _replEngine.Execute(input);
+                    _consoleWriter.WriteOutput(result.Output);
                 }
                 catch (Exception exception)
                 {

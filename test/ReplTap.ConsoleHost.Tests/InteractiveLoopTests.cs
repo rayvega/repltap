@@ -15,6 +15,10 @@ namespace ReplTap.ConsoleHost.Tests
             // arrange
             var input = "test code";
             var output = "test output";
+            var result = new CodeResult
+            {
+                Output = output
+            };
 
             var console = new Mock<IConsole>();
             var consoleReader = new Mock<IConsoleReader>();
@@ -28,7 +32,7 @@ namespace ReplTap.ConsoleHost.Tests
             
             replEngine
                 .Setup(r => r.Execute(input))
-                .ReturnsAsync((output));
+                .ReturnsAsync(result);
 
             var count = 0;
             
