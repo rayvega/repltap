@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Scripting;
 using NUnit.Framework;
 
 namespace ReplTap.Core.Tests
@@ -42,6 +43,18 @@ namespace ReplTap.Core.Tests
             // assert
             Assert.That(firstReturnValue, Is.EqualTo(expectedFirstReturnValue));
             Assert.That(secondReturnValue, Is.EqualTo(expectedSecondReturnValue));
+        }
+        
+        [Test]
+        public void Execute_Should_Throw_Exception_When_Run_Invalid_Code_()
+        {
+            // arrange
+            var invalidCode = "var";
+            
+            var engine = new ReplEngine();
+            
+            // act && assert
+            Assert.ThrowsAsync<CompilationErrorException>(async () => await engine.Execute(invalidCode));
         }
     }
 }
