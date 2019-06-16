@@ -56,5 +56,29 @@ namespace ReplTap.Core.Tests
             // act && assert
             Assert.ThrowsAsync<CompilationErrorException>(async () => await engine.Execute(invalidCode));
         }
+        
+        
+        [Test]
+        public async Task Execute_Should_Continue_With_Same_State_After_Throwing_Exception()
+        {
+            // arrange
+            const string expectedFirstReturnValue = null;
+            const string expectedSecondReturnValue = "test value";
+            
+            var firstCode = $"var testVariable = \"{expectedSecondReturnValue}\";";
+            var invalidCode = "var";
+            var secondCode = "testVariable";
+            
+            var engine = new ReplEngine();
+            
+            // act && assert
+            var firstReturnValue  = await engine.Execute(firstCode);
+            Assert.ThrowsAsync<CompilationErrorException>(async () => await engine.Execute(invalidCode));
+            var secondReturnValue  = await engine.Execute(secondCode);
+            
+            // assert
+            Assert.That(firstReturnValue, Is.EqualTo(expectedFirstReturnValue));
+            Assert.That(secondReturnValue, Is.EqualTo(expectedSecondReturnValue));
+        }
     }
 }
