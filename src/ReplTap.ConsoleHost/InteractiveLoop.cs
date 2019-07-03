@@ -15,21 +15,23 @@ namespace ReplTap.ConsoleHost
         private readonly IConsoleReader _consoleReader;
         private readonly IReplEngine _replEngine;
         private readonly IConsoleWriter _consoleWriter;
+        private readonly ILoop _loop;
 
         public InteractiveLoop(IConsole console, IConsoleReader consoleReader, IConsoleWriter consoleWriter,
-            IReplEngine replEngine)
+            IReplEngine replEngine, ILoop loop)
         {
             _console = console;
             _consoleReader = consoleReader;
             _consoleWriter = consoleWriter;
             _replEngine = replEngine;
+            _loop = loop;
         }
 
         private const string Prompt = ">";
 
         public async Task Run()
         {
-            while (true)
+            while (_loop.Continue())
             {
                 try
                 {
