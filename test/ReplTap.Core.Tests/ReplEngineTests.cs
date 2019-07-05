@@ -1,5 +1,6 @@
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Scripting;
 using NUnit.Framework;
 
 namespace ReplTap.Core.Tests
@@ -30,7 +31,7 @@ namespace ReplTap.Core.Tests
         public async Task Execute_Should_Run_Code_On_Continue()
         {
             // arrange
-            const string expectedFirstOuput = null;
+            const string expectedFirstOutput = null;
             const string expectedSecondOutput = "test value";
             
             var firstCode = $"var testVariable = \"{expectedSecondOutput}\";";
@@ -43,7 +44,7 @@ namespace ReplTap.Core.Tests
             var secondResult  = await engine.Execute(secondCode);
             
             // assert
-            Assert.That(firstResult.Output, Is.EqualTo(expectedFirstOuput));
+            Assert.That(firstResult.Output, Is.EqualTo(expectedFirstOutput));
             Assert.That(firstResult.State, Is.EqualTo(OutputState.Valid));
             
             Assert.That(secondResult.Output, Is.EqualTo(expectedSecondOutput));
@@ -51,42 +52,61 @@ namespace ReplTap.Core.Tests
         }
         
         [Test]
-        public void Execute_Should_Throw_Exception_When_Run_Invalid_Code_()
-        {
-            // arrange
-            var invalidCode = "var";
-            
-            var engine = new ReplEngine();
-            
-            // act && assert
-            Assert.ThrowsAsync<CompilationErrorException>(async () => await engine.Execute(invalidCode));
-        }
-        
-        
-        [Test]
-        public async Task Execute_Should_Continue_With_Same_State_After_Throwing_Exception()
+        public async Task Execute_Should_Return_Continue_State_When_Invalid_Code()
         {
             // arrange
             const string expectedFirstResult = null;
             const string expectedSecondResult = "test value";
             
             var firstCode = $"var testVariable = \"{expectedSecondResult}\";";
-            var invalidCode = "var";
+            var invalidCode = "invalid code;";
             var secondCode = "testVariable";
             
             var engine = new ReplEngine();
             
-            // act && assert
+            // act 
             var firstResult  = await engine.Execute(firstCode);
-            Assert.ThrowsAsync<CompilationErrorException>(async () => await engine.Execute(invalidCode));
+            var invalidResult = await engine.Execute(invalidCode);
             var secondResult  = await engine.Execute(secondCode);
             
             // assert
             Assert.That(firstResult.Output, Is.EqualTo(expectedFirstResult));
             Assert.That(firstResult.State, Is.EqualTo(OutputState.Valid));
             
+            Assert.That(invalidResult.Output, Is.EqualTo(null));
+            Assert.That(invalidResult.State, Is.EqualTo(OutputState.Continue));
+            
             Assert.That(secondResult.Output, Is.EqualTo(expectedSecondResult));
             Assert.That(secondResult.State, Is.EqualTo(OutputState.Valid));
         }
+        
+        [Test]
+        public async Task Execute_Should_Continue_If_Not_Complete()
+        {
+            // arrange
+            var codeLines = new List<string>
+            {
+                "var ",
+                "foo =\"bar\";",
+                "foo",
+            };
+            
+            var engine = new ReplEngine();
+            var builder = new StringBuilder();
+            var codeResult = new CodeResult();
+            
+            // act 
+            
+            foreach (var line in codeLines)
+            {
+                builder.AppendLine(line);
+                
+                codeResult = await engine.Execute(builder.ToString());
+            }
+            
+            // assert
+            Assert.That(codeResult.Output, Is.EqualTo("bar"));
+            Assert.That(codeResult.State, Is.EqualTo(OutputState.Valid));
+        } 
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
@@ -15,15 +16,21 @@ namespace ReplTap.Core
 
         public async Task<CodeResult> Execute(string code)
         {
-            _state = _state == null
-                ? await CSharpScript.RunAsync(code)
-                : await _state.ContinueWithAsync(code);
-
-            var result = new CodeResult
+            var result = new CodeResult();
+            
+            try
             {
-                Output = _state.ReturnValue?.ToString(), 
-                State = OutputState.Valid
-            };
+                _state = _state == null
+                    ? await CSharpScript.RunAsync(code)
+                    : await _state.ContinueWithAsync(code);
+
+                result.Output = _state.ReturnValue?.ToString();
+                result.State = OutputState.Valid;
+            }
+            catch (Exception)
+            {
+                result.State = OutputState.Continue;
+            }
 
             return result;
         }
