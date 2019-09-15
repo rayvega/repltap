@@ -100,5 +100,63 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             consoleWriter.Verify(c => c.WriteError(errorOutput), Times.Once);
         }
+
+        [Test]
+        public async Task Run_Should_Output_Code_Results_When_Multiline()
+        {
+            // arrange
+            var console = new Mock<IConsole>();
+            var consoleReader = new Mock<IConsoleReader>();
+            var consoleWriter = new Mock<IConsoleWriter>();
+            var replEngine = new Mock<IReplEngine>();
+            var loop = new Mock<ILoop>();
+
+            consoleReader
+                .SetupSequence(c => c.ReadLine(It.IsAny<string>()))
+                .Returns(Task.FromResult("var "))
+                .Returns(Task.FromResult("testVariable = \"test value\";"));
+
+            var firstResult = new CodeResult
+            {
+                State = OutputState.Continue,
+                Output = "no output after 1st input",
+            };
+
+            var secondResult = new CodeResult
+            {
+                State = OutputState.Valid,
+                Output = "final output after 2nd input",
+            };
+
+            replEngine
+                .SetupSequence(r => r.Execute(It.IsAny<string>()))
+                .Returns(Task.FromResult(firstResult))
+                .Returns(Task.FromResult(secondResult));
+
+            var count = 1;
+            loop
+                .Setup(l => l.Continue())
+                .Returns(() =>
+                {
+                    var shouldContinue = count <= 2;
+                    count++;
+                    
+                    return shouldContinue;
+                });
+            
+
+            var interactiveLoop = new InteractiveLoop(console.Object, 
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+            
+            // act
+            await interactiveLoop.Run();
+            
+            // assert
+            console.Verify(c => c.Write("> "), Times.Once());
+            consoleWriter.Verify(c => c.WriteOutput(firstResult.Output), Times.Never());
+
+            console.Verify(c => c.Write("* "), Times.Once());
+            consoleWriter.Verify(c => c.WriteOutput(secondResult.Output), Times.Once());
+        }
     }
 }

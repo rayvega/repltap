@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Threading.Tasks;
 using ReplTap.Core;
 
@@ -27,20 +28,33 @@ namespace ReplTap.ConsoleHost
             _loop = loop;
         }
 
-        private const string Prompt = ">";
+        private string _prompt = ">";
 
         public async Task Run()
         {
+            var codes = new StringBuilder();
+
             while (_loop.Continue())
             {
                 try
                 {
-                    _console.Write($"{Prompt} ");
-                    var input = await _consoleReader.ReadLine(Prompt);
-                    _console.WriteLine($"{Prompt} {input}");
+                    _console.Write($"{_prompt} ");
+                    var input = await _consoleReader.ReadLine(_prompt);
+                    codes.Append(input);
+                    _console.WriteLine($"{_prompt} {input}");
 
-                    var result = await _replEngine.Execute(input);
-                    _consoleWriter.WriteOutput(result.Output);
+                    var result = await _replEngine.Execute(codes.ToString());
+
+                    if (result.State == OutputState.Continue)
+                    {
+                        _prompt = "*";
+                    }
+                    else
+                    {
+                        _consoleWriter.WriteOutput(result.Output);
+                        codes.Clear();
+                        _prompt = ">";
+                    }
                 }
                 catch (Exception exception)
                 {
