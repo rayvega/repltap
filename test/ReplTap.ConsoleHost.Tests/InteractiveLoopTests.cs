@@ -34,18 +34,10 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(r => r.Execute(input))
                 .ReturnsAsync(result);
 
-            var count = 0;
-            
             loop
-                .Setup(l => l.Continue())
-                .Returns(() =>
-                {
-                    count++;
-
-                    var shouldContinue = count <= 1;
-                    
-                    return shouldContinue;
-                });
+                .SetupSequence(l => l.Continue())
+                .Returns(true)
+                .Returns(false);
             
             var interactiveLoop = new InteractiveLoop(console.Object, 
                 consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
@@ -78,18 +70,10 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(r => r.Execute(input))
                 .Throws(new Exception(errorOutput));
 
-            var count = 0;
-            
             loop
-                .Setup(l => l.Continue())
-                .Returns(() =>
-                {
-                    count++;
-
-                    var shouldContinue = count <= 1;
-                    
-                    return shouldContinue;
-                });
+                .SetupSequence(l => l.Continue())
+                .Returns(true)
+                .Returns(false);
             
             var interactiveLoop = new InteractiveLoop(console.Object, 
                 consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
@@ -133,17 +117,11 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(Task.FromResult(firstResult))
                 .Returns(Task.FromResult(secondResult));
 
-            var count = 1;
             loop
-                .Setup(l => l.Continue())
-                .Returns(() =>
-                {
-                    var shouldContinue = count <= 2;
-                    count++;
-                    
-                    return shouldContinue;
-                });
-            
+                .SetupSequence(l => l.Continue())
+                .Returns(true)
+                .Returns(true)
+                .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object, 
                 consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
