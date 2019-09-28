@@ -130,10 +130,10 @@ namespace ReplTap.ConsoleHost.Tests
             await interactiveLoop.Run();
             
             // assert
-            console.Verify(c => c.Write("> "), Times.Once());
+            console.Verify(c => c.Write($"{Prompt.Standard} "), Times.Once());
             consoleWriter.Verify(c => c.WriteOutput(firstResult.Output), Times.Never());
 
-            console.Verify(c => c.Write("* "), Times.Once());
+            console.Verify(c => c.Write($"{Prompt.Continue} "), Times.Once());
             consoleWriter.Verify(c => c.WriteOutput(secondResult.Output), Times.Once());
         }
     }

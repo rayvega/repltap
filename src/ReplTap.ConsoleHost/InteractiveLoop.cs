@@ -28,7 +28,7 @@ namespace ReplTap.ConsoleHost
             _loop = loop;
         }
 
-        private string _prompt = ">";
+        private string _prompt = Prompt.Standard;
 
         public async Task Run()
         {
@@ -47,13 +47,13 @@ namespace ReplTap.ConsoleHost
 
                     if (result.State == OutputState.Continue)
                     {
-                        _prompt = "*";
+                        _prompt = Prompt.Continue;
                     }
                     else
                     {
                         _consoleWriter.WriteOutput(result.Output);
                         codes.Clear();
-                        _prompt = ">";
+                        _prompt = Prompt.Standard;
                     }
                 }
                 catch (Exception exception)
