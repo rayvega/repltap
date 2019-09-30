@@ -17,18 +17,21 @@ namespace ReplTap.ConsoleHost
         private readonly IReplEngine _replEngine;
         private readonly IConsoleWriter _consoleWriter;
         private readonly ILoop _loop;
+        private readonly IInputCheck _inputCheck;
+        
+        private string _prompt = Prompt.Standard;
 
         public InteractiveLoop(IConsole console, IConsoleReader consoleReader, IConsoleWriter consoleWriter,
-            IReplEngine replEngine, ILoop loop)
+            IReplEngine replEngine, ILoop loop, IInputCheck inputCheck)
         {
             _console = console;
             _consoleReader = consoleReader;
             _consoleWriter = consoleWriter;
             _replEngine = replEngine;
             _loop = loop;
+            _inputCheck = inputCheck;
         }
 
-        private string _prompt = Prompt.Standard;
 
         public async Task Run()
         {
@@ -45,7 +48,7 @@ namespace ReplTap.ConsoleHost
 
                     var result = await _replEngine.Execute(codes.ToString());
 
-                    if (result.State == OutputState.Continue)
+                    if (result.State == OutputState.Continue && !_inputCheck.IsForceExecute(input))
                     {
                         _prompt = Prompt.Continue;
                     }
