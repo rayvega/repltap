@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Moq;
 
 namespace ReplTap.Core.Tests
 {
@@ -14,8 +15,9 @@ namespace ReplTap.Core.Tests
             // arrange
             var expectedOutput = "test output";
             var code = $"var testVariable = \"{expectedOutput}\"; testVariable";
-            
-            var engine = new ReplEngine();
+            var inputCheck = new Mock<IInputCheck>();
+
+            var engine = new ReplEngine(inputCheck.Object);
             
             // act
             var result  = await engine.Execute(code);
@@ -26,7 +28,6 @@ namespace ReplTap.Core.Tests
             Assert.That(result.State, Is.EqualTo(OutputState.Valid));
         }
         
-        
         [Test]
         public async Task Execute_Should_Run_Code_On_Continue()
         {
@@ -36,8 +37,9 @@ namespace ReplTap.Core.Tests
             
             var firstCode = $"var testVariable = \"{expectedSecondOutput}\";";
             var secondCode = "testVariable";
+            var inputCheck = new Mock<IInputCheck>();
             
-            var engine = new ReplEngine();
+            var engine = new ReplEngine(inputCheck.Object);
             
             // act
             var firstResult  = await engine.Execute(firstCode);
@@ -61,8 +63,9 @@ namespace ReplTap.Core.Tests
             var firstCode = $"var testVariable = \"{expectedSecondResult}\";";
             var invalidCode = "invalid code;";
             var secondCode = "testVariable";
+            var inputCheck = new Mock<IInputCheck>();
             
-            var engine = new ReplEngine();
+            var engine = new ReplEngine(inputCheck.Object);
             
             // act 
             var firstResult  = await engine.Execute(firstCode);
@@ -91,7 +94,8 @@ namespace ReplTap.Core.Tests
                 "foo",
             };
             
-            var engine = new ReplEngine();
+            var inputCheck = new Mock<IInputCheck>();
+            var engine = new ReplEngine(inputCheck.Object);
             var builder = new StringBuilder();
             var codeResult = new CodeResult();
             

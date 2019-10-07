@@ -1,4 +1,4 @@
-namespace ReplTap.ConsoleHost
+namespace ReplTap.Core
 {
     public interface IInputCheck
     {
