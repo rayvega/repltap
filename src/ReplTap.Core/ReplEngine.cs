@@ -33,10 +33,11 @@ namespace ReplTap.Core
                 result.Output = _state.ReturnValue?.ToString();
                 result.State = OutputState.Valid;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
                 if (_inputCheck.IsForceExecute(code))
                 {
+                    result.Output = exception.Message;
                     result.State = OutputState.Error;
                 }
                 else

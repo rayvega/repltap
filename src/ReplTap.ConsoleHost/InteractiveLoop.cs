@@ -17,7 +17,7 @@ namespace ReplTap.ConsoleHost
         private readonly IReplEngine _replEngine;
         private readonly IConsoleWriter _consoleWriter;
         private readonly ILoop _loop;
-        
+
         private string _prompt = Prompt.Standard;
 
         public InteractiveLoop(IConsole console, IConsoleReader consoleReader, IConsoleWriter consoleWriter,
@@ -45,15 +45,21 @@ namespace ReplTap.ConsoleHost
 
                     var result = await _replEngine.Execute(codes.ToString());
 
-                    if (result.State == OutputState.Continue)
+                    switch (result.State)
                     {
-                        _prompt = Prompt.Continue;
-                    }
-                    else
-                    {
-                        _consoleWriter.WriteOutput(result.Output);
-                        codes.Clear();
-                        _prompt = Prompt.Standard;
+                        case OutputState.Continue:
+                            _prompt = Prompt.Continue;
+                            break;
+                        case OutputState.Error:
+                            _consoleWriter.WriteError(result.Output);
+                            codes.Clear();
+                            _prompt = Prompt.Standard;
+                            break;
+                        default:
+                            _consoleWriter.WriteOutput(result.Output);
+                            codes.Clear();
+                            _prompt = Prompt.Standard;
+                            break;
                     }
                 }
                 catch (Exception exception)
@@ -61,7 +67,7 @@ namespace ReplTap.ConsoleHost
                     _consoleWriter.WriteError(exception.Message);
                 }
             }
-            
+
             // ReSharper disable once FunctionNeverReturns
         }
     }
