@@ -18,6 +18,8 @@ namespace ReplTap.ConsoleHost
         private readonly IConsoleWriter _consoleWriter;
         private readonly ILoop _loop;
 
+        private string _prompt = Prompt.Standard;
+
         public InteractiveLoop(IConsole console, IConsoleReader consoleReader, IConsoleWriter consoleWriter,
             IReplEngine replEngine, ILoop loop)
         {
@@ -27,8 +29,6 @@ namespace ReplTap.ConsoleHost
             _replEngine = replEngine;
             _loop = loop;
         }
-
-        private string _prompt = Prompt.Standard;
 
         public async Task Run()
         {
@@ -45,15 +45,21 @@ namespace ReplTap.ConsoleHost
 
                     var result = await _replEngine.Execute(codes.ToString());
 
-                    if (result.State == OutputState.Continue)
+                    switch (result.State)
                     {
-                        _prompt = Prompt.Continue;
-                    }
-                    else
-                    {
-                        _consoleWriter.WriteOutput(result.Output);
-                        codes.Clear();
-                        _prompt = Prompt.Standard;
+                        case OutputState.Continue:
+                            _prompt = Prompt.Continue;
+                            break;
+                        case OutputState.Error:
+                            _consoleWriter.WriteError(result.Output);
+                            codes.Clear();
+                            _prompt = Prompt.Standard;
+                            break;
+                        default:
+                            _consoleWriter.WriteOutput(result.Output);
+                            codes.Clear();
+                            _prompt = Prompt.Standard;
+                            break;
                     }
                 }
                 catch (Exception exception)
@@ -61,7 +67,7 @@ namespace ReplTap.ConsoleHost
                     _consoleWriter.WriteError(exception.Message);
                 }
             }
-            
+
             // ReSharper disable once FunctionNeverReturns
         }
     }

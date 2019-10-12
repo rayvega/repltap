@@ -13,6 +13,12 @@ namespace ReplTap.Core
     public class ReplEngine : IReplEngine
     {
         private static ScriptState<object> _state;
+        private readonly IInputCheck _inputCheck;
+
+        public ReplEngine(IInputCheck inputCheck)
+        {
+            _inputCheck = inputCheck;
+        }
 
         public async Task<CodeResult> Execute(string code)
         {
@@ -27,9 +33,17 @@ namespace ReplTap.Core
                 result.Output = _state.ReturnValue?.ToString();
                 result.State = OutputState.Valid;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                result.State = OutputState.Continue;
+                if (_inputCheck.IsForceExecute(code))
+                {
+                    result.Output = exception.Message;
+                    result.State = OutputState.Error;
+                }
+                else
+                {
+                    result.State = OutputState.Continue;
+                }
             }
 
             return result;
