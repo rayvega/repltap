@@ -9,7 +9,12 @@ namespace ReplTap.Core
     {
         public bool IsForceExecute(string input)
         {
-            return input?.Contains(";") ?? false;
+            var hasSemicolon = input?.Contains(";") ?? false;
+            var hasMultipleNewlines = input?.EndsWith("\r\r\r") ?? false;
+
+            var isForceExecute = hasSemicolon || hasMultipleNewlines;
+
+            return isForceExecute;
         }
     }
 }
