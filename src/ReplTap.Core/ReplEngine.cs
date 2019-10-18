@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
@@ -23,7 +22,7 @@ namespace ReplTap.Core
         public async Task<CodeResult> Execute(string code)
         {
             var result = new CodeResult();
-            
+
             try
             {
                 _state = _state == null
@@ -33,7 +32,7 @@ namespace ReplTap.Core
                 result.Output = _state.ReturnValue?.ToString();
                 result.State = OutputState.Valid;
             }
-            catch (Exception exception)
+            catch (CompilationErrorException exception)
             {
                 if (_inputCheck.IsForceExecute(code))
                 {

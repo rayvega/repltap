@@ -13,8 +13,30 @@ namespace ReplTap.Core.Tests
         [TestCase("", false)]
         [TestCase(null, false)]
         [TestCase("test code", false)]
-        [TestCase("", false)]
-        public void IsForceExecute_Should_Return_As_Expected(string input, bool expectedIsForceExecute)
+        public void IsForceExecute_When_Has_Semicolon_Should_Return_Expected(string input, bool expectedIsForceExecute)
+        {
+            var inputCheck = new InputCheck();
+
+            var isForceExecute = inputCheck.IsForceExecute(input);
+
+            Assert.That(isForceExecute, Is.EqualTo(expectedIsForceExecute));
+        }
+
+        private static object[] _testCasesNewLine =
+        {
+            new object[] {"test code line 1 \r\r\r", true},
+            new object[] {"test code line 1\r\r\r", true},
+            new object[] {"test code line 1\rtest code line 2\r\r\r", true},
+            new object[] {"test code line 1", false},
+            new object[] {"test code line 1 \r", false},
+            new object[] {"test code line 1 \ra\r", false},
+            new object[] {"test code line 1 \r \r", false},
+            new object[] {"test code line 1 \r\ra", false},
+            new object[] {"test code line 1 \ra\ra", false},
+        };
+
+        [TestCaseSource(nameof(_testCasesNewLine))]
+        public void IsForceExecute_Multiple_Newlines_Should_Return_Expected(string input, bool expectedIsForceExecute)
         {
             var inputCheck = new InputCheck();
 
