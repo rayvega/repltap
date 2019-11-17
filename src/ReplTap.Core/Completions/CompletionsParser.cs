@@ -7,6 +7,11 @@ namespace ReplTap.Core.Completions
     {
         public string ParseIncompleteText(string code)
         {
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return string.Empty;
+            }
+
             var builder = new StringBuilder(code.Length);
 
             for (var index = code.Length - 1; index >= 0; index--)

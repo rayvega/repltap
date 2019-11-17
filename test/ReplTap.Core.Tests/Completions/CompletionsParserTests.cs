@@ -39,5 +39,25 @@ namespace ReplTap.Core.Tests.Completions
 
             return incompleteText;
         }
+
+        [Test]
+        [TestCase("b.c ")]
+        [TestCase("c ")]
+        [TestCase("c  ")]
+        [TestCase("")]
+        [TestCase(" ")]
+        [TestCase("  ")]
+        [TestCase(null)]
+        public void ParseIncompleteText_Should_Return_Empty_String(string code)
+        {
+            // arrange
+            var parser = new CompletionsParser();
+
+            // act
+            var incompleteText = parser.ParseIncompleteText(code);
+
+            // assert
+            Assert.That(incompleteText, Is.Not.Null.And.Empty);
+        }
     }
 }
