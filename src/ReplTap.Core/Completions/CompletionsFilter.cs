@@ -3,7 +3,12 @@ using System.Linq;
 
 namespace ReplTap.Core.Completions
 {
-    public class CompletionsFilter
+    public interface ICompletionsFilter
+    {
+        IEnumerable<string> Apply(IEnumerable<string> completions, string filterText);
+    }
+
+    public class CompletionsFilter : ICompletionsFilter
     {
         public IEnumerable<string> Apply(IEnumerable<string> completions, string filterText)
         {

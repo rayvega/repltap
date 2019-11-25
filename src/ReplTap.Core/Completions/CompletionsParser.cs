@@ -3,7 +3,12 @@ using System.Text;
 
 namespace ReplTap.Core.Completions
 {
-    public class CompletionsParser
+    public interface ICompletionsParser
+    {
+        string ParseIncompleteText(string code);
+    }
+
+    public class CompletionsParser : ICompletionsParser
     {
         public string ParseIncompleteText(string code)
         {

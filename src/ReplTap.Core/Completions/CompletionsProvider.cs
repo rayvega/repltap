@@ -12,18 +12,28 @@ namespace ReplTap.Core.Completions
     public class CompletionsProvider : ICompletionsProvider
     {
         private readonly IRoslynCompletionsProvider _roslynCompletionsProvider;
+        private readonly ICompletionsParser _parser;
+        private readonly ICompletionsFilter _filter;
 
-        public CompletionsProvider(IRoslynCompletionsProvider roslynCompletionsProvider)
+        public CompletionsProvider(IRoslynCompletionsProvider roslynCompletionsProvider,
+            ICompletionsParser parser, ICompletionsFilter filter)
         {
             _roslynCompletionsProvider = roslynCompletionsProvider;
+            _parser = parser;
+            _filter = filter;
         }
 
         public async Task<IEnumerable<string>> GetCompletions(string code)
         {
             var results = await _roslynCompletionsProvider.GetCompletions(code);
 
-            var completions = results.Items.Select(item => item.DisplayText);
-            
+            var unfilteredCompletions = results
+                .Items
+                .Select(item => item.DisplayText);
+
+            var filterText = _parser.ParseIncompleteText(code);
+            var completions = _filter.Apply(unfilteredCompletions, filterText);
+
             return completions;
         }
     }
