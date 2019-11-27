@@ -20,9 +20,11 @@ namespace ReplTap
             service.AddSingleton<IReplEngine, ReplEngine>();
             service.AddSingleton<ICompletionsProvider, CompletionsProvider>();
             service.AddSingleton<IRoslynCompletionsProvider, RoslynCompletionsProvider>();
-            
+            service.AddSingleton<ICompletionsParser, CompletionsParser>();
+            service.AddSingleton<ICompletionsFilter, CompletionsFilter>();
+
             var provider = service.BuildServiceProvider();
-            
+
             return provider;
         }
     }
