@@ -25,6 +25,11 @@ namespace ReplTap.Core.Completions
 
         public async Task<IEnumerable<string>> GetCompletions(string code)
         {
+            if (string.IsNullOrEmpty(code))
+            {
+                return Enumerable.Empty<string>();
+            }
+
             var results = await _roslyn.GetCompletions(code);
 
             var unfilteredCompletions = results
