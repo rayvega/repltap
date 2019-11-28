@@ -32,6 +32,11 @@ namespace ReplTap.Core.Completions
 
             var results = await _roslyn.GetCompletions(code);
 
+            if (results == null)
+            {
+                return Enumerable.Empty<string>();
+            }
+
             var unfilteredCompletions = results
                 .Items
                 .Select(item => item.DisplayText);
