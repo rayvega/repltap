@@ -162,9 +162,11 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(c => c.ReadLine(It.IsAny<string>()))
                 .ReturnsAsync(input);
 
+            var expectedException = new Exception(errorOutput);
+
             replEngine
                 .Setup(r => r.Execute(input))
-                .Throws(new Exception(errorOutput));
+                .Throws(expectedException);
 
             loop
                 .SetupSequence(l => l.Continue())
@@ -179,7 +181,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             // assert
             consoleWriter.Verify(c => c.WriteOutput(errorOutput), Times.Never);
-            consoleWriter.Verify(c => c.WriteError(errorOutput), Times.Once);
+            consoleWriter.Verify(c => c.WriteError(expectedException), Times.Once);
         }
     }
 }

@@ -10,8 +10,9 @@ namespace ReplTap.ConsoleHost
         void ClearLine();
         ConsoleColor ForegroundColor { get; set; }
         void ResetColor();
+        void WriteLine(Exception exception);
     }
-    
+
     public class ConsoleWrapper : IConsole
     {
         public void Write(string text)
@@ -24,11 +25,16 @@ namespace ReplTap.ConsoleHost
             if (text == string.Empty)
             {
                 Console.WriteLine();
-                
+
                 return;
             }
-            
+
             Console.WriteLine(text);
+        }
+
+        public void WriteLine(Exception exception)
+        {
+            Console.WriteLine(exception);
         }
 
         public ConsoleKeyInfo ReadKey(bool intercept)
@@ -54,5 +60,6 @@ namespace ReplTap.ConsoleHost
         {
             Console.ResetColor();
         }
+
     }
 }
