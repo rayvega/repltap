@@ -64,7 +64,8 @@ namespace ReplTap.ConsoleHost
                 }
                 catch (Exception exception)
                 {
-                    _consoleWriter.WriteError(exception.Message);
+                    _console.WriteLine();
+                    _consoleWriter.WriteError(exception);
                 }
             }
 

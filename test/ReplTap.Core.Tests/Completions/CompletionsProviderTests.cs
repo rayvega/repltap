@@ -53,10 +53,10 @@ namespace ReplTap.Core.Tests.Completions
                 .Setup(f => f.Apply(It.IsAny<IEnumerable<string>>(), incompleteText))
                 .Returns(filtered);
 
-            var completionsProvider = new CompletionsProvider(roslyn.Object, parser.Object, filter.Object);
+            var provider = new CompletionsProvider(roslyn.Object, parser.Object, filter.Object);
 
             // act
-            var completions = (await completionsProvider.GetCompletions(code)).ToArray();
+            var completions = (await provider.GetCompletions(code)).ToArray();
 
             // assert
             Assert.That(completions, Is.Not.Null);
@@ -64,6 +64,41 @@ namespace ReplTap.Core.Tests.Completions
             roslyn.VerifyAll();
             parser.VerifyAll();
             filter.VerifyAll();
+        }
+
+        [Test]
+        public async Task GetCompletions_Should_Return_Empty_List_When_No_Code()
+        {
+            // arrange
+            var code = string.Empty;
+            var provider = new CompletionsProvider(null, null, null);
+
+            // act
+            var completions = (await provider.GetCompletions(code)).ToArray();
+
+            // assert
+            Assert.That(completions, Is.Empty);
+        }
+
+        [Test]
+        public async Task GetCompletions_Should_Return_Empty_List_When_No_Completions()
+        {
+            // arrange
+            var code = "test code";
+
+            var roslyn = new Mock<IRoslynCompletionsProvider>();
+
+            roslyn
+                .Setup(r => r.GetCompletions(code))
+                .ReturnsAsync((CompletionList)null);
+
+            var provider = new CompletionsProvider(roslyn.Object, null, null);
+
+            // act
+            var completions = (await provider.GetCompletions(code)).ToArray();
+
+            // assert
+            Assert.That(completions, Is.Empty);
         }
     }
 }
