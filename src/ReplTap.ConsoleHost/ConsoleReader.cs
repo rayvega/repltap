@@ -28,7 +28,7 @@ namespace ReplTap.ConsoleHost
 
             do
             {
-                input = _console.ReadKey(true);
+                input = _console.ReadKey(intercept: true);
 
                 switch (input.Key)
                 {
@@ -36,10 +36,10 @@ namespace ReplTap.ConsoleHost
                     {
                         var currentCode = buffer.ToString();
                         await WriteAllCompletions(currentCode);
-                        
+
                         break;
                     }
-                    
+
                     case ConsoleKey.Backspace:
                     {
                         if (buffer.Length > 0)
@@ -70,7 +70,7 @@ namespace ReplTap.ConsoleHost
             var completions = await _completionsProvider.GetCompletions(code);
 
             _console.WriteLine();
-            
+
             foreach (var completion in completions)
             {
                 _console.WriteLine(completion);
