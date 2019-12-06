@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using ReplTap.Core.Completions;
+using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost.Tests
 {
@@ -38,7 +39,7 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleReader = new ConsoleReader(console.Object, provider.Object);
 
             // act
-            var input = await consoleReader.ReadLine(prompt);
+            var input = await consoleReader.ReadLine(prompt, null);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
@@ -75,7 +76,7 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleReader = new ConsoleReader(console.Object, provider.Object);
 
             // act
-            var input = await consoleReader.ReadLine(prompt);
+            var input = await consoleReader.ReadLine(prompt, null);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));
@@ -115,10 +116,55 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleReader = new ConsoleReader(console.Object, provider.Object);
 
             // act
-            var input = await consoleReader.ReadLine(prompt);
+            var input = await consoleReader.ReadLine(prompt, null);
 
             // assert
             Assert.That(input, Is.EqualTo("efh"));
+
+            provider.Verify(p => p.GetCompletions(It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public async Task ReadLine_Should_Return_Input_History_When_Key_Up_Arrow()
+        {
+            // arrange
+            var expectedInputHistory = "test input from history";
+            var prompt = "test prompt *";
+
+            var console = new Mock<IConsole>();
+            var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey, bool altKey)>
+            {
+                ('a', It.IsAny<ConsoleKey>(), false),
+                ('b', It.IsAny<ConsoleKey>(), false),
+                ('c', It.IsAny<ConsoleKey>(), false),
+                (It.IsAny<char>(), ConsoleKey.UpArrow, true),
+                (' ', ConsoleKey.Enter, false),
+            };
+
+            var setupSequence = console
+                .SetupSequence(c => c.ReadKey(true));
+
+            foreach (var (inputChar, consoleKey, altKey) in consoleKeys)
+            {
+                var consoleKeyInfo = new ConsoleKeyInfo(inputChar, consoleKey, false, altKey, false);
+
+                setupSequence.Returns(consoleKeyInfo);
+            }
+
+            var provider = new Mock<ICompletionsProvider>();
+
+            var inputHistory = new Mock<IInputHistory>();
+            inputHistory
+                .Setup(i => i.GetPreviousInput())
+                .Returns(expectedInputHistory);
+
+            var consoleReader = new ConsoleReader(console.Object, provider.Object);
+
+            // act
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
+
+            // assert
+            Assert.That(input, Is.EqualTo($"{expectedInputHistory} "));
 
             provider.Verify(p => p.GetCompletions(It.IsAny<string>()), Times.Never);
         }

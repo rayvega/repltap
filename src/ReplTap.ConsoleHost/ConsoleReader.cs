@@ -2,12 +2,13 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using ReplTap.Core.Completions;
+using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost
 {
     public interface IConsoleReader
     {
-        Task<string> ReadLine(string prompt);
+        Task<string> ReadLine(string prompt, IInputHistory inputHistory);
     }
 
     public class ConsoleReader : IConsoleReader
@@ -21,7 +22,7 @@ namespace ReplTap.ConsoleHost
             _completionsProvider = completionsProvider;
         }
 
-        public async Task<string> ReadLine(string prompt)
+        public async Task<string> ReadLine(string prompt, IInputHistory inputHistory)
         {
             var buffer = new StringBuilder();
             ConsoleKeyInfo input;
@@ -50,8 +51,18 @@ namespace ReplTap.ConsoleHost
                         break;
                     }
 
+                    case ConsoleKey.UpArrow:
+                        if (input.Modifiers.HasFlag(ConsoleModifiers.Alt))
+                        {
+                            buffer.Clear();
+                            buffer.Append(inputHistory.GetPreviousInput());
+                        }
+
+                        break;
+
                     default:
                         buffer.Append(input.KeyChar);
+
                         break;
                 }
 

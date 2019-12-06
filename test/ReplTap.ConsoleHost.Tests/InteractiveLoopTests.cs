@@ -28,7 +28,7 @@ namespace ReplTap.ConsoleHost.Tests
             var loop = new Mock<ILoop>();
 
             consoleReader
-                .Setup(c => c.ReadLine(It.IsAny<string>()))
+                .Setup(c => c.ReadLine(It.IsAny<string>(), null))
                 .ReturnsAsync(input);
 
             replEngine
@@ -41,7 +41,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object,
-                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object, null);
 
             // act
             await interactiveLoop.Run();
@@ -70,7 +70,7 @@ namespace ReplTap.ConsoleHost.Tests
             var loop = new Mock<ILoop>();
 
             consoleReader
-                .Setup(c => c.ReadLine(It.IsAny<string>()))
+                .Setup(c => c.ReadLine(It.IsAny<string>(), null))
                 .ReturnsAsync(input);
 
             replEngine
@@ -83,7 +83,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object,
-                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object, null);
 
             // act
             await interactiveLoop.Run();
@@ -104,7 +104,7 @@ namespace ReplTap.ConsoleHost.Tests
             var loop = new Mock<ILoop>();
 
             consoleReader
-                .SetupSequence(c => c.ReadLine(It.IsAny<string>()))
+                .SetupSequence(c => c.ReadLine(It.IsAny<string>(), null))
                 .Returns(Task.FromResult("var "))
                 .Returns(Task.FromResult("testVariable = \"test value\";"));
 
@@ -132,7 +132,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object,
-                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object, null);
 
             // act
             await interactiveLoop.Run();
@@ -159,7 +159,7 @@ namespace ReplTap.ConsoleHost.Tests
             var loop = new Mock<ILoop>();
 
             consoleReader
-                .Setup(c => c.ReadLine(It.IsAny<string>()))
+                .Setup(c => c.ReadLine(It.IsAny<string>(), null))
                 .ReturnsAsync(input);
 
             var expectedException = new Exception(errorOutput);
@@ -174,7 +174,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object,
-                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object, null);
 
             // act && assert
             await interactiveLoop.Run();
