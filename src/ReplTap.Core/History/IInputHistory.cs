@@ -5,5 +5,7 @@ namespace ReplTap.Core.History
         string GetPreviousInput();
 
         void Add(string code);
+
+        void Reset();
     }
 }

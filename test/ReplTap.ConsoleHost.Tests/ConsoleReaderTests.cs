@@ -35,16 +35,17 @@ namespace ReplTap.ConsoleHost.Tests
             }
 
             var provider = new Mock<ICompletionsProvider>();
-
             var consoleReader = new ConsoleReader(console.Object, provider.Object);
+            var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, null);
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
 
             provider.Verify(p => p.GetCompletions(It.IsAny<string>()), Times.Never);
+            inputHistory.Verify(i => i.Reset());
         }
 
         [Test]
@@ -74,15 +75,17 @@ namespace ReplTap.ConsoleHost.Tests
 
             var provider = new Mock<ICompletionsProvider>();
             var consoleReader = new ConsoleReader(console.Object, provider.Object);
+            var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, null);
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));
 
             provider.Verify(p => p.GetCompletions("ab"), Times.Once());
             console.Verify(c => c.WriteLine(It.IsAny<string>()), Times.AtLeastOnce());
+            inputHistory.Verify(i => i.Reset());
         }
 
         [Test]
@@ -112,16 +115,17 @@ namespace ReplTap.ConsoleHost.Tests
             }
 
             var provider = new Mock<ICompletionsProvider>();
-
             var consoleReader = new ConsoleReader(console.Object, provider.Object);
+            var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, null);
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
 
             // assert
             Assert.That(input, Is.EqualTo("efh"));
 
             provider.Verify(p => p.GetCompletions(It.IsAny<string>()), Times.Never);
+            inputHistory.Verify(i => i.Reset());
         }
 
         [Test]
