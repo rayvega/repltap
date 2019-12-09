@@ -54,13 +54,11 @@ namespace ReplTap.ConsoleHost
                             break;
                         case OutputState.Error:
                             _consoleWriter.WriteError(result.Output);
-                            codes.Clear();
-                            _prompt = Prompt.Standard;
+                            CompleteInput(codes, _inputHistory);
                             break;
                         default:
                             _consoleWriter.WriteOutput(result.Output);
-                            codes.Clear();
-                            _prompt = Prompt.Standard;
+                            CompleteInput(codes, _inputHistory);
                             break;
                     }
                 }
@@ -72,6 +70,13 @@ namespace ReplTap.ConsoleHost
             }
 
             // ReSharper disable once FunctionNeverReturns
+        }
+
+        private void CompleteInput(StringBuilder codes, IInputHistory inputHistory)
+        {
+            inputHistory.Add(codes.ToString());
+            codes.Clear();
+            _prompt = Prompt.Standard;
         }
     }
 }
