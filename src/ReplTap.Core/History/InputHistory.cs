@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ReplTap.Core.History
 {
@@ -15,14 +14,26 @@ namespace ReplTap.Core.History
     public class InputHistory : IInputHistory
     {
         private readonly List<string> _history = new List<string>();
+        private int _currentPosition = -1;
 
         public string GetPreviousInput()
         {
-            return _history.LastOrDefault();
+            if (_currentPosition < 0)
+            {
+                return string.Empty;
+            }
+
+            var input = _history[_currentPosition];
+
+            _currentPosition--;
+
+            return input;
         }
 
         public void Add(string code)
         {
+            _currentPosition++;
+
             _history.Add(code);
         }
 
