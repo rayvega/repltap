@@ -39,7 +39,7 @@ namespace ReplTap.Core.History
 
         public void Reset()
         {
-            throw new System.NotImplementedException();
+            _currentPosition = _history.Count - 1;
         }
     }
 }

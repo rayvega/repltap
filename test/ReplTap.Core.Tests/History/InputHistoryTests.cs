@@ -8,7 +8,7 @@ namespace ReplTap.Core.Tests.History
     public class InputHistoryTests
     {
         [Test]
-        public void GetPreviousInput_Should_Return_Last_Input([Values(1, 2, 3)]int count)
+        public void GetPreviousInput_Should_Return_Last_Input([Range(1, 3)]int count)
         {
             // arrange
             var inputHistory = new InputHistory();
@@ -56,6 +56,34 @@ namespace ReplTap.Core.Tests.History
 
             // assert
             Assert.That(previousInput, Is.EqualTo(expectedInput));
+        }
+
+        [Test]
+        public void Reset_Should_Go_To_Last_Input_When_Has_Any_History([Range(1, 4)] int count)
+        {
+            // arrange
+            var expectedLastInput = "test input # 4";
+
+            var inputHistory = new InputHistory();
+
+            foreach (var index in Enumerable.Range(1, 4))
+            {
+                var input = $"test input # {index}";
+                inputHistory.Add(input);
+            }
+
+            // act
+            foreach (var _ in Enumerable.Range(1, count))
+            {
+                inputHistory.GetPreviousInput();
+            }
+
+            inputHistory.Reset();
+
+            var previousInput = inputHistory.GetPreviousInput();
+
+            // assert
+            Assert.That(previousInput, Is.EqualTo(expectedLastInput));
         }
     }
 }
