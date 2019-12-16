@@ -39,7 +39,9 @@ namespace ReplTap.Core.History
 
         public void Reset()
         {
-            _currentPosition = _history.Count - 1;
+            _currentPosition = _history.Count <= 0
+                ? -1
+                : _history.Count - 1;
         }
     }
 }

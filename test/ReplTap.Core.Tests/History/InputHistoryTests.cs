@@ -85,5 +85,27 @@ namespace ReplTap.Core.Tests.History
             // assert
             Assert.That(previousInput, Is.EqualTo(expectedLastInput));
         }
+
+        [Test]
+        public void Reset_Should_Return_Empty_String_Input_When_No_History([Range(1, 4)] int count)
+        {
+            // arrange
+            var expectedInput = string.Empty;
+
+            var inputHistory = new InputHistory();
+
+            // act
+            foreach (var _ in Enumerable.Range(1, count))
+            {
+                inputHistory.GetPreviousInput();
+            }
+
+            inputHistory.Reset();
+
+            var previousInput = inputHistory.GetPreviousInput();
+
+            // assert
+            Assert.That(previousInput, Is.EqualTo(expectedInput));
+        }
     }
 }
