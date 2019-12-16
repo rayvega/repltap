@@ -6,6 +6,8 @@ namespace ReplTap.Core.History
     {
         string GetPreviousInput();
 
+        string GetNextInput();
+
         void Add(string code);
 
         void Reset();
@@ -28,6 +30,11 @@ namespace ReplTap.Core.History
             _currentPosition--;
 
             return input;
+        }
+
+        public string GetNextInput()
+        {
+            throw new System.NotImplementedException();
         }
 
         public void Add(string code)

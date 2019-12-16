@@ -60,6 +60,16 @@ namespace ReplTap.ConsoleHost
 
                         break;
 
+                    case ConsoleKey.DownArrow:
+                        if (input.Modifiers.HasFlag(ConsoleModifiers.Alt))
+                        {
+                            buffer.Clear();
+                            buffer.Append(inputHistory.GetNextInput());
+                        }
+
+                        break;
+
+
                     default:
                         buffer.Append(input.KeyChar);
                         inputHistory.Reset();
