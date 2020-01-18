@@ -72,7 +72,6 @@ namespace ReplTap.ConsoleHost
 
                     default:
                         buffer.Append(input.KeyChar);
-                        inputHistory.Reset();
 
                         break;
                 }

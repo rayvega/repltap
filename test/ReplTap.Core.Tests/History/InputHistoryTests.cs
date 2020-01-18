@@ -8,39 +8,18 @@ namespace ReplTap.Core.Tests.History
     public class InputHistoryTests
     {
         [Test]
-        public void GetPreviousInput_Should_Return_Last_Input([Range(1, 3)]int count)
-        {
-            // arrange
-            var inputHistory = new InputHistory();
-
-            var lastInput = "";
-            foreach (var index in Enumerable.Range(1, count))
-            {
-                lastInput = $"test input # {index}";
-                inputHistory.Add(lastInput);
-            }
-
-            // act
-            var previousInput = inputHistory.GetPreviousInput();
-
-            // assert
-            Assert.That(previousInput, Is.EqualTo(lastInput));
-        }
-
-        [Test]
-        [TestCase(1, "test input # 4")]
-        [TestCase(2, "test input # 3")]
-        [TestCase(3, "test input # 2")]
-        [TestCase(4, "test input # 1")]
-        [TestCase(5, "")]
         [TestCase(6, "")]
-        [TestCase(7, "")]
+        [TestCase(5, "")]
+        [TestCase(4, "test input # 0")]
+        [TestCase(3, "test input # 1")]
+        [TestCase(2, "test input # 2")]
+        [TestCase(1, "test input # 3")]
         public void GetPreviousInput_Should_Return_Previous_Input(int count, string expectedInput)
         {
             // arrange
             var inputHistory = new InputHistory();
 
-            foreach (var index in Enumerable.Range(1, 4))
+            foreach (var index in Enumerable.Range(0, 4))
             {
                 var input = $"test input # {index}";
                 inputHistory.Add(input);
@@ -59,53 +38,42 @@ namespace ReplTap.Core.Tests.History
         }
 
         [Test]
-        public void Reset_Should_Go_To_Last_Input_When_Has_Any_History([Range(1, 4)] int count)
+        [TestCase(4, 1, "test input # 1")]
+        [TestCase(4, 2, "test input # 2")]
+        [TestCase(4, 4, "")]
+        [TestCase(3, 2, "test input # 3")]
+        [TestCase(2, 1, "test input # 3")]
+        [TestCase(1, 1, "")]
+        [TestCase(1, 2, "")]
+        [TestCase(0, 1, "")]
+        [TestCase(0, 2, "")]
+        public void GetNextInput_Should_Return_Next_Input(int previousCount, int nextCount, string expectedInput)
         {
             // arrange
-            var expectedLastInput = "test input # 4";
-
             var inputHistory = new InputHistory();
 
-            foreach (var index in Enumerable.Range(1, 4))
+            foreach (var index in Enumerable.Range(0, 4))
             {
                 var input = $"test input # {index}";
                 inputHistory.Add(input);
+                System.Console.WriteLine($"[debug] {input}");
             }
 
             // act
-            foreach (var _ in Enumerable.Range(1, count))
+            foreach (var _ in Enumerable.Range(1, previousCount  ))
             {
                 inputHistory.GetPreviousInput();
             }
 
-            inputHistory.Reset();
+            var nextInput = "";
 
-            var previousInput = inputHistory.GetPreviousInput();
-
-            // assert
-            Assert.That(previousInput, Is.EqualTo(expectedLastInput));
-        }
-
-        [Test]
-        public void Reset_Should_Return_Empty_String_Input_When_No_History([Range(1, 4)] int count)
-        {
-            // arrange
-            var expectedInput = string.Empty;
-
-            var inputHistory = new InputHistory();
-
-            // act
-            foreach (var _ in Enumerable.Range(1, count))
+            foreach (var _ in Enumerable.Range(1, nextCount))
             {
-                inputHistory.GetPreviousInput();
+                nextInput = inputHistory.GetNextInput();
             }
 
-            inputHistory.Reset();
-
-            var previousInput = inputHistory.GetPreviousInput();
-
             // assert
-            Assert.That(previousInput, Is.EqualTo(expectedInput));
+            Assert.That(nextInput, Is.EqualTo(expectedInput));
         }
     }
 }
