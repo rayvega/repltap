@@ -69,7 +69,6 @@ namespace ReplTap.ConsoleHost
 
                         break;
 
-
                     default:
                         buffer.Append(input.KeyChar);
 
@@ -81,7 +80,7 @@ namespace ReplTap.ConsoleHost
 
             } while (input.Key != ConsoleKey.Enter);
 
-            var line = buffer.ToString();
+            var line = buffer.ToString().TrimEnd();
 
             return line;
         }
