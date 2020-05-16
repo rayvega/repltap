@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ReplTap.ConsoleHost;
 using ReplTap.Core;
 using ReplTap.Core.Completions;
+using ReplTap.Core.History;
 
 namespace ReplTap
 {
@@ -17,6 +18,7 @@ namespace ReplTap
             service.AddSingleton<IInputCheck, InputCheck>();
             service.AddSingleton<IConsoleReader, ConsoleReader>();
             service.AddSingleton<IConsoleWriter, ConsoleWriter>();
+            service.AddSingleton<IInputHistory, InputHistory>();
             service.AddSingleton<IReplEngine, ReplEngine>();
             service.AddSingleton<ICompletionsProvider, CompletionsProvider>();
             service.AddSingleton<IRoslynCompletionsProvider, RoslynCompletionsProvider>();

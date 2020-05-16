@@ -3,6 +3,7 @@ using System;
 using Moq;
 using NUnit.Framework;
 using ReplTap.Core;
+using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost.Tests
 {
@@ -27,8 +28,10 @@ namespace ReplTap.ConsoleHost.Tests
             var replEngine = new Mock<IReplEngine>();
             var loop = new Mock<ILoop>();
 
+            var inputHistory = new Mock<IInputHistory>();
+
             consoleReader
-                .Setup(c => c.ReadLine(It.IsAny<string>()))
+                .Setup(c => c.ReadLine(It.IsAny<string>(), inputHistory.Object))
                 .ReturnsAsync(input);
 
             replEngine
@@ -41,7 +44,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object,
-                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object, inputHistory.Object);
 
             // act
             await interactiveLoop.Run();
@@ -49,6 +52,8 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             consoleWriter.Verify(c => c.WriteOutput(output), Times.Once);
             consoleWriter.Verify(c => c.WriteError(output), Times.Never);
+
+            inputHistory.Verify(i => i.Add(It.IsAny<string>()));
         }
 
         [Test]
@@ -69,8 +74,10 @@ namespace ReplTap.ConsoleHost.Tests
             var replEngine = new Mock<IReplEngine>();
             var loop = new Mock<ILoop>();
 
+            var inputHistory = new Mock<IInputHistory>();
+
             consoleReader
-                .Setup(c => c.ReadLine(It.IsAny<string>()))
+                .Setup(c => c.ReadLine(It.IsAny<string>(), inputHistory.Object))
                 .ReturnsAsync(input);
 
             replEngine
@@ -83,7 +90,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object,
-                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object, inputHistory.Object);
 
             // act
             await interactiveLoop.Run();
@@ -91,6 +98,8 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             consoleWriter.Verify(c => c.WriteOutput(output), Times.Never);
             consoleWriter.Verify(c => c.WriteError(output), Times.Once);
+
+            inputHistory.Verify(i => i.Add(It.IsAny<string>()));
         }
 
         [Test]
@@ -104,7 +113,7 @@ namespace ReplTap.ConsoleHost.Tests
             var loop = new Mock<ILoop>();
 
             consoleReader
-                .SetupSequence(c => c.ReadLine(It.IsAny<string>()))
+                .SetupSequence(c => c.ReadLine(It.IsAny<string>(), null))
                 .Returns(Task.FromResult("var "))
                 .Returns(Task.FromResult("testVariable = \"test value\";"));
 
@@ -132,7 +141,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object,
-                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object, null);
 
             // act
             await interactiveLoop.Run();
@@ -159,7 +168,7 @@ namespace ReplTap.ConsoleHost.Tests
             var loop = new Mock<ILoop>();
 
             consoleReader
-                .Setup(c => c.ReadLine(It.IsAny<string>()))
+                .Setup(c => c.ReadLine(It.IsAny<string>(), null))
                 .ReturnsAsync(input);
 
             var expectedException = new Exception(errorOutput);
@@ -174,7 +183,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object,
-                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object, null);
 
             // act && assert
             await interactiveLoop.Run();
