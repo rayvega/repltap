@@ -44,10 +44,9 @@ namespace ReplTap.ConsoleHost
 
         public void ClearLine()
         {
-            var cursor = Console.CursorTop;
-            Console.SetCursorPosition(0, cursor);
+            Console.Write('\r');
             Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, cursor);
+            Console.Write('\r');
         }
 
         public ConsoleColor ForegroundColor
