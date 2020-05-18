@@ -10,10 +10,10 @@ namespace ReplTap
         public static async Task Main()
         {
             Console.WriteLine("repltap - C# interactive repl");
-            
+
             var provider = Configuration.GetServiceProvider();
             var interactiveLoop = provider.GetService<IInteractiveLoop>();
-            
+
             await interactiveLoop.Run();
         }
     }

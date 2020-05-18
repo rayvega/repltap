@@ -17,7 +17,7 @@ namespace ReplTap.Core.Completions
         public async Task<CompletionList> GetCompletions(string code)
         {
             // based on: https://www.strathweb.com/2018/12/using-roslyn-c-completion-service-programmatically/
-            
+
             var host = MefHostServices.Create(MefHostServices.DefaultAssemblies);
             var workspace = new AdhocWorkspace(host);
 
@@ -46,9 +46,9 @@ namespace ReplTap.Core.Completions
 
             var position = code.Length - 1;
             var completionService = CompletionService.GetService(scriptDocument);
-            
+
             var results = await completionService.GetCompletionsAsync(scriptDocument, position);
-            
+
             return results;
         }
     }
