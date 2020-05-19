@@ -4,7 +4,7 @@ namespace ReplTap.ConsoleHost
     {
         bool Continue();
     }
-    
+
     public class Loop : ILoop
     {
         public bool Continue()
