@@ -11,7 +11,7 @@ namespace ReplTap.Core
 
     public class ReplEngine : IReplEngine
     {
-        private static ScriptState<object> _state;
+        private static ScriptState<object>? _state;
         private readonly IInputCheck _inputCheck;
 
         public ReplEngine(IInputCheck inputCheck)
