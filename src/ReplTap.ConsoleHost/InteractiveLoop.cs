@@ -53,11 +53,11 @@ namespace ReplTap.ConsoleHost
                             _prompt = Prompt.Continue;
                             break;
                         case OutputState.Error:
-                            _consoleWriter.WriteError(result.Output);
+                            _consoleWriter.WriteError(result.Output ?? "");
                             CompleteInput(codes, _inputHistory);
                             break;
                         default:
-                            _consoleWriter.WriteOutput(result.Output);
+                            _consoleWriter.WriteOutput(result.Output ?? "");
                             CompleteInput(codes, _inputHistory);
                             break;
                     }
