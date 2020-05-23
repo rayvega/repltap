@@ -80,6 +80,7 @@ namespace ReplTap.ConsoleHost
 
             } while (input.Key != ConsoleKey.Enter);
 
+            // remove newline(s) from end to avoid cursor moving to start of line after navigating input history
             var line = buffer.ToString().TrimEnd();
 
             return line;
