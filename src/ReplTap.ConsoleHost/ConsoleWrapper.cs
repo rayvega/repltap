@@ -44,6 +44,7 @@ namespace ReplTap.ConsoleHost
 
         public void ClearLine()
         {
+            // `SetCursorPosition()` no longer worked properly after migrating to dotnet 3.1
             Console.Write('\r');
             Console.Write(new string(' ', Console.WindowWidth));
             Console.Write('\r');
