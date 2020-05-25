@@ -41,6 +41,7 @@ namespace ReplTap.Core.Completions
                 .Items
                 .Select(item => item.DisplayText);
 
+            // parse last token of code then filter completions by matching against that token
             var filterText = _parser.ParseIncompleteText(code);
             var completions = _filter.Apply(unfilteredCompletions, filterText);
 
