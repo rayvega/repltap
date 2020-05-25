@@ -26,18 +26,18 @@ namespace ReplTap.Core.Tests.Completions
         [TestCase("a b)c", ExpectedResult = "c")]
         [TestCase("a b[c", ExpectedResult = "c")]
         [TestCase("a b]c", ExpectedResult = "c")]
-        public string ParseIncompleteText_Should_Return_Expected(string code)
+        public string ParseLastToken_Should_Return_Expected(string code)
         {
             // arrange
             var parser = new CompletionsParser();
 
             // act
-            var incompleteText = parser.ParseIncompleteText(code);
+            var lastToken = parser.ParseLastToken(code);
 
             // assert
-            Assert.That(incompleteText, Is.Not.Null.And.Not.Empty);
+            Assert.That(lastToken, Is.Not.Null.And.Not.Empty);
 
-            return incompleteText;
+            return lastToken;
         }
 
         [Test]
@@ -48,16 +48,16 @@ namespace ReplTap.Core.Tests.Completions
         [TestCase(" ")]
         [TestCase("  ")]
         [TestCase(null)]
-        public void ParseIncompleteText_Should_Return_Empty_String(string code)
+        public void ParseLastToken_Should_Return_Empty_String(string code)
         {
             // arrange
             var parser = new CompletionsParser();
 
             // act
-            var incompleteText = parser.ParseIncompleteText(code);
+            var lastToken = parser.ParseLastToken(code);
 
             // assert
-            Assert.That(incompleteText, Is.Not.Null.And.Empty);
+            Assert.That(lastToken, Is.Not.Null.And.Empty);
         }
     }
 }

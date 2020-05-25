@@ -5,12 +5,12 @@ namespace ReplTap.Core.Completions
 {
     public interface ICompletionsParser
     {
-        string ParseIncompleteText(string code);
+        string ParseLastToken(string code);
     }
 
     public class CompletionsParser : ICompletionsParser
     {
-        public string ParseIncompleteText(string code)
+        public string ParseLastToken(string code)
         {
             if (string.IsNullOrWhiteSpace(code))
             {
@@ -31,9 +31,9 @@ namespace ReplTap.Core.Completions
                 builder.Append(current);
             }
 
-            var incompleteText = new string(builder.ToString().Reverse().ToArray());
+            var lastToken = new string(builder.ToString().Reverse().ToArray());
 
-            return incompleteText;
+            return lastToken;
         }
     }
 }
