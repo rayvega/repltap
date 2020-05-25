@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Completion;
 
 namespace ReplTap.Core.Completions
 {
@@ -32,7 +33,7 @@ namespace ReplTap.Core.Completions
 
             var results = await _roslyn.GetCompletions(code);
 
-            if (results == null)
+            if (results == CompletionList.Empty)
             {
                 return Enumerable.Empty<string>();
             }

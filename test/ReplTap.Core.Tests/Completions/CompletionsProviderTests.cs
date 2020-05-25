@@ -90,7 +90,7 @@ namespace ReplTap.Core.Tests.Completions
 
             roslyn
                 .Setup(r => r.GetCompletions(code))
-                .ReturnsAsync((CompletionList)null);
+                .ReturnsAsync(CompletionList.Empty);
 
             var provider = new CompletionsProvider(roslyn.Object, null!, null!);
 
