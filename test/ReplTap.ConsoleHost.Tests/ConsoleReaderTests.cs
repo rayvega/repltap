@@ -39,7 +39,7 @@ namespace ReplTap.ConsoleHost.Tests
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
@@ -77,7 +77,7 @@ namespace ReplTap.ConsoleHost.Tests
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));
@@ -116,7 +116,7 @@ namespace ReplTap.ConsoleHost.Tests
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("efh"));
@@ -162,7 +162,7 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleReader = new ConsoleReader(console.Object, null!);
 
             // act
-            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object);
+            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));
@@ -208,7 +208,7 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleReader = new ConsoleReader(console.Object, null!);
 
             // act
-            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object);
+            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));

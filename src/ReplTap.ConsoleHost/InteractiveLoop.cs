@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using ReplTap.Core;
@@ -19,6 +20,7 @@ namespace ReplTap.ConsoleHost
         private readonly IConsoleWriter _consoleWriter;
         private readonly ILoop _loop;
         private readonly IInputHistory _inputHistory;
+        private List<string> _variables = new List<string>();
         private string _prompt = Prompt.Standard;
 
         public InteractiveLoop(IConsole console, IConsoleReader consoleReader, IConsoleWriter consoleWriter,
@@ -41,7 +43,7 @@ namespace ReplTap.ConsoleHost
                 try
                 {
                     _console.Write($"{_prompt} ");
-                    var input = await _consoleReader.ReadLine(_prompt, _inputHistory);
+                    var input = await _consoleReader.ReadLine(_prompt, _inputHistory, _variables);
                     codes.Append(input);
                     _console.WriteLine($"{_prompt} {input}");
 
@@ -54,11 +56,11 @@ namespace ReplTap.ConsoleHost
                             break;
                         case OutputState.Error:
                             _consoleWriter.WriteError(result.Output ?? "");
-                            CompleteInput(codes, _inputHistory);
+                            CompleteInput(codes, _inputHistory, result.Variables);
                             break;
                         default:
                             _consoleWriter.WriteOutput(result.Output ?? "");
-                            CompleteInput(codes, _inputHistory);
+                            CompleteInput(codes, _inputHistory, result.Variables);
                             break;
                     }
                 }
@@ -72,10 +74,12 @@ namespace ReplTap.ConsoleHost
             // ReSharper disable once FunctionNeverReturns
         }
 
-        private void CompleteInput(StringBuilder codes, IInputHistory inputHistory)
+        private void CompleteInput(StringBuilder codes, IInputHistory inputHistory, List<string>? variables)
         {
             inputHistory.Add(codes.ToString());
             codes.Clear();
+            _variables = variables ?? _variables;
+
             _prompt = Prompt.Standard;
         }
     }

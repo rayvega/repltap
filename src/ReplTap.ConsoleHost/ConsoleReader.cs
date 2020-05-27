@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using ReplTap.Core.History;
@@ -7,7 +8,7 @@ namespace ReplTap.ConsoleHost
 {
     public interface IConsoleReader
     {
-        Task<string> ReadLine(string prompt, IInputHistory inputHistory);
+        Task<string> ReadLine(string prompt, IInputHistory inputHistory, List<string> variables);
     }
 
     public class ConsoleReader : IConsoleReader
@@ -21,7 +22,7 @@ namespace ReplTap.ConsoleHost
             _completionsWriter = completionsWriter;
         }
 
-        public async Task<string> ReadLine(string prompt, IInputHistory inputHistory)
+        public async Task<string> ReadLine(string prompt, IInputHistory inputHistory, List<string> variables)
         {
             var buffer = new StringBuilder();
             ConsoleKeyInfo input;
