@@ -1,7 +1,6 @@
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using ReplTap.Core.Completions;
 using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost
@@ -14,12 +13,12 @@ namespace ReplTap.ConsoleHost
     public class ConsoleReader : IConsoleReader
     {
         private readonly IConsole _console;
-        private readonly ICompletionsProvider _completionsProvider;
+        private readonly ICompletionsWriter _completionsWriter;
 
-        public ConsoleReader(IConsole console, ICompletionsProvider completionsProvider)
+        public ConsoleReader(IConsole console, ICompletionsWriter completionsWriter)
         {
             _console = console;
-            _completionsProvider = completionsProvider;
+            _completionsWriter = completionsWriter;
         }
 
         public async Task<string> ReadLine(string prompt, IInputHistory inputHistory)
@@ -36,7 +35,8 @@ namespace ReplTap.ConsoleHost
                     case ConsoleKey.Tab:
                     {
                         var currentCode = buffer.ToString();
-                        await WriteAllCompletions(currentCode);
+
+                        await _completionsWriter.WriteAllCompletions(currentCode);
 
                         break;
                     }
@@ -84,18 +84,6 @@ namespace ReplTap.ConsoleHost
             var line = buffer.ToString().TrimEnd();
 
             return line;
-        }
-
-        private async Task WriteAllCompletions(string code)
-        {
-            var completions = await _completionsProvider.GetCompletions(code);
-
-            _console.WriteLine();
-
-            foreach (var completion in completions)
-            {
-                _console.WriteLine(completion);
-            }
         }
     }
 }
