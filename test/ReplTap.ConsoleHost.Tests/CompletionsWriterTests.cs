@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -14,7 +13,11 @@ namespace ReplTap.ConsoleHost.Tests
         public async Task WriteAllCompletions_Should_Return_Expected()
         {
             var code = "test code";
-            var variables = new List<string>();
+
+            var variables = Enumerable
+                .Range(1, 3)
+                .Select(i => $"test variables {i}")
+                .ToList();
 
             var completions = Enumerable
                 .Range(1, 3)
@@ -23,7 +26,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             var expectedEmptyWriteLineCount = 1;
 
-            var expectedCallCount = completions.Count + expectedEmptyWriteLineCount;
+            var expectedCallCount = expectedEmptyWriteLineCount + variables.Count + completions.Count;
 
             var completionsProvider = new Mock<ICompletionsProvider>();
 

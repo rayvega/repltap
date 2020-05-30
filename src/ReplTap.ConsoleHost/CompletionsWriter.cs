@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using ReplTap.Core.Completions;
 
@@ -24,9 +25,11 @@ namespace ReplTap.ConsoleHost
         {
             var completions = await _completionsProvider.GetCompletions(code);
 
+            var allCompletions = variables.Union(completions);
+
             _console.WriteLine();
 
-            foreach (var completion in completions)
+            foreach (var completion in allCompletions)
             {
                 _console.WriteLine(completion);
             }
