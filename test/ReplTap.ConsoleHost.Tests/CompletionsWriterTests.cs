@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
@@ -13,6 +14,7 @@ namespace ReplTap.ConsoleHost.Tests
         public async Task WriteAllCompletions_Should_Return_Expected()
         {
             var code = "test code";
+            var variables = new List<string>();
 
             var completions = Enumerable
                 .Range(1, 3)
@@ -34,7 +36,7 @@ namespace ReplTap.ConsoleHost.Tests
             var completionsWriter = new CompletionsWriter(completionsProvider.Object, console.Object);
 
             // act
-            await completionsWriter.WriteAllCompletions(code);
+            await completionsWriter.WriteAllCompletions(code, variables);
 
             // assert
             completionsProvider.Verify(c => c.GetCompletions(code), Times.Once);

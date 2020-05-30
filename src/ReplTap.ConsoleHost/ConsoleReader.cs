@@ -37,7 +37,7 @@ namespace ReplTap.ConsoleHost
                     {
                         var currentCode = buffer.ToString();
 
-                        await _completionsWriter.WriteAllCompletions(currentCode);
+                        await _completionsWriter.WriteAllCompletions(currentCode, variables);
 
                         break;
                     }

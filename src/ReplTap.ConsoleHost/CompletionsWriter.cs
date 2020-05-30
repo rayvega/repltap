@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using ReplTap.Core.Completions;
 
@@ -5,7 +6,7 @@ namespace ReplTap.ConsoleHost
 {
     public interface ICompletionsWriter
     {
-        Task WriteAllCompletions(string code);
+        Task WriteAllCompletions(string code, List<string> variables);
     }
 
     public class CompletionsWriter : ICompletionsWriter
@@ -19,7 +20,7 @@ namespace ReplTap.ConsoleHost
             _console = console;
         }
 
-        public async Task WriteAllCompletions(string code)
+        public async Task WriteAllCompletions(string code, List<string> variables)
         {
             var completions = await _completionsProvider.GetCompletions(code);
 
