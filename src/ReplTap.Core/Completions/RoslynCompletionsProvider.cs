@@ -49,7 +49,7 @@ namespace ReplTap.Core.Completions
 
             var results = await completionService.GetCompletionsAsync(scriptDocument, position);
 
-            return results;
+            return results ?? CompletionList.Empty;
         }
     }
 }

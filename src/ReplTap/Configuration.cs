@@ -18,6 +18,7 @@ namespace ReplTap
             service.AddSingleton<IInputCheck, InputCheck>();
             service.AddSingleton<IConsoleReader, ConsoleReader>();
             service.AddSingleton<IConsoleWriter, ConsoleWriter>();
+            service.AddSingleton<ICompletionsWriter, CompletionsWriter>();
             service.AddSingleton<IInputHistory, InputHistory>();
             service.AddSingleton<IReplEngine, ReplEngine>();
             service.AddSingleton<ICompletionsProvider, CompletionsProvider>();

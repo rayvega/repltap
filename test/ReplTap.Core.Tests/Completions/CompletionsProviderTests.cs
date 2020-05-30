@@ -36,11 +36,11 @@ namespace ReplTap.Core.Tests.Completions
             // parser
             var parser = new Mock<ICompletionsParser>();
 
-            var incompleteText = "test incomplete text";
+            var lastToken = "test-incomplete-text";
 
             parser
-                .Setup(p => p.ParseIncompleteText(code))
-                .Returns(incompleteText);
+                .Setup(p => p.ParseLastToken(code))
+                .Returns(lastToken);
 
             // filter
             var filter = new Mock<ICompletionsFilter>();
@@ -50,7 +50,7 @@ namespace ReplTap.Core.Tests.Completions
                 .Select(i => $"filtered item {i}");
 
             filter
-                .Setup(f => f.Apply(It.IsAny<IEnumerable<string>>(), incompleteText))
+                .Setup(f => f.Apply(It.IsAny<IEnumerable<string>>(), lastToken))
                 .Returns(filtered);
 
             var provider = new CompletionsProvider(roslyn.Object, parser.Object, filter.Object);
@@ -71,7 +71,7 @@ namespace ReplTap.Core.Tests.Completions
         {
             // arrange
             var code = string.Empty;
-            var provider = new CompletionsProvider(null, null, null);
+            var provider = new CompletionsProvider(null!, null!, null!);
 
             // act
             var completions = (await provider.GetCompletions(code)).ToArray();
@@ -90,9 +90,9 @@ namespace ReplTap.Core.Tests.Completions
 
             roslyn
                 .Setup(r => r.GetCompletions(code))
-                .ReturnsAsync((CompletionList)null);
+                .ReturnsAsync(CompletionList.Empty);
 
-            var provider = new CompletionsProvider(roslyn.Object, null, null);
+            var provider = new CompletionsProvider(roslyn.Object, null!, null!);
 
             // act
             var completions = (await provider.GetCompletions(code)).ToArray();

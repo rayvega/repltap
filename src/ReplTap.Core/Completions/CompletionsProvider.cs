@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Completion;
 
 namespace ReplTap.Core.Completions
 {
@@ -32,7 +33,7 @@ namespace ReplTap.Core.Completions
 
             var results = await _roslyn.GetCompletions(code);
 
-            if (results == null)
+            if (results == CompletionList.Empty)
             {
                 return Enumerable.Empty<string>();
             }
@@ -41,8 +42,9 @@ namespace ReplTap.Core.Completions
                 .Items
                 .Select(item => item.DisplayText);
 
-            var filterText = _parser.ParseIncompleteText(code);
-            var completions = _filter.Apply(unfilteredCompletions, filterText);
+            // parse last token of code then filter completions by matching against that token
+            var lastToken = _parser.ParseLastToken(code);
+            var completions = _filter.Apply(unfilteredCompletions, lastToken);
 
             return completions;
         }

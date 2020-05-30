@@ -35,7 +35,7 @@ namespace ReplTap.ConsoleHost.Tests
             }
 
             var provider = new Mock<ICompletionsProvider>();
-            var consoleReader = new ConsoleReader(console.Object, provider.Object);
+            var consoleReader = new ConsoleReader(console.Object, null!);
             var inputHistory = new Mock<IInputHistory>();
 
             // act
@@ -72,8 +72,8 @@ namespace ReplTap.ConsoleHost.Tests
                 setupSequence.Returns(consoleKeyInfo);
             }
 
-            var provider = new Mock<ICompletionsProvider>();
-            var consoleReader = new ConsoleReader(console.Object, provider.Object);
+            var completionsWriter = new Mock<ICompletionsWriter>();
+            var consoleReader = new ConsoleReader(console.Object, completionsWriter.Object);
             var inputHistory = new Mock<IInputHistory>();
 
             // act
@@ -82,8 +82,7 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             Assert.That(input, Is.EqualTo("abd"));
 
-            provider.Verify(p => p.GetCompletions("ab"), Times.Once());
-            console.Verify(c => c.WriteLine(It.IsAny<string>()), Times.AtLeastOnce());
+            completionsWriter.Verify(p => p.WriteAllCompletions("ab"), Times.Once());
         }
 
         [Test]
@@ -112,8 +111,8 @@ namespace ReplTap.ConsoleHost.Tests
                 setupSequence.Returns(consoleKeyInfo);
             }
 
-            var provider = new Mock<ICompletionsProvider>();
-            var consoleReader = new ConsoleReader(console.Object, provider.Object);
+            var completionsWriter = new Mock<ICompletionsWriter>();
+            var consoleReader = new ConsoleReader(console.Object, null!);
             var inputHistory = new Mock<IInputHistory>();
 
             // act
@@ -122,7 +121,7 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             Assert.That(input, Is.EqualTo("efh"));
 
-            provider.Verify(p => p.GetCompletions(It.IsAny<string>()), Times.Never);
+            completionsWriter.Verify(p => p.WriteAllCompletions(It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -152,7 +151,7 @@ namespace ReplTap.ConsoleHost.Tests
                 setupSequence.Returns(consoleKeyInfo);
             }
 
-            var provider = new Mock<ICompletionsProvider>();
+            var completionsWriter = new Mock<ICompletionsWriter>();
 
             var inputHistory = new Mock<IInputHistory>();
 
@@ -160,7 +159,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(i => i.GetPreviousInput())
                 .Returns($"{expectedInputHistory}{lineEndingToBeRemoved}");
 
-            var consoleReader = new ConsoleReader(console.Object, provider.Object);
+            var consoleReader = new ConsoleReader(console.Object, null!);
 
             // act
             var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object);
@@ -168,7 +167,7 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));
 
-            provider.Verify(p => p.GetCompletions(It.IsAny<string>()), Times.Never);
+            completionsWriter.Verify(p => p.WriteAllCompletions(It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -198,7 +197,7 @@ namespace ReplTap.ConsoleHost.Tests
                 setupSequence.Returns(consoleKeyInfo);
             }
 
-            var provider = new Mock<ICompletionsProvider>();
+            var completionsWriter = new Mock<ICompletionsWriter>();
 
             var inputHistory = new Mock<IInputHistory>();
 
@@ -206,7 +205,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(i => i.GetNextInput())
                 .Returns($"{expectedInputHistory}{lineEndingToBeRemoved}");
 
-            var consoleReader = new ConsoleReader(console.Object, provider.Object);
+            var consoleReader = new ConsoleReader(console.Object, null!);
 
             // act
             var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object);
@@ -214,7 +213,7 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));
 
-            provider.Verify(p => p.GetCompletions(It.IsAny<string>()), Times.Never);
+            completionsWriter.Verify(p => p.WriteAllCompletions(It.IsAny<string>()), Times.Never);
         }
     }
 }
