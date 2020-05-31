@@ -14,7 +14,11 @@ namespace ReplTap.Core.Tests
         {
             // arrange
             var expectedOutput = "test output";
-            var code = $"var testVariable = \"{expectedOutput}\"; testVariable";
+            var expectedVariable = "testVariable";
+
+            var code = $"var {expectedVariable} = \"{expectedOutput}\"; testVariable";
+            var expectedVariables = new[] {expectedVariable};
+
             var inputCheck = new Mock<IInputCheck>();
 
             var engine = new ReplEngine(inputCheck.Object);
@@ -26,6 +30,7 @@ namespace ReplTap.Core.Tests
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Output, Is.EqualTo(expectedOutput));
             Assert.That(result.State, Is.EqualTo(OutputState.Valid));
+            Assert.That(result.Variables, Is.SupersetOf(expectedVariables));
         }
 
         [Test]
