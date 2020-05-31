@@ -14,18 +14,21 @@ namespace ReplTap.ConsoleHost
     {
         private readonly IConsole _console;
         private readonly ICompletionsProvider _completionsProvider;
+        private readonly IVariablesFilter _variablesFilter;
 
-        public CompletionsWriter(ICompletionsProvider completionsProvider, IConsole console)
+        public CompletionsWriter(ICompletionsProvider completionsProvider, IConsole console, IVariablesFilter variablesFilter)
         {
             _completionsProvider = completionsProvider;
             _console = console;
+            _variablesFilter = variablesFilter;
         }
 
         public async Task WriteAllCompletions(string code, List<string> variables)
         {
             var completions = await _completionsProvider.GetCompletions(code);
+            var filteredVariables = _variablesFilter.Filter(code, variables);
 
-            var allCompletions = variables.Union(completions);
+            var allCompletions = filteredVariables.Union(completions);
 
             _console.WriteLine();
 
