@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
@@ -39,7 +40,7 @@ namespace ReplTap.ConsoleHost.Tests
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
@@ -48,7 +49,7 @@ namespace ReplTap.ConsoleHost.Tests
         }
 
         [Test]
-        public async Task ReadLine_Should_Return_Write_Completions_When_Key_Tab()
+        public async Task ReadLine_Should_Write_All_Completions_When_Key_Tab()
         {
             // arrange
             var prompt = "test prompt *";
@@ -75,14 +76,18 @@ namespace ReplTap.ConsoleHost.Tests
             var completionsWriter = new Mock<ICompletionsWriter>();
             var consoleReader = new ConsoleReader(console.Object, completionsWriter.Object);
             var inputHistory = new Mock<IInputHistory>();
+            var variables = Enumerable
+                .Range(1, 3)
+                .Select(i => $"test variable {i}")
+                .ToList();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object, variables);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));
 
-            completionsWriter.Verify(p => p.WriteAllCompletions("ab"), Times.Once());
+            completionsWriter.Verify(p => p.WriteAllCompletions("ab", variables), Times.Once());
         }
 
         [Test]
@@ -116,12 +121,13 @@ namespace ReplTap.ConsoleHost.Tests
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, inputHistory.Object);
+            var input = await consoleReader.ReadLine(prompt, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("efh"));
 
-            completionsWriter.Verify(p => p.WriteAllCompletions(It.IsAny<string>()), Times.Never);
+            completionsWriter.Verify(p => p.WriteAllCompletions(It.IsAny<string>(), It.IsAny<List<string>>()),
+                Times.Never);
         }
 
         [Test]
@@ -162,12 +168,13 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleReader = new ConsoleReader(console.Object, null!);
 
             // act
-            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object);
+            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));
 
-            completionsWriter.Verify(p => p.WriteAllCompletions(It.IsAny<string>()), Times.Never);
+            completionsWriter.Verify(p => p.WriteAllCompletions(It.IsAny<string>(), It.IsAny<List<string>>()),
+                Times.Never);
         }
 
         [Test]
@@ -208,12 +215,13 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleReader = new ConsoleReader(console.Object, null!);
 
             // act
-            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object);
+            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));
 
-            completionsWriter.Verify(p => p.WriteAllCompletions(It.IsAny<string>()), Times.Never);
+            completionsWriter.Verify(p => p.WriteAllCompletions(It.IsAny<string>(), It.IsAny<List<string>>()),
+                Times.Never);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
@@ -30,7 +31,12 @@ namespace ReplTap.Core
                     : await _state.ContinueWithAsync(code);
 
                 result.Output = _state.ReturnValue?.ToString();
+
                 result.State = OutputState.Valid;
+
+                result.Variables = _state.Variables
+                    .Select(variable => variable.Name)
+                    .ToList();
             }
             catch (CompilationErrorException exception)
             {
