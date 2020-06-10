@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Completion;
@@ -16,9 +17,14 @@ namespace ReplTap.Core.Completions
     {
         public async Task<CompletionList> GetCompletions(string code)
         {
+            // not sure why but adding extra character at end fixes auto completion when tab complete after '.'
+            var extraChar = code.LastOrDefault();
+            var modifiedCode = $"{code}{extraChar}";
+
             // based on: https://www.strathweb.com/2018/12/using-roslyn-c-completion-service-programmatically/
 
             var host = MefHostServices.Create(MefHostServices.DefaultAssemblies);
+
             var workspace = new AdhocWorkspace(host);
 
             var compilationOptions = new CSharpCompilationOptions(
@@ -37,14 +43,18 @@ namespace ReplTap.Core.Completions
                     MetadataReference.CreateFromFile(typeof(object).Assembly.Location)
                 })
                 .WithCompilationOptions(compilationOptions);
+
             var scriptProject = workspace.AddProject(scriptProjectInfo);
+
             var scriptDocumentInfo = DocumentInfo.Create(
                 DocumentId.CreateNewId(scriptProject.Id), "Script",
                 sourceCodeKind: SourceCodeKind.Script,
-                loader: TextLoader.From(TextAndVersion.Create(SourceText.From(code), VersionStamp.Create())));
+                loader: TextLoader.From(TextAndVersion.Create(SourceText.From(modifiedCode), VersionStamp.Create())));
+
             var scriptDocument = workspace.AddDocument(scriptDocumentInfo);
 
-            var position = code.Length - 1;
+            var position = modifiedCode.Length - 1;
+
             var completionService = CompletionService.GetService(scriptDocument);
 
             var results = await completionService.GetCompletionsAsync(scriptDocument, position);
