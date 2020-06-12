@@ -14,10 +14,12 @@ namespace ReplTap.Core
     {
         private static ScriptState<object>? _state;
         private readonly IInputCheck _inputCheck;
+        private readonly IScriptOptionsBuilder _scriptOptionsBuilder;
 
-        public ReplEngine(IInputCheck inputCheck)
+        public ReplEngine(IInputCheck inputCheck, IScriptOptionsBuilder scriptOptionsBuilder)
         {
             _inputCheck = inputCheck;
+            _scriptOptionsBuilder = scriptOptionsBuilder;
         }
 
         public async Task<CodeResult> Execute(string code)
@@ -27,7 +29,7 @@ namespace ReplTap.Core
             try
             {
                 _state = _state == null
-                    ? await CSharpScript.RunAsync(code)
+                    ? await CSharpScript.RunAsync(code, _scriptOptionsBuilder.Build())
                     : await _state.ContinueWithAsync(code);
 
                 result.Output = _state.ReturnValue?.ToString();

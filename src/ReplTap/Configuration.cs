@@ -22,6 +22,7 @@ namespace ReplTap
 
             service.AddSingleton<IInputHistory, InputHistory>();
             service.AddSingleton<IReplEngine, ReplEngine>();
+            service.AddSingleton<IScriptOptionsBuilder, ScriptOptionsBuilder>();
             service.AddSingleton<ICompletionsProvider, CompletionsProvider>();
             service.AddSingleton<IVariablesFilter, VariablesFilter>();
             service.AddSingleton<IRoslynCompletionsProvider, RoslynCompletionsProvider>();
