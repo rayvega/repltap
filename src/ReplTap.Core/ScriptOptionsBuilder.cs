@@ -11,6 +11,10 @@ namespace ReplTap.Core
     {
         public ScriptOptions Build()
         {
+            var scriptOptions = ScriptOptions.Default;
+
+            // add imports
+
             var imports = new[]
             {
                 "System",
@@ -18,11 +22,20 @@ namespace ReplTap.Core
                 "System.Collections.Generic",
                 "System.Console",
                 "System.Diagnostics",
+                "System.Linq",
                 "System.Text",
                 "System.Threading.Tasks",
             };
 
-            return ScriptOptions.Default.WithImports(imports);
+            scriptOptions = scriptOptions.AddImports(imports);
+
+            // add references
+
+            var systemLinq = typeof(System.Linq.Enumerable).Assembly;
+
+            scriptOptions = scriptOptions.AddReferences(systemLinq);
+
+            return scriptOptions;
         }
     }
 }
