@@ -75,7 +75,12 @@ namespace ReplTap.ConsoleHost.Tests
 
             var completionsWriter = new Mock<ICompletionsWriter>();
             var consoleReader = new ConsoleReader(console.Object, completionsWriter.Object);
+
             var inputHistory = new Mock<IInputHistory>();
+            inputHistory
+                .Setup(i => i.AllInputsAsString())
+                .Returns("all test history inputs");
+
             var variables = Enumerable
                 .Range(1, 3)
                 .Select(i => $"test variable {i}")
@@ -87,7 +92,9 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             Assert.That(input, Is.EqualTo("abd"));
 
-            completionsWriter.Verify(p => p.WriteAllCompletions("ab", variables), Times.Once());
+            completionsWriter.Verify(
+                p => p.WriteAllCompletions($"all test history inputs{Environment.NewLine}ab", variables),
+                Times.Once());
         }
 
         [Test]
