@@ -20,8 +20,9 @@ namespace ReplTap.Core.Tests
             var expectedVariables = new[] {expectedVariable};
 
             var inputCheck = new Mock<IInputCheck>();
+            var scriptOptionsBuilder = new Mock<IScriptOptionsBuilder>();
 
-            var engine = new ReplEngine(inputCheck.Object);
+            var engine = new ReplEngine(inputCheck.Object, scriptOptionsBuilder.Object);
 
             // act
             var result  = await engine.Execute(code);
@@ -43,8 +44,9 @@ namespace ReplTap.Core.Tests
             var firstCode = $"var testVariable = \"{expectedSecondOutput}\";";
             var secondCode = "testVariable";
             var inputCheck = new Mock<IInputCheck>();
+            var scriptOptionsBuilder = new Mock<IScriptOptionsBuilder>();
 
-            var engine = new ReplEngine(inputCheck.Object);
+            var engine = new ReplEngine(inputCheck.Object, scriptOptionsBuilder.Object);
 
             // act
             var firstResult  = await engine.Execute(firstCode);
@@ -69,8 +71,9 @@ namespace ReplTap.Core.Tests
             var invalidCode = "invalid code;";
             var secondCode = "testVariable";
             var inputCheck = new Mock<IInputCheck>();
+            var scriptOptionsBuilder = new Mock<IScriptOptionsBuilder>();
 
-            var engine = new ReplEngine(inputCheck.Object);
+            var engine = new ReplEngine(inputCheck.Object, scriptOptionsBuilder.Object);
 
             // act
             var firstResult  = await engine.Execute(firstCode);
@@ -100,12 +103,12 @@ namespace ReplTap.Core.Tests
             };
 
             var inputCheck = new Mock<IInputCheck>();
-            var engine = new ReplEngine(inputCheck.Object);
+            var scriptOptionsBuilder = new Mock<IScriptOptionsBuilder>();
+            var engine = new ReplEngine(inputCheck.Object, scriptOptionsBuilder.Object);
             var builder = new StringBuilder();
             var codeResult = new CodeResult();
 
             // act
-
             foreach (var line in codeLines)
             {
                 builder.AppendLine(line);
@@ -124,7 +127,8 @@ namespace ReplTap.Core.Tests
             // arrange
             var input = "invalid code with semicolon to force execute ; ";
             var inputCheck = new Mock<IInputCheck>();
-            var engine = new ReplEngine(inputCheck.Object);
+            var scriptOptionsBuilder = new Mock<IScriptOptionsBuilder>();
+            var engine = new ReplEngine(inputCheck.Object, scriptOptionsBuilder.Object);
 
             inputCheck
                 .Setup(i => i.IsForceExecute(input))
