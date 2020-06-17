@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using NUnit.Framework;
 using ReplTap.Core.History;
@@ -56,7 +57,7 @@ namespace ReplTap.Core.Tests.History
             {
                 var input = $"test input # {index}";
                 inputHistory.Add(input);
-                System.Console.WriteLine($"[debug] {input}");
+                Console.WriteLine($"[debug] {input}");
             }
 
             // act
@@ -74,6 +75,27 @@ namespace ReplTap.Core.Tests.History
 
             // assert
             Assert.That(nextInput, Is.EqualTo(expectedInput));
+        }
+
+        [Test]
+        public void AllInputsAsString_Should_Return_Expected()
+        {
+            // arrange
+            var expectedAllInputsAsString =
+                $"test input 1{Environment.NewLine}test input 2{Environment.NewLine}test input 3";
+
+            var inputHistory = new InputHistory();
+
+            Enumerable
+                .Range(1, 3)
+                .ToList()
+                .ForEach(i => inputHistory.Add($"test input {i}"));
+
+            // act
+            var allInputsAsString = inputHistory.AllInputsAsString();
+
+            // assert
+            Assert.That(allInputsAsString, Is.EqualTo(expectedAllInputsAsString));
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ReplTap.Core.History
@@ -83,7 +84,7 @@ namespace ReplTap.Core.History
 
         public string AllInputsAsString()
         {
-            throw new System.NotImplementedException();
+            return string.Join(Environment.NewLine, _history);
         }
     }
 }
