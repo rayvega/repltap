@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
@@ -10,12 +11,12 @@ namespace ReplTap.Core.Completions
 {
     public interface IRoslynCompletionsProvider
     {
-        Task<CompletionList> GetCompletions(string code);
+        Task<CompletionList> GetCompletions(string code, IEnumerable<string> imports);
     }
 
     public class RoslynCompletionsProvider : IRoslynCompletionsProvider
     {
-        public async Task<CompletionList> GetCompletions(string code)
+        public async Task<CompletionList> GetCompletions(string code, IEnumerable<string> imports)
         {
             // not sure why but adding extra character at end fixes auto completion when tab complete after '.'
             var extraChar = code.LastOrDefault();
@@ -29,7 +30,7 @@ namespace ReplTap.Core.Completions
 
             var compilationOptions = new CSharpCompilationOptions(
                 OutputKind.DynamicallyLinkedLibrary,
-                usings: new[] {"System"});
+                usings: imports);
 
             var scriptProjectInfo = ProjectInfo.Create(
                     ProjectId.CreateNewId(),

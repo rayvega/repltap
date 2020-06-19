@@ -17,7 +17,7 @@ namespace ReplTap.Core.Tests.Completions
             var completionsProvider = new RoslynCompletionsProvider();
 
             // act
-            var completions = await completionsProvider.GetCompletions(code);
+            var completions = await completionsProvider.GetCompletions(code, new[] {"System"});
 
             // assert
             var actual = completions.Items.Select(i => i.DisplayText);

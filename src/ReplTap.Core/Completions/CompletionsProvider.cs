@@ -31,7 +31,7 @@ namespace ReplTap.Core.Completions
                 return Enumerable.Empty<string>();
             }
 
-            var results = await _roslyn.GetCompletions(code);
+            var results = await _roslyn.GetCompletions(code, new[] {"System"});
 
             if (results == CompletionList.Empty)
             {

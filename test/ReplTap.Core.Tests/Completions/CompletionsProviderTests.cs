@@ -30,7 +30,7 @@ namespace ReplTap.Core.Tests.Completions
             var completionList = CompletionList.Create(TextSpan.FromBounds(0, 10), completionItems);
 
             roslyn
-                .Setup(r => r.GetCompletions(code))
+                .Setup(r => r.GetCompletions(code, It.IsAny<string[]>()))
                 .ReturnsAsync(completionList);
 
             // parser
@@ -89,7 +89,7 @@ namespace ReplTap.Core.Tests.Completions
             var roslyn = new Mock<IRoslynCompletionsProvider>();
 
             roslyn
-                .Setup(r => r.GetCompletions(code))
+                .Setup(r => r.GetCompletions(code, It.IsAny<string[]>()))
                 .ReturnsAsync(CompletionList.Empty);
 
             var provider = new CompletionsProvider(roslyn.Object, null!, null!);
