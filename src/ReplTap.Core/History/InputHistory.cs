@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ReplTap.Core.History
@@ -9,6 +10,8 @@ namespace ReplTap.Core.History
         string GetPreviousInput();
 
         string GetNextInput();
+
+        string AllInputsAsString();
     }
 
     public class InputHistory : IInputHistory
@@ -77,6 +80,11 @@ namespace ReplTap.Core.History
             var input = _history[_currentPosition];
 
             return input;
+        }
+
+        public string AllInputsAsString()
+        {
+            return string.Join(Environment.NewLine, _history);
         }
     }
 }
