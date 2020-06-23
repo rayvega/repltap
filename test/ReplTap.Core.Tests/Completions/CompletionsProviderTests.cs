@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Completion;
+using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.CodeAnalysis.Text;
 using Moq;
 using NUnit.Framework;
@@ -30,7 +31,7 @@ namespace ReplTap.Core.Tests.Completions
             var completionList = CompletionList.Create(TextSpan.FromBounds(0, 10), completionItems);
 
             roslyn
-                .Setup(r => r.GetCompletions(code, It.IsAny<string[]>()))
+                .Setup(r => r.GetCompletions(code, It.IsAny<IEnumerable<string>>()))
                 .ReturnsAsync(completionList);
 
             // parser
@@ -53,7 +54,13 @@ namespace ReplTap.Core.Tests.Completions
                 .Setup(f => f.Apply(It.IsAny<IEnumerable<string>>(), lastToken))
                 .Returns(filtered);
 
-            var provider = new CompletionsProvider(roslyn.Object, parser.Object, filter.Object);
+            var builder = new Mock<IScriptOptionsBuilder>();
+
+            builder
+                .Setup(b => b.Build())
+                .Returns(ScriptOptions.Default.AddImports("test.import"));
+
+            var provider = new CompletionsProvider(roslyn.Object, parser.Object, filter.Object, builder.Object);
 
             // act
             var completions = (await provider.GetCompletions(code)).ToArray();
@@ -71,7 +78,14 @@ namespace ReplTap.Core.Tests.Completions
         {
             // arrange
             var code = string.Empty;
-            var provider = new CompletionsProvider(null!, null!, null!);
+
+            var builder = new Mock<IScriptOptionsBuilder>();
+
+            builder
+                .Setup(b => b.Build())
+                .Returns(ScriptOptions.Default.AddImports("test.import"));
+
+            var provider = new CompletionsProvider(null!, null!, null!, builder.Object);
 
             // act
             var completions = (await provider.GetCompletions(code)).ToArray();
@@ -86,13 +100,19 @@ namespace ReplTap.Core.Tests.Completions
             // arrange
             var code = "test code";
 
+            var builder = new Mock<IScriptOptionsBuilder>();
+
+            builder
+                .Setup(b => b.Build())
+                .Returns(ScriptOptions.Default.AddImports("test.import"));
+
             var roslyn = new Mock<IRoslynCompletionsProvider>();
 
             roslyn
-                .Setup(r => r.GetCompletions(code, It.IsAny<string[]>()))
+                .Setup(r => r.GetCompletions(code, It.IsAny<IEnumerable<string>>()))
                 .ReturnsAsync(CompletionList.Empty);
 
-            var provider = new CompletionsProvider(roslyn.Object, null!, null!);
+            var provider = new CompletionsProvider(roslyn.Object, null!, null!, builder.Object);
 
             // act
             var completions = (await provider.GetCompletions(code)).ToArray();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Completion;
@@ -15,13 +16,15 @@ namespace ReplTap.Core.Completions
         private readonly IRoslynCompletionsProvider _roslyn;
         private readonly ICompletionsParser _parser;
         private readonly ICompletionsFilter _filter;
+        private readonly ImmutableArray<string> _imports;
 
         public CompletionsProvider(IRoslynCompletionsProvider roslyn, ICompletionsParser parser,
-            ICompletionsFilter filter)
+            ICompletionsFilter filter, IScriptOptionsBuilder scriptOptionsBuilder)
         {
             _roslyn = roslyn;
             _parser = parser;
             _filter = filter;
+            _imports = scriptOptionsBuilder.Build().Imports;
         }
 
         public async Task<IEnumerable<string>> GetCompletions(string code)
@@ -31,7 +34,7 @@ namespace ReplTap.Core.Completions
                 return Enumerable.Empty<string>();
             }
 
-            var results = await _roslyn.GetCompletions(code, new[] {"System"});
+            var results = await _roslyn.GetCompletions(code, _imports);
 
             if (results == CompletionList.Empty)
             {
