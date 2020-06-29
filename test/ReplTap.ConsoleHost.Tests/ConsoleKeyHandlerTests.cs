@@ -10,7 +10,7 @@ using ReplTap.Core.History;
 namespace ReplTap.ConsoleHost.Tests
 {
     [TestFixture]
-    public class ConsoleReaderTests
+    public class ConsoleKeyHandlerTests
     {
         [Test]
         public async Task ReadLine_Should_Return_Input_When_Key_Enter()
@@ -36,11 +36,11 @@ namespace ReplTap.ConsoleHost.Tests
             }
 
             var provider = new Mock<ICompletionsProvider>();
-            var consoleReader = new ConsoleReader(console.Object, null!);
+            var keyHandler = new ConsoleKeyHandler(console.Object, null!);
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, inputHistory.Object, null!);
+            var input = await keyHandler.ReadLine(prompt, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
@@ -74,7 +74,7 @@ namespace ReplTap.ConsoleHost.Tests
             }
 
             var completionsWriter = new Mock<ICompletionsWriter>();
-            var consoleReader = new ConsoleReader(console.Object, completionsWriter.Object);
+            var keyHandler = new ConsoleKeyHandler(console.Object, completionsWriter.Object);
 
             var inputHistory = new Mock<IInputHistory>();
             inputHistory
@@ -87,7 +87,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .ToList();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, inputHistory.Object, variables);
+            var input = await keyHandler.ReadLine(prompt, inputHistory.Object, variables);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));
@@ -124,11 +124,11 @@ namespace ReplTap.ConsoleHost.Tests
             }
 
             var completionsWriter = new Mock<ICompletionsWriter>();
-            var consoleReader = new ConsoleReader(console.Object, null!);
+            var keyHandler = new ConsoleKeyHandler(console.Object, null!);
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await consoleReader.ReadLine(prompt, inputHistory.Object, null!);
+            var input = await keyHandler.ReadLine(prompt, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("efh"));
@@ -172,10 +172,10 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(i => i.GetPreviousInput())
                 .Returns($"{expectedInputHistory}{lineEndingToBeRemoved}");
 
-            var consoleReader = new ConsoleReader(console.Object, null!);
+            var keyHandler = new ConsoleKeyHandler(console.Object, null!);
 
             // act
-            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
+            var input = await keyHandler.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));
@@ -219,10 +219,10 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(i => i.GetNextInput())
                 .Returns($"{expectedInputHistory}{lineEndingToBeRemoved}");
 
-            var consoleReader = new ConsoleReader(console.Object, null!);
+            var keyHandler = new ConsoleKeyHandler(console.Object, null!);
 
             // act
-            var input = await consoleReader.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
+            var input = await keyHandler.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));

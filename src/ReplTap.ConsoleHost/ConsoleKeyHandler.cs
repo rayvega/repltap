@@ -6,17 +6,17 @@ using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost
 {
-    public interface IConsoleReader
+    public interface IConsoleKeyHandler
     {
         Task<string> ReadLine(string prompt, IInputHistory inputHistory, List<string> variables);
     }
 
-    public class ConsoleReader : IConsoleReader
+    public class ConsoleKeyHandler : IConsoleKeyHandler
     {
         private readonly IConsole _console;
         private readonly ICompletionsWriter _completionsWriter;
 
-        public ConsoleReader(IConsole console, ICompletionsWriter completionsWriter)
+        public ConsoleKeyHandler(IConsole console, ICompletionsWriter completionsWriter)
         {
             _console = console;
             _completionsWriter = completionsWriter;
