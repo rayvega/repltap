@@ -24,7 +24,7 @@ namespace ReplTap.ConsoleHost
 
         public async Task<string> Process(string prompt, IInputHistory inputHistory, List<string> variables)
         {
-            var buffer = new StringBuilder();
+            var text = new StringBuilder();
             ConsoleKeyInfo input;
 
             do
@@ -35,7 +35,7 @@ namespace ReplTap.ConsoleHost
                 {
                     case ConsoleKey.Tab:
                     {
-                        var currentCode = buffer.ToString();
+                        var currentCode = text.ToString();
 
                         var allCode = $"{inputHistory.AllInputsAsString()}{Environment.NewLine}{currentCode}";
 
@@ -46,9 +46,9 @@ namespace ReplTap.ConsoleHost
 
                     case ConsoleKey.Backspace:
                     {
-                        if (buffer.Length > 0)
+                        if (text.Length > 0)
                         {
-                            buffer.Length--;
+                            text.Length--;
                         }
 
                         break;
@@ -57,8 +57,8 @@ namespace ReplTap.ConsoleHost
                     case ConsoleKey.UpArrow:
                         if (input.Modifiers.HasFlag(ConsoleModifiers.Alt))
                         {
-                            buffer.Clear();
-                            buffer.Append(inputHistory.GetPreviousInput());
+                            text.Clear();
+                            text.Append(inputHistory.GetPreviousInput());
                         }
 
                         break;
@@ -66,25 +66,25 @@ namespace ReplTap.ConsoleHost
                     case ConsoleKey.DownArrow:
                         if (input.Modifiers.HasFlag(ConsoleModifiers.Alt))
                         {
-                            buffer.Clear();
-                            buffer.Append(inputHistory.GetNextInput());
+                            text.Clear();
+                            text.Append(inputHistory.GetNextInput());
                         }
 
                         break;
 
                     default:
-                        buffer.Append(input.KeyChar);
+                        text.Append(input.KeyChar);
 
                         break;
                 }
 
                 _console.ClearLine();
-                _console.Write($"{prompt} {buffer}");
+                _console.Write($"{prompt} {text}");
 
             } while (input.Key != ConsoleKey.Enter);
 
             // remove newline(s) from end to avoid cursor moving to start of line after navigating input history
-            var line = buffer.ToString().TrimEnd();
+            var line = text.ToString().TrimEnd();
 
             return line;
         }
