@@ -8,7 +8,7 @@ namespace ReplTap.ConsoleHost
 {
     public interface IConsoleKeyHandler
     {
-        Task<string> ReadLine(string prompt, IInputHistory inputHistory, List<string> variables);
+        Task<string> Process(string prompt, IInputHistory inputHistory, List<string> variables);
     }
 
     public class ConsoleKeyHandler : IConsoleKeyHandler
@@ -22,7 +22,7 @@ namespace ReplTap.ConsoleHost
             _completionsWriter = completionsWriter;
         }
 
-        public async Task<string> ReadLine(string prompt, IInputHistory inputHistory, List<string> variables)
+        public async Task<string> Process(string prompt, IInputHistory inputHistory, List<string> variables)
         {
             var buffer = new StringBuilder();
             ConsoleKeyInfo input;

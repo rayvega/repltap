@@ -13,7 +13,7 @@ namespace ReplTap.ConsoleHost.Tests
     public class ConsoleKeyHandlerTests
     {
         [Test]
-        public async Task ReadLine_Should_Return_Input_When_Key_Enter()
+        public async Task Process_Should_Return_Input_When_Key_Enter()
         {
             // arrange
             var prompt = "test prompt *";
@@ -40,7 +40,7 @@ namespace ReplTap.ConsoleHost.Tests
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await keyHandler.ReadLine(prompt, inputHistory.Object, null!);
+            var input = await keyHandler.Process(prompt, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
@@ -49,7 +49,7 @@ namespace ReplTap.ConsoleHost.Tests
         }
 
         [Test]
-        public async Task ReadLine_Should_Write_All_Completions_When_Key_Tab()
+        public async Task Process_Should_Write_All_Completions_When_Key_Tab()
         {
             // arrange
             var prompt = "test prompt *";
@@ -87,7 +87,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .ToList();
 
             // act
-            var input = await keyHandler.ReadLine(prompt, inputHistory.Object, variables);
+            var input = await keyHandler.Process(prompt, inputHistory.Object, variables);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));
@@ -98,7 +98,7 @@ namespace ReplTap.ConsoleHost.Tests
         }
 
         [Test]
-        public async Task ReadLine_Should_Return_Smaller_Input_When_Key_Backspace()
+        public async Task Process_Should_Return_Smaller_Input_When_Key_Backspace()
         {
             // arrange
             var prompt = "test prompt *";
@@ -128,7 +128,7 @@ namespace ReplTap.ConsoleHost.Tests
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = await keyHandler.ReadLine(prompt, inputHistory.Object, null!);
+            var input = await keyHandler.Process(prompt, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("efh"));
@@ -138,7 +138,7 @@ namespace ReplTap.ConsoleHost.Tests
         }
 
         [Test]
-        public async Task ReadLine_Should_Return_Input_History_When_Key_Up_Arrow()
+        public async Task Process_Should_Return_Input_History_When_Key_Up_Arrow()
         {
             // arrange
             var expectedInputHistory = "test input from history";
@@ -175,7 +175,7 @@ namespace ReplTap.ConsoleHost.Tests
             var keyHandler = new ConsoleKeyHandler(console.Object, null!);
 
             // act
-            var input = await keyHandler.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
+            var input = await keyHandler.Process(It.IsAny<string>(), inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));
@@ -185,7 +185,7 @@ namespace ReplTap.ConsoleHost.Tests
         }
 
         [Test]
-        public async Task ReadLine_Should_Return_Input_History_When_Key_Down_Arrow()
+        public async Task Process_Should_Return_Input_History_When_Key_Down_Arrow()
         {
             // arrange
             var expectedInputHistory = "test input from history";
@@ -222,7 +222,7 @@ namespace ReplTap.ConsoleHost.Tests
             var keyHandler = new ConsoleKeyHandler(console.Object, null!);
 
             // act
-            var input = await keyHandler.ReadLine(It.IsAny<string>(), inputHistory.Object, null!);
+            var input = await keyHandler.Process(It.IsAny<string>(), inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo(expectedInputHistory));

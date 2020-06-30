@@ -43,7 +43,7 @@ namespace ReplTap.ConsoleHost
                 try
                 {
                     _console.Write($"{_prompt} ");
-                    var input = await _consoleKeyHandler.ReadLine(_prompt, _inputHistory, _variables);
+                    var input = await _consoleKeyHandler.Process(_prompt, _inputHistory, _variables);
                     codes.Append(input);
                     _console.WriteLine($"{_prompt} {input}");
 
