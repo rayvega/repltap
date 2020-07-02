@@ -16,7 +16,7 @@ namespace ReplTap
             service.AddSingleton<IInteractiveLoop, InteractiveLoop>();
             service.AddSingleton<ILoop, Loop>();
             service.AddSingleton<IInputCheck, InputCheck>();
-            service.AddSingleton<IConsoleReader, ConsoleReader>();
+            service.AddSingleton<IConsoleKeyHandler, ConsoleKeyHandler>();
             service.AddSingleton<IConsoleWriter, ConsoleWriter>();
             service.AddSingleton<ICompletionsWriter, CompletionsWriter>();
 
