@@ -4,7 +4,12 @@ using System.Threading.Tasks;
 
 namespace ReplTap.ConsoleHost
 {
-    public class ConsoleKeyCommands
+    public interface IConsoleKeyCommands
+    {
+        Dictionary<(ConsoleKey, ConsoleModifiers), Action<CommandParameters>> GetInputKeyCommandMap();
+    }
+
+    public class ConsoleKeyCommands : IConsoleKeyCommands
     {
         private readonly ICompletionsWriter _completionsWriter;
 

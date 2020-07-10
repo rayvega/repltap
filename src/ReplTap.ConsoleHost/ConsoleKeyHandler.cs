@@ -13,12 +13,12 @@ namespace ReplTap.ConsoleHost
     public class ConsoleKeyHandler : IConsoleKeyHandler
     {
         private readonly IConsole _console;
-        private readonly ConsoleKeyCommands _consoleKeyCommands;
+        private readonly IConsoleKeyCommands _consoleKeyCommands;
 
-        public ConsoleKeyHandler(IConsole console, ICompletionsWriter completionsWriter)
+        public ConsoleKeyHandler(IConsole console, IConsoleKeyCommands consoleKeyCommands)
         {
             _console = console;
-            _consoleKeyCommands = new ConsoleKeyCommands(completionsWriter);
+            _consoleKeyCommands = consoleKeyCommands;
         }
 
         public string Process(string prompt, IInputHistory inputHistory, List<string> variables)
