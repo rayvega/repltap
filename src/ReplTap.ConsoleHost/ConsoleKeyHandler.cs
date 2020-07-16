@@ -1,81 +1,51 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost
 {
     public interface IConsoleKeyHandler
     {
-        Task<string> Process(string prompt, IInputHistory inputHistory, List<string> variables);
+        string Process(string prompt, IInputHistory inputHistory, List<string> variables);
     }
 
     public class ConsoleKeyHandler : IConsoleKeyHandler
     {
         private readonly IConsole _console;
-        private readonly ICompletionsWriter _completionsWriter;
+        private readonly IConsoleKeyCommands _consoleKeyCommands;
 
-        public ConsoleKeyHandler(IConsole console, ICompletionsWriter completionsWriter)
+        public ConsoleKeyHandler(IConsole console, IConsoleKeyCommands consoleKeyCommands)
         {
             _console = console;
-            _completionsWriter = completionsWriter;
+            _consoleKeyCommands = consoleKeyCommands;
         }
 
-        public async Task<string> Process(string prompt, IInputHistory inputHistory, List<string> variables)
+        public string Process(string prompt, IInputHistory inputHistory, List<string> variables)
         {
             var text = new StringBuilder();
             ConsoleKeyInfo input;
+
+            var parameters = new CommandParameters
+            {
+                Text = text,
+                InputHistory = inputHistory,
+                Variables = variables
+            };
+
+            var inputKeyCommandMap = _consoleKeyCommands.GetInputKeyCommandMap();
 
             do
             {
                 input = _console.ReadKey(intercept: true);
 
-                switch (input.Key)
+                if (inputKeyCommandMap.TryGetValue((input.Key, input.Modifiers), out var runCommand))
                 {
-                    case ConsoleKey.Tab:
-                    {
-                        var currentCode = text.ToString();
-
-                        var allCode = $"{inputHistory.AllInputsAsString()}{Environment.NewLine}{currentCode}";
-
-                        await _completionsWriter.WriteAllCompletions(allCode, variables);
-
-                        break;
-                    }
-
-                    case ConsoleKey.Backspace:
-                    {
-                        if (text.Length > 0)
-                        {
-                            text.Length--;
-                        }
-
-                        break;
-                    }
-
-                    case ConsoleKey.UpArrow:
-                        if (input.Modifiers.HasFlag(ConsoleModifiers.Alt))
-                        {
-                            text.Clear();
-                            text.Append(inputHistory.GetPreviousInput());
-                        }
-
-                        break;
-
-                    case ConsoleKey.DownArrow:
-                        if (input.Modifiers.HasFlag(ConsoleModifiers.Alt))
-                        {
-                            text.Clear();
-                            text.Append(inputHistory.GetNextInput());
-                        }
-
-                        break;
-
-                    default:
-                        text.Append(input.KeyChar);
-
-                        break;
+                    runCommand(parameters);
+                }
+                else
+                {
+                    text.Append(input.KeyChar);
                 }
 
                 _console.ClearLine();

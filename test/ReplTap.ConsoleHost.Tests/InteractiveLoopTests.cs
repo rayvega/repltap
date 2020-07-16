@@ -34,7 +34,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             keyHandler
                 .Setup(c => c.Process(It.IsAny<string>(), inputHistory.Object, variables))
-                .ReturnsAsync(input);
+                .Returns(input);
 
             replEngine
                 .Setup(r => r.Execute(input))
@@ -80,7 +80,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             keyHandler
                 .Setup(c => c.Process(It.IsAny<string>(), inputHistory.Object, It.IsAny<List<string>>()))
-                .ReturnsAsync(input);
+                .Returns(input);
 
             replEngine
                 .Setup(r => r.Execute(input))
@@ -116,8 +116,8 @@ namespace ReplTap.ConsoleHost.Tests
 
             consoleReader
                 .SetupSequence(c => c.Process(It.IsAny<string>(), null, null))
-                .Returns(Task.FromResult("var "))
-                .Returns(Task.FromResult("testVariable = \"test value\";"));
+                .Returns("var ")
+                .Returns("testVariable = \"test value\";");
 
             var firstResult = new CodeResult
             {
@@ -171,7 +171,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             keyHandler
                 .Setup(c => c.Process(It.IsAny<string>(), null, It.IsAny<List<string>>()))
-                .ReturnsAsync(input);
+                .Returns(input);
 
             var expectedException = new Exception(errorOutput);
 
