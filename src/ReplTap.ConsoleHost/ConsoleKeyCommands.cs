@@ -11,10 +11,12 @@ namespace ReplTap.ConsoleHost
 
     public class ConsoleKeyCommands : IConsoleKeyCommands
     {
+        private readonly IConsole _console;
         private readonly ICompletionsWriter _completionsWriter;
 
-        public ConsoleKeyCommands(ICompletionsWriter completionsWriter)
+        public ConsoleKeyCommands(IConsole console, ICompletionsWriter completionsWriter)
         {
+            _console = console;
             _completionsWriter = completionsWriter;
         }
 
@@ -27,7 +29,7 @@ namespace ReplTap.ConsoleHost
                     async parameters => await Completions(parameters)
                 },
                 {
-                    (ConsoleKey.Backspace, (ConsoleModifiers) 0), DeleteCharBackward
+                    (ConsoleKey.Backspace, (ConsoleModifiers) 0), Backspace
                 },
                 {
                     (ConsoleKey.UpArrow, ConsoleModifiers.Alt), PreviousInput
@@ -51,12 +53,18 @@ namespace ReplTap.ConsoleHost
             await _completionsWriter.WriteAllCompletions(allCode, variables);
         }
 
-        private static void DeleteCharBackward(CommandParameters parameters)
+        private void Backspace(CommandParameters parameters)
         {
-            if (parameters.Text?.Length > 0)
+            if (!(parameters.Text?.Length > 0))
             {
-                parameters.Text.Length--;
+                return;
             }
+
+            parameters.Text.Length--;
+
+            _console.MoveCursorLeft(--parameters.Position);
+            _console.Write(" ");
+            _console.MoveCursorLeft(parameters.Position);
         }
 
         private static void NextInput(CommandParameters parameters)

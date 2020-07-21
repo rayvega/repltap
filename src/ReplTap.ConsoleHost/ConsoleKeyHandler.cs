@@ -30,7 +30,8 @@ namespace ReplTap.ConsoleHost
             {
                 Text = text,
                 InputHistory = inputHistory,
-                Variables = variables
+                Variables = variables,
+                Position = Console.CursorLeft,
             };
 
             var inputKeyCommandMap = _consoleKeyCommands.GetInputKeyCommandMap();
@@ -46,10 +47,9 @@ namespace ReplTap.ConsoleHost
                 else
                 {
                     text.Append(input.KeyChar);
+                    Console.Write(input.KeyChar);
+                    parameters.Position++;
                 }
-
-                _console.ClearLine();
-                _console.Write($"{prompt} {text}");
 
             } while (input.Key != ConsoleKey.Enter);
 

@@ -16,5 +16,6 @@ namespace ReplTap.ConsoleHost
         public StringBuilder? Text { get; set; }
         public IInputHistory? InputHistory { get; set; }
         public List<string>? Variables { get; set; }
+        public int Position { get; set; }
     }
 }
