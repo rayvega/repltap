@@ -51,6 +51,8 @@ namespace ReplTap.ConsoleHost
             var allCode = $"{inputHistory?.AllInputsAsString()}{Environment.NewLine}{currentCode}";
 
             await _completionsWriter.WriteAllCompletions(allCode, variables);
+
+            _console.Write($"{parameters.Prompt} {currentCode}");
         }
 
         private void Backspace(CommandParameters parameters)

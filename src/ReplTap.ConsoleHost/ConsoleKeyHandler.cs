@@ -32,6 +32,7 @@ namespace ReplTap.ConsoleHost
                 InputHistory = inputHistory,
                 Variables = variables,
                 Position = Console.CursorLeft,
+                Prompt = prompt,
             };
 
             var inputKeyCommandMap = _consoleKeyCommands.GetInputKeyCommandMap();

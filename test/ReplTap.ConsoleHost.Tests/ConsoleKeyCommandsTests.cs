@@ -36,7 +36,9 @@ namespace ReplTap.ConsoleHost.Tests
                 InputHistory = inputHistory.Object,
             };
 
-            var consoleKeyCommands = new ConsoleKeyCommands(null!, completionsWriter.Object);
+            var console = new Mock<IConsole>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, completionsWriter.Object);
             var key = (ConsoleKey.Tab, (ConsoleModifiers) 0);
 
             // act
