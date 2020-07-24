@@ -104,7 +104,9 @@ namespace ReplTap.ConsoleHost.Tests
                 InputHistory = inputHistory.Object,
             };
 
-            var consoleKeyCommands = new ConsoleKeyCommands(null!, null!);
+            var console = new Mock<IConsole>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
             var key = (ConsoleKey.UpArrow, ConsoleModifiers.Alt);
 
             // act
@@ -138,7 +140,9 @@ namespace ReplTap.ConsoleHost.Tests
                 InputHistory = inputHistory.Object,
             };
 
-            var consoleKeyCommands = new ConsoleKeyCommands(null!, null!);
+            var console = new Mock<IConsole>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
             var key = (ConsoleKey.DownArrow, ConsoleModifiers.Alt);
 
             // act

@@ -52,7 +52,7 @@ namespace ReplTap.ConsoleHost
 
             await _completionsWriter.WriteAllCompletions(allCode, variables);
 
-            _console.Write($"{parameters.Prompt} {currentCode}");
+            WriteFullLine(parameters.Prompt, currentCode);
         }
 
         private void Backspace(CommandParameters parameters)
@@ -69,22 +69,42 @@ namespace ReplTap.ConsoleHost
             _console.MoveCursorLeft(parameters.Position);
         }
 
-        private static void NextInput(CommandParameters parameters)
+        private void NextInput(CommandParameters parameters)
         {
             var inputHistory = parameters.InputHistory;
+            var input = inputHistory?.GetNextInput();
+
+            WriteInput(parameters, input);
+        }
+
+        private void PreviousInput(CommandParameters parameters)
+        {
+            var inputHistory = parameters.InputHistory;
+            var input = inputHistory?.GetPreviousInput();
+
+            WriteInput(parameters, input);
+        }
+
+        private void WriteInput(CommandParameters parameters, string? input)
+        {
             var text = parameters.Text;
 
             text?.Clear();
-            text?.Append(inputHistory?.GetNextInput());
+            text?.Append(input);
+
+            var code = text?.ToString() ?? "";
+            var position = parameters.Prompt.Length + code.Length + 1;
+
+            _console.ClearLine();
+            WriteFullLine(parameters.Prompt, code);
+            _console.MoveCursorLeft(position);
+            parameters.Position = position;
         }
 
-        private static void PreviousInput(CommandParameters parameters)
+        private void WriteFullLine(string prompt, string? code)
         {
-            var inputHistory = parameters.InputHistory;
-            var text = parameters.Text;
-
-            text?.Clear();
-            text?.Append(inputHistory?.GetPreviousInput());
+            _console.Write($"{prompt} {code}");
         }
+
     }
 }
