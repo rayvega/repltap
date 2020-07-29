@@ -11,10 +11,12 @@ namespace ReplTap.ConsoleHost
 
     public class ConsoleKeyCommands : IConsoleKeyCommands
     {
+        private readonly IConsole _console;
         private readonly ICompletionsWriter _completionsWriter;
 
-        public ConsoleKeyCommands(ICompletionsWriter completionsWriter)
+        public ConsoleKeyCommands(IConsole console, ICompletionsWriter completionsWriter)
         {
+            _console = console;
             _completionsWriter = completionsWriter;
         }
 
@@ -27,7 +29,7 @@ namespace ReplTap.ConsoleHost
                     async parameters => await Completions(parameters)
                 },
                 {
-                    (ConsoleKey.Backspace, (ConsoleModifiers) 0), DeleteCharBackward
+                    (ConsoleKey.Backspace, (ConsoleModifiers) 0), Backspace
                 },
                 {
                     (ConsoleKey.UpArrow, ConsoleModifiers.Alt), PreviousInput
@@ -49,32 +51,60 @@ namespace ReplTap.ConsoleHost
             var allCode = $"{inputHistory?.AllInputsAsString()}{Environment.NewLine}{currentCode}";
 
             await _completionsWriter.WriteAllCompletions(allCode, variables);
+
+            WriteFullLine(parameters.Prompt, currentCode);
         }
 
-        private static void DeleteCharBackward(CommandParameters parameters)
+        private void Backspace(CommandParameters parameters)
         {
-            if (parameters.Text?.Length > 0)
+            if (!(parameters.Text?.Length > 0))
             {
-                parameters.Text.Length--;
+                return;
             }
+
+            parameters.Text.Length--;
+
+            _console.MoveCursorLeft(--parameters.Position);
+            _console.Write(" ");
+            _console.MoveCursorLeft(parameters.Position);
         }
 
-        private static void NextInput(CommandParameters parameters)
+        private void NextInput(CommandParameters parameters)
         {
             var inputHistory = parameters.InputHistory;
+            var input = inputHistory?.GetNextInput();
+
+            WriteInput(parameters, input);
+        }
+
+        private void PreviousInput(CommandParameters parameters)
+        {
+            var inputHistory = parameters.InputHistory;
+            var input = inputHistory?.GetPreviousInput();
+
+            WriteInput(parameters, input);
+        }
+
+        private void WriteInput(CommandParameters parameters, string? input)
+        {
             var text = parameters.Text;
 
             text?.Clear();
-            text?.Append(inputHistory?.GetNextInput());
+            text?.Append(input);
+
+            var code = text?.ToString() ?? "";
+            var position = parameters.Prompt.Length + code.Length + 1;
+
+            _console.ClearLine();
+            WriteFullLine(parameters.Prompt, code);
+            _console.MoveCursorLeft(position);
+            parameters.Position = position;
         }
 
-        private static void PreviousInput(CommandParameters parameters)
+        private void WriteFullLine(string prompt, string? code)
         {
-            var inputHistory = parameters.InputHistory;
-            var text = parameters.Text;
-
-            text?.Clear();
-            text?.Append(inputHistory?.GetPreviousInput());
+            _console.Write($"{prompt} {code}");
         }
+
     }
 }

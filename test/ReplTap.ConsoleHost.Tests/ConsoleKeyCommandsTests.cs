@@ -36,7 +36,9 @@ namespace ReplTap.ConsoleHost.Tests
                 InputHistory = inputHistory.Object,
             };
 
-            var consoleKeyCommands = new ConsoleKeyCommands(completionsWriter.Object);
+            var console = new Mock<IConsole>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, completionsWriter.Object);
             var key = (ConsoleKey.Tab, (ConsoleModifiers) 0);
 
             // act
@@ -62,10 +64,12 @@ namespace ReplTap.ConsoleHost.Tests
                 Text = text,
                 Variables = null,
                 InputHistory = null,
+                Position = 3,
             };
 
             var completionsWriter = new Mock<ICompletionsWriter>();
-            var consoleKeyCommands = new ConsoleKeyCommands(completionsWriter.Object);
+            var console = new Mock<IConsole>();
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, completionsWriter.Object);
 
             var key = (ConsoleKey.Backspace, (ConsoleModifiers) 0);
 
@@ -100,7 +104,9 @@ namespace ReplTap.ConsoleHost.Tests
                 InputHistory = inputHistory.Object,
             };
 
-            var consoleKeyCommands = new ConsoleKeyCommands(null!);
+            var console = new Mock<IConsole>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
             var key = (ConsoleKey.UpArrow, ConsoleModifiers.Alt);
 
             // act
@@ -134,7 +140,9 @@ namespace ReplTap.ConsoleHost.Tests
                 InputHistory = inputHistory.Object,
             };
 
-            var consoleKeyCommands = new ConsoleKeyCommands(null!);
+            var console = new Mock<IConsole>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
             var key = (ConsoleKey.DownArrow, ConsoleModifiers.Alt);
 
             // act
