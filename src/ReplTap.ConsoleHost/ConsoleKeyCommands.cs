@@ -37,6 +37,9 @@ namespace ReplTap.ConsoleHost
                 {
                     (ConsoleKey.DownArrow, ConsoleModifiers.Alt), NextInput
                 },
+                {
+                    (ConsoleKey.LeftArrow, (ConsoleModifiers) 0), MoveCursorLeft
+                },
             };
         }
 
@@ -99,6 +102,16 @@ namespace ReplTap.ConsoleHost
             WriteFullLine(parameters.Prompt, code);
             _console.MoveCursorLeft(position);
             parameters.Position = position;
+        }
+
+        private void MoveCursorLeft(CommandParameters parameters)
+        {
+            if (parameters.Position - parameters.Prompt.Length - 1 <= 0)
+            {
+                return;
+            }
+
+            _console.MoveCursorLeft(--parameters.Position);
         }
 
         private void WriteFullLine(string prompt, string? code)
