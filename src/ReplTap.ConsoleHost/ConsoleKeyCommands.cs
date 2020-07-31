@@ -60,7 +60,7 @@ namespace ReplTap.ConsoleHost
 
         private void Backspace(CommandParameters parameters)
         {
-            if (!(parameters.Text?.Length > 0))
+            if (parameters.Position - parameters.Prompt.Length - 1 <= 0 || !(parameters.Text?.Length > 0))
             {
                 return;
             }
