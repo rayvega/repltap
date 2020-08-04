@@ -65,10 +65,16 @@ namespace ReplTap.ConsoleHost
                 return;
             }
 
-            parameters.Text.Length--;
-
             _console.MoveCursorLeft(--parameters.Position);
+
+            var endText = parameters.Text.ToString().Substring(parameters.Position - 1);
+            _console.Write(endText);
             _console.Write(" ");
+
+            var startText = parameters.Text.ToString().Substring(0, parameters.Position - 2);
+            parameters.Text.Clear();
+            parameters.Text.Append(startText + endText);
+
             _console.MoveCursorLeft(parameters.Position);
         }
 

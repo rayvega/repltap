@@ -59,12 +59,14 @@ namespace ReplTap.ConsoleHost.Tests
             var text = new StringBuilder();
             text.Append("test code");
 
+            var position = Prompt.Standard.Length + text.Length + 1;
+
             var parameters = new CommandParameters
             {
                 Text = text,
                 Variables = null,
                 InputHistory = null,
-                Position = 3,
+                Position = position,
             };
 
             var completionsWriter = new Mock<ICompletionsWriter>();
