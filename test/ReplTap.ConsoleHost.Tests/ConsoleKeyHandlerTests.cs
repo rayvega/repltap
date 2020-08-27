@@ -14,6 +14,9 @@ namespace ReplTap.ConsoleHost.Tests
         {
             // arrange
             var console = new Mock<IConsole>();
+
+            Console.CursorLeft = 2; // TODO: mock this
+
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
                 ('a', It.IsAny<ConsoleKey>()),
@@ -53,6 +56,8 @@ namespace ReplTap.ConsoleHost.Tests
         {
             // arrange
             var otherConsoleKey = ConsoleKey.F24;
+
+            Console.CursorLeft = 2; // TODO: mock this
 
             var console = new Mock<IConsole>();
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>

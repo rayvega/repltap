@@ -47,17 +47,34 @@ namespace ReplTap.ConsoleHost
                 }
                 else
                 {
-                    text.Append(input.KeyChar);
-                    Console.Write(input.KeyChar);
-                    parameters.Position++;
+                    WriteText(parameters, input);
                 }
 
             } while (input.Key != ConsoleKey.Enter);
 
             // remove newline(s) from end to avoid cursor moving to start of line after navigating input history
-            var line = text.ToString().TrimEnd();
+            var line = parameters.Text.ToString().TrimEnd();
 
             return line;
+        }
+
+        private void WriteText(CommandParameters parameters, ConsoleKeyInfo input)
+        {
+            var endText = parameters.Text?.Length < 0 || parameters.Position - 2 > parameters.Text?.Length
+                ? ""
+                : parameters.Text?.ToString().Substring(parameters.Position - 2);
+
+            _console.Write(input.KeyChar.ToString());
+            _console.Write(endText);
+
+            var startText = parameters.Text?.Length <= 0
+                ? ""
+                : parameters.Text?.ToString().Substring(0, parameters.Position - 2);
+
+            parameters.Text?.Clear();
+            parameters.Text?.Append($"{startText}{input.KeyChar}{endText}");
+            parameters.Position++;
+            Console.CursorLeft = parameters.Position;
         }
     }
 }
