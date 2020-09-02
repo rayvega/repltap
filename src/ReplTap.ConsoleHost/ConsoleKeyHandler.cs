@@ -24,7 +24,6 @@ namespace ReplTap.ConsoleHost
         public string Process(string prompt, IInputHistory inputHistory, List<string> variables)
         {
             var text = new StringBuilder();
-            ConsoleKeyInfo input;
 
             var parameters = new CommandParameters
             {
@@ -37,9 +36,14 @@ namespace ReplTap.ConsoleHost
 
             var inputKeyCommandMap = _consoleKeyCommands.GetInputKeyCommandMap();
 
-            do
+            while (true)
             {
-                input = _console.ReadKey(intercept: true);
+                var input = _console.ReadKey(intercept: true);
+
+                if (input.Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
 
                 if (inputKeyCommandMap.TryGetValue((input.Key, input.Modifiers), out var runCommand))
                 {
@@ -49,8 +53,7 @@ namespace ReplTap.ConsoleHost
                 {
                     WriteText(parameters, input);
                 }
-
-            } while (input.Key != ConsoleKey.Enter);
+            }
 
             // remove newline(s) from end to avoid cursor moving to start of line after navigating input history
             var line = parameters.Text.ToString().TrimEnd();

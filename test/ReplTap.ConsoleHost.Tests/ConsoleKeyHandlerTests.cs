@@ -21,7 +21,8 @@ namespace ReplTap.ConsoleHost.Tests
             {
                 ('a', It.IsAny<ConsoleKey>()),
                 ('b', It.IsAny<ConsoleKey>()),
-                ('c', ConsoleKey.Enter),
+                ('c', It.IsAny<ConsoleKey>()),
+                (' ', ConsoleKey.Enter),
             };
 
             var setupSequence = console
@@ -65,7 +66,8 @@ namespace ReplTap.ConsoleHost.Tests
                 ('a', It.IsAny<ConsoleKey>()),
                 ('b', It.IsAny<ConsoleKey>()),
                 ('c', otherConsoleKey),
-                ('d', ConsoleKey.Enter),
+                ('d', It.IsAny<ConsoleKey>()),
+                (' ', ConsoleKey.Enter),
             };
 
             var setupSequence = console
