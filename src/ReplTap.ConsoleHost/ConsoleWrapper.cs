@@ -9,6 +9,7 @@ namespace ReplTap.ConsoleHost
         ConsoleKeyInfo ReadKey(bool intercept);
         void ClearLine();
         ConsoleColor ForegroundColor { get; set; }
+        int CursorLeft { get; set; }
         void ResetColor();
         void WriteLine(Exception exception);
         void MoveCursorLeft(int position);
@@ -55,6 +56,12 @@ namespace ReplTap.ConsoleHost
         {
             get => Console.ForegroundColor;
             set => Console.ForegroundColor = value;
+        }
+
+        public int CursorLeft
+        {
+            get => Console.CursorLeft;
+            set => Console.CursorLeft = value;
         }
 
         public void ResetColor()
