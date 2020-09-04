@@ -29,7 +29,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Select(i => $"test variable {i}")
                 .ToList();
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 Variables = variables,
@@ -44,7 +44,7 @@ namespace ReplTap.ConsoleHost.Tests
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
             var runCommand = map[key];
-            runCommand(parameters);
+            runCommand(state);
 
             // assert
             completionsWriter.Verify(
@@ -61,7 +61,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             var position = Prompt.Standard.Length + text.Length + 1;
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 Variables = null,
@@ -78,10 +78,10 @@ namespace ReplTap.ConsoleHost.Tests
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
             var runCommand = map[key];
-            runCommand(parameters);
+            runCommand(state);
 
             // assert
-            Assert.That(parameters.Text.ToString(), Is.EqualTo("test cod"));
+            Assert.That(state.Text.ToString(), Is.EqualTo("test cod"));
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace ReplTap.ConsoleHost.Tests
             var text = new StringBuilder();
             text.Append("test code");
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 Variables = null,
@@ -114,10 +114,10 @@ namespace ReplTap.ConsoleHost.Tests
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
             var runCommand = map[key];
-            runCommand(parameters);
+            runCommand(state);
 
             // assert
-            Assert.That(parameters.Text.ToString(), Is.EqualTo(expectedInputHistory));
+            Assert.That(state.Text.ToString(), Is.EqualTo(expectedInputHistory));
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace ReplTap.ConsoleHost.Tests
             var text = new StringBuilder();
             text.Append("test code");
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 Variables = null,
@@ -150,10 +150,10 @@ namespace ReplTap.ConsoleHost.Tests
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
             var runCommand = map[key];
-            runCommand(parameters);
+            runCommand(state);
 
             // assert
-            Assert.That(parameters.Text.ToString(), Is.EqualTo(expectedInputHistory));
+            Assert.That(state.Text.ToString(), Is.EqualTo(expectedInputHistory));
         }
 
 
@@ -164,7 +164,7 @@ namespace ReplTap.ConsoleHost.Tests
             var text = new StringBuilder();
             text.Append("test code");
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 LinePosition = 4,
@@ -178,10 +178,10 @@ namespace ReplTap.ConsoleHost.Tests
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
             var runCommand = map[key];
-            runCommand(parameters);
+            runCommand(state);
 
             // assert
-            Assert.That(parameters.LinePosition, Is.EqualTo(3));
+            Assert.That(state.LinePosition, Is.EqualTo(3));
         }
     }
 }

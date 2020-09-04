@@ -43,7 +43,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             consoleKeyCommands
                 .Setup(c => c.GetInputKeyCommandMap())
-                .Returns(new Dictionary<(ConsoleKey, ConsoleModifiers), Action<CommandParameters>>());
+                .Returns(new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>());
 
             var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
 
@@ -90,9 +90,9 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleKeyCommands = new Mock<IConsoleKeyCommands>();
             var isCommandCalled = false;
 
-            var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<CommandParameters>>
+            var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>
             {
-                {(otherConsoleKey, (ConsoleModifiers) 0), parameters => { isCommandCalled = true; }}
+                {(otherConsoleKey, (ConsoleModifiers) 0), state => { isCommandCalled = true; }}
             };
 
             consoleKeyCommands

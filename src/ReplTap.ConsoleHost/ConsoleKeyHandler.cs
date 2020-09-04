@@ -25,7 +25,7 @@ namespace ReplTap.ConsoleHost
         {
             var text = new StringBuilder();
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 InputHistory = inputHistory,
@@ -47,37 +47,37 @@ namespace ReplTap.ConsoleHost
 
                 if (inputKeyCommandMap.TryGetValue((input.Key, input.Modifiers), out var runCommand))
                 {
-                    runCommand(parameters);
+                    runCommand(state);
                 }
                 else
                 {
-                    WriteText(parameters, input);
+                    WriteText(state, input);
                 }
             }
 
             // remove newline(s) from end to avoid cursor moving to start of line after navigating input history
-            var line = parameters.Text.ToString().TrimEnd();
+            var line = state.Text.ToString().TrimEnd();
 
             return line;
         }
 
-        private void WriteText(CommandParameters parameters, ConsoleKeyInfo input)
+        private void WriteText(ConsoleState state, ConsoleKeyInfo input)
         {
-            var endText = parameters.Text?.Length < 0 || parameters.TextPosition > parameters.Text?.Length
+            var endText = state.Text?.Length < 0 || state.TextPosition > state.Text?.Length
                 ? ""
-                : parameters.Text?.ToString().Substring(parameters.TextPosition);
+                : state.Text?.ToString().Substring(state.TextPosition);
 
             _console.Write(input.KeyChar.ToString());
             _console.Write(endText);
 
-            var startText = parameters.Text?.Length <= 0
+            var startText = state.Text?.Length <= 0
                 ? ""
-                : parameters.Text?.ToString().Substring(0, parameters.TextPosition);
+                : state.Text?.ToString().Substring(0, state.TextPosition);
 
-            parameters.Text?.Clear();
-            parameters.Text?.Append($"{startText}{input.KeyChar}{endText}");
-            parameters.LinePosition++;
-            _console.CursorLeft = parameters.LinePosition;
+            state.Text?.Clear();
+            state.Text?.Append($"{startText}{input.KeyChar}{endText}");
+            state.LinePosition++;
+            _console.CursorLeft = state.LinePosition;
         }
     }
 }

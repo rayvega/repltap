@@ -5,9 +5,9 @@ using PromptValues = ReplTap.ConsoleHost.Prompt;
 
 namespace ReplTap.ConsoleHost
 {
-    public class CommandParameters
+    public class ConsoleState
     {
-        public CommandParameters()
+        public ConsoleState()
         {
             Text = new StringBuilder();
             InputHistory = new InputHistory();
