@@ -30,7 +30,7 @@ namespace ReplTap.ConsoleHost
                 Text = text,
                 InputHistory = inputHistory,
                 Variables = variables,
-                Position = _console.CursorLeft,
+                LinePosition = _console.CursorLeft,
                 Prompt = prompt,
             };
 
@@ -76,8 +76,8 @@ namespace ReplTap.ConsoleHost
 
             parameters.Text?.Clear();
             parameters.Text?.Append($"{startText}{input.KeyChar}{endText}");
-            parameters.Position++;
-            _console.CursorLeft = parameters.Position;
+            parameters.LinePosition++;
+            _console.CursorLeft = parameters.LinePosition;
         }
     }
 }

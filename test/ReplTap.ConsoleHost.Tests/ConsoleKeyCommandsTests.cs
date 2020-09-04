@@ -66,7 +66,7 @@ namespace ReplTap.ConsoleHost.Tests
                 Text = text,
                 Variables = null,
                 InputHistory = null,
-                Position = position,
+                LinePosition = position,
             };
 
             var completionsWriter = new Mock<ICompletionsWriter>();
@@ -167,7 +167,7 @@ namespace ReplTap.ConsoleHost.Tests
             var parameters = new CommandParameters
             {
                 Text = text,
-                Position = 4,
+                LinePosition = 4,
             };
 
             var console = new Mock<IConsole>();
@@ -181,7 +181,7 @@ namespace ReplTap.ConsoleHost.Tests
             runCommand(parameters);
 
             // assert
-            Assert.That(parameters.Position, Is.EqualTo(3));
+            Assert.That(parameters.LinePosition, Is.EqualTo(3));
         }
     }
 }

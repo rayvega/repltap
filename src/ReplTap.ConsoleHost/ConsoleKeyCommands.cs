@@ -65,9 +65,9 @@ namespace ReplTap.ConsoleHost
                 return;
             }
 
-            _console.MoveCursorLeft(--parameters.Position);
+            _console.MoveCursorLeft(--parameters.LinePosition);
 
-            var endText = parameters.Text.ToString().Substring(parameters.Position - 1);
+            var endText = parameters.Text.ToString().Substring(parameters.LinePosition - 1);
             _console.Write(endText);
             _console.Write(" ");
 
@@ -75,7 +75,7 @@ namespace ReplTap.ConsoleHost
             parameters.Text.Clear();
             parameters.Text.Append(startText + endText);
 
-            _console.MoveCursorLeft(parameters.Position);
+            _console.MoveCursorLeft(parameters.LinePosition);
         }
 
         private void NextInput(CommandParameters parameters)
@@ -108,7 +108,7 @@ namespace ReplTap.ConsoleHost
             WriteFullLine(parameters.Prompt, code);
 
             _console.MoveCursorLeft(position);
-            parameters.Position = position;
+            parameters.LinePosition = position;
         }
 
         private void MoveCursorLeft(CommandParameters parameters)
@@ -118,7 +118,7 @@ namespace ReplTap.ConsoleHost
                 return;
             }
 
-            _console.MoveCursorLeft(--parameters.Position);
+            _console.MoveCursorLeft(--parameters.LinePosition);
         }
 
         private void WriteFullLine(string prompt, string? code)

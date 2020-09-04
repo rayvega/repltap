@@ -18,8 +18,8 @@ namespace ReplTap.ConsoleHost
         public StringBuilder? Text { get; set; }
         public IInputHistory? InputHistory { get; set; }
         public List<string>? Variables { get; set; }
-        public int Position { get; set; }
-        public int TextPosition => Position - $"{Prompt} ".Length;
+        public int LinePosition { get; set; }
+        public int TextPosition => LinePosition - $"{Prompt} ".Length;
 
         public bool IsStartOfTextPosition()
         {
