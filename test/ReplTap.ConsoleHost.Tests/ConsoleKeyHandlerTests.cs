@@ -48,7 +48,7 @@ namespace ReplTap.ConsoleHost.Tests
             var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
 
             // act
-            var input = keyHandler.Process(It.IsAny<string>(), inputHistory.Object, null!);
+            var input = keyHandler.Process(Prompt.Standard, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
@@ -102,7 +102,7 @@ namespace ReplTap.ConsoleHost.Tests
             var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
 
             // act
-            var input = keyHandler.Process(It.IsAny<string>(), inputHistory.Object, null!);
+            var input = keyHandler.Process(Prompt.Standard, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));

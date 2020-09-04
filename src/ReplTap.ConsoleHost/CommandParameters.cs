@@ -19,6 +19,7 @@ namespace ReplTap.ConsoleHost
         public IInputHistory? InputHistory { get; set; }
         public List<string>? Variables { get; set; }
         public int Position { get; set; }
+        public int TextPosition => Position - $"{Prompt} ".Length;
         public string Prompt { get; internal set; }
     }
 }

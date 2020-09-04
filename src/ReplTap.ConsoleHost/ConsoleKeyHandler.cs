@@ -63,16 +63,16 @@ namespace ReplTap.ConsoleHost
 
         private void WriteText(CommandParameters parameters, ConsoleKeyInfo input)
         {
-            var endText = parameters.Text?.Length < 0 || parameters.Position - 2 > parameters.Text?.Length
+            var endText = parameters.Text?.Length < 0 || parameters.TextPosition > parameters.Text?.Length
                 ? ""
-                : parameters.Text?.ToString().Substring(parameters.Position - 2);
+                : parameters.Text?.ToString().Substring(parameters.TextPosition);
 
             _console.Write(input.KeyChar.ToString());
             _console.Write(endText);
 
             var startText = parameters.Text?.Length <= 0
                 ? ""
-                : parameters.Text?.ToString().Substring(0, parameters.Position - 2);
+                : parameters.Text?.ToString().Substring(0, parameters.TextPosition);
 
             parameters.Text?.Clear();
             parameters.Text?.Append($"{startText}{input.KeyChar}{endText}");

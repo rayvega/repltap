@@ -60,7 +60,7 @@ namespace ReplTap.ConsoleHost
 
         private void Backspace(CommandParameters parameters)
         {
-            if (parameters.Position - parameters.Prompt.Length - 1 <= 0 || !(parameters.Text?.Length > 0))
+            if (parameters.TextPosition <= 0 || parameters.Text?.Length <= 0 || parameters.Text == null)
             {
                 return;
             }
@@ -71,7 +71,7 @@ namespace ReplTap.ConsoleHost
             _console.Write(endText);
             _console.Write(" ");
 
-            var startText = parameters.Text.ToString().Substring(0, parameters.Position - 2);
+            var startText = parameters.Text.ToString().Substring(0, parameters.TextPosition);
             parameters.Text.Clear();
             parameters.Text.Append(startText + endText);
 
@@ -106,13 +106,14 @@ namespace ReplTap.ConsoleHost
 
             _console.ClearLine();
             WriteFullLine(parameters.Prompt, code);
+
             _console.MoveCursorLeft(position);
             parameters.Position = position;
         }
 
         private void MoveCursorLeft(CommandParameters parameters)
         {
-            if (parameters.Position - parameters.Prompt.Length - 1 <= 0)
+            if (parameters.TextPosition <= 0)
             {
                 return;
             }
