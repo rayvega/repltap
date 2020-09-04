@@ -63,19 +63,20 @@ namespace ReplTap.ConsoleHost
 
         private void WriteText(ConsoleState state, ConsoleKeyInfo input)
         {
-            var endText = state.Text?.Length < 0 || state.TextPosition > state.Text?.Length
+            var endText = state.IsTextEmpty() || state.TextPosition > state.Text?.Length
                 ? ""
                 : state.Text?.ToString().Substring(state.TextPosition);
 
             _console.Write(input.KeyChar.ToString());
             _console.Write(endText);
 
-            var startText = state.Text?.Length <= 0
+            var startText = state.IsTextEmpty()
                 ? ""
                 : state.Text?.ToString().Substring(0, state.TextPosition);
 
             state.Text?.Clear();
             state.Text?.Append($"{startText}{input.KeyChar}{endText}");
+
             state.LinePosition++;
             _console.CursorLeft = state.LinePosition;
         }

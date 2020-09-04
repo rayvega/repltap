@@ -16,6 +16,12 @@ namespace ReplTap.ConsoleHost
         }
 
         public StringBuilder? Text { get; set; }
+
+        public bool IsTextEmpty()
+        {
+            return Text?.Length <= 0;
+        }
+
         public IInputHistory? InputHistory { get; set; }
         public List<string>? Variables { get; set; }
         public int LinePosition { get; set; }

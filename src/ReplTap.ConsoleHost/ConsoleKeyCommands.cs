@@ -60,7 +60,7 @@ namespace ReplTap.ConsoleHost
 
         private void Backspace(ConsoleState state)
         {
-            if (state.IsStartOfTextPosition() || state.Text?.Length <= 0 || state.Text == null)
+            if (state.IsStartOfTextPosition() || state.IsTextEmpty() || state.Text == null)
             {
                 return;
             }
