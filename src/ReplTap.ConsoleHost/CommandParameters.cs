@@ -20,6 +20,12 @@ namespace ReplTap.ConsoleHost
         public List<string>? Variables { get; set; }
         public int Position { get; set; }
         public int TextPosition => Position - $"{Prompt} ".Length;
+
+        public bool IsStartOfTextPosition()
+        {
+            return TextPosition <= 0;
+        }
+
         public string Prompt { get; internal set; }
     }
 }

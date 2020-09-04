@@ -60,7 +60,7 @@ namespace ReplTap.ConsoleHost
 
         private void Backspace(CommandParameters parameters)
         {
-            if (parameters.TextPosition <= 0 || parameters.Text?.Length <= 0 || parameters.Text == null)
+            if (parameters.IsStartOfTextPosition() || parameters.Text?.Length <= 0 || parameters.Text == null)
             {
                 return;
             }
@@ -113,7 +113,7 @@ namespace ReplTap.ConsoleHost
 
         private void MoveCursorLeft(CommandParameters parameters)
         {
-            if (parameters.TextPosition <= 0)
+            if (parameters.IsStartOfTextPosition())
             {
                 return;
             }
