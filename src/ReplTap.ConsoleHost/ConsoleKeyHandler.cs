@@ -51,7 +51,7 @@ namespace ReplTap.ConsoleHost
                 }
                 else
                 {
-                    WriteText(state, input);
+                    _consoleKeyCommands.WriteChar(state, input.KeyChar);
                 }
             }
 
@@ -61,24 +61,5 @@ namespace ReplTap.ConsoleHost
             return line;
         }
 
-        private void WriteText(ConsoleState state, ConsoleKeyInfo input)
-        {
-            var endText = state.IsTextEmpty() || state.TextPosition > state.Text?.Length
-                ? ""
-                : state.Text?.ToString().Substring(state.TextPosition);
-
-            _console.Write(input.KeyChar.ToString());
-            _console.Write(endText);
-
-            var startText = state.IsTextEmpty()
-                ? ""
-                : state.Text?.ToString().Substring(0, state.TextPosition);
-
-            state.Text?.Clear();
-            state.Text?.Append($"{startText}{input.KeyChar}{endText}");
-
-            state.LinePosition++;
-            _console.CursorLeft = state.LinePosition;
-        }
     }
 }

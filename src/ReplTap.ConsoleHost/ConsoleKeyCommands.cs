@@ -6,6 +6,7 @@ namespace ReplTap.ConsoleHost
 {
     public interface IConsoleKeyCommands
     {
+        void WriteChar(ConsoleState state, char inputChar);
         Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>> GetInputKeyCommandMap();
     }
 
@@ -18,6 +19,25 @@ namespace ReplTap.ConsoleHost
         {
             _console = console;
             _completionsWriter = completionsWriter;
+        }
+
+        public void WriteChar(ConsoleState state, char inputChar)
+        {
+            var endText = state.IsTextEmpty() || state.TextPosition > state.Text?.Length
+                ? ""
+                : state.Text?.ToString().Substring(state.TextPosition);
+
+            _console.Write(inputChar.ToString());
+            _console.Write(endText);
+
+            var startText = state.IsTextEmpty()
+                ? ""
+                : state.Text?.ToString().Substring(0, state.TextPosition);
+
+            state.Text?.Clear();
+            state.Text?.Append($"{startText}{inputChar}{endText}");
+
+            _console.CursorLeft = ++state.LinePosition;
         }
 
         public Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>> GetInputKeyCommandMap()
@@ -83,7 +103,7 @@ namespace ReplTap.ConsoleHost
             var inputHistory = state.InputHistory;
             var input = inputHistory?.GetNextInput();
 
-            WriteInput(state, input);
+            WriteText(state, input);
         }
 
         private void PreviousInput(ConsoleState state)
@@ -91,17 +111,15 @@ namespace ReplTap.ConsoleHost
             var inputHistory = state.InputHistory;
             var input = inputHistory?.GetPreviousInput();
 
-            WriteInput(state, input);
+            WriteText(state, input);
         }
 
-        private void WriteInput(ConsoleState state, string? input)
+        private void WriteText(ConsoleState state, string? text)
         {
-            var text = state.Text;
+            state.Text?.Clear();
+            state.Text?.Append(text);
 
-            text?.Clear();
-            text?.Append(input);
-
-            var code = text?.ToString() ?? "";
+            var code = state.Text?.ToString() ?? "";
             var position = state.Prompt.Length + code.Length + 1;
 
             _console.ClearLine();
