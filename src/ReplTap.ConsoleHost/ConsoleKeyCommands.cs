@@ -29,8 +29,7 @@ namespace ReplTap.ConsoleHost
                     .ToString()
                     .Substring(state.TextPosition);
 
-            _console.Write(inputChar.ToString());
-            _console.Write(endText);
+            _console.Write($"{inputChar.ToString()}{endText}");
 
             var startText = state.IsTextEmpty()
                 ? ""
@@ -96,8 +95,7 @@ namespace ReplTap.ConsoleHost
                 .ToString()
                 .Substring(state.LinePosition - 1);
 
-            _console.Write(endText);
-            _console.Write(" ");
+            _console.Write($"{endText} ");
 
             var startText = state.Text
                 .ToString()
