@@ -25,17 +25,22 @@ namespace ReplTap.ConsoleHost
         {
             var endText = state.IsTextEmpty() || state.TextPosition > state.Text?.Length
                 ? ""
-                : state.Text?.ToString().Substring(state.TextPosition);
+                : state.Text?
+                    .ToString()
+                    .Substring(state.TextPosition);
 
             _console.Write(inputChar.ToString());
             _console.Write(endText);
 
             var startText = state.IsTextEmpty()
                 ? ""
-                : state.Text?.ToString().Substring(0, state.TextPosition);
+                : state.Text?
+                    .ToString()
+                    .Substring(0, state.TextPosition);
 
-            state.Text?.Clear();
-            state.Text?.Append($"{startText}{inputChar}{endText}");
+            state.Text?
+                .Clear()
+                .Append($"{startText}{inputChar}{endText}");
 
             _console.CursorLeft = ++state.LinePosition;
         }
@@ -87,13 +92,20 @@ namespace ReplTap.ConsoleHost
 
             _console.MoveCursorLeft(--state.LinePosition);
 
-            var endText = state.Text.ToString().Substring(state.LinePosition - 1);
+            var endText = state.Text
+                .ToString()
+                .Substring(state.LinePosition - 1);
+
             _console.Write(endText);
             _console.Write(" ");
 
-            var startText = state.Text.ToString().Substring(0, state.TextPosition);
-            state.Text.Clear();
-            state.Text.Append(startText + endText);
+            var startText = state.Text
+                .ToString()
+                .Substring(0, state.TextPosition);
+
+            state.Text
+                .Clear()
+                .Append(startText + endText);
 
             _console.MoveCursorLeft(state.LinePosition);
         }
@@ -116,8 +128,9 @@ namespace ReplTap.ConsoleHost
 
         private void WriteText(ConsoleState state, string? text)
         {
-            state.Text?.Clear();
-            state.Text?.Append(text);
+            state.Text?
+                .Clear()
+                .Append(text);
 
             var code = state.Text?.ToString() ?? "";
             var position = state.Prompt.Length + code.Length + 1;
@@ -143,6 +156,5 @@ namespace ReplTap.ConsoleHost
         {
             _console.Write($"{prompt} {code}");
         }
-
     }
 }
