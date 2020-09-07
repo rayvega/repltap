@@ -26,16 +26,14 @@ namespace ReplTap.ConsoleHost
             var endText = state.IsTextEmpty() || state.TextPosition > state.Text?.Length
                 ? ""
                 : state.Text?
-                    .ToString()
-                    .Substring(state.TextPosition);
+                    .ToString()[state.TextPosition..];
 
             _console.Write($"{inputChar.ToString()}{endText}");
 
             var startText = state.IsTextEmpty()
                 ? ""
                 : state.Text?
-                    .ToString()
-                    .Substring(0, state.TextPosition);
+                    .ToString()[..state.TextPosition];
 
             state.Text?
                 .Clear()
@@ -92,14 +90,12 @@ namespace ReplTap.ConsoleHost
             _console.MoveCursorLeft(--state.LinePosition);
 
             var endText = state.Text
-                .ToString()
-                .Substring(state.LinePosition - 1);
+                .ToString()[(state.LinePosition - 1)..];
 
             _console.Write($"{endText} ");
 
             var startText = state.Text
-                .ToString()
-                .Substring(0, state.TextPosition);
+                .ToString()[..state.TextPosition];
 
             state.Text
                 .Clear()
