@@ -26,15 +26,13 @@ namespace ReplTap.ConsoleHost
         {
             var endText = state.IsTextEmpty() || state.TextPosition > state.Text?.Length
                 ? ""
-                : state.Text?
-                    .ToString()[state.TextPosition..];
+                : state.Text?.Slice(state.TextPosition..);
 
             _console.Write($"{inputChar.ToString()}{endText}");
 
             var startText = state.IsTextEmpty()
                 ? ""
-                : state.Text?
-                    .ToString()[..state.TextPosition];
+                : state.Text?.Slice(..state.TextPosition);
 
             state.Text?.ReplaceWith($"{startText}{inputChar}{endText}");
 
@@ -88,13 +86,11 @@ namespace ReplTap.ConsoleHost
 
             _console.MoveCursorLeft(--state.LinePosition);
 
-            var endText = state.Text
-                .ToString()[(state.LinePosition - 1)..];
+            var endText = state.Text.Slice((state.LinePosition - 1)..);
 
             _console.Write($"{endText} ");
 
-            var startText = state.Text
-                .ToString()[..state.TextPosition];
+            var startText = state.Text.Slice(..state.TextPosition);
 
             state.Text.ReplaceWith($"{startText}{endText}");
 

@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 
 namespace ReplTap.ConsoleHost.Extensions
@@ -9,6 +10,11 @@ namespace ReplTap.ConsoleHost.Extensions
             builder
                 .Clear()
                 .Append(text);
+        }
+
+        public static string Slice(this StringBuilder builder, Range range)
+        {
+            return builder.ToString()[range];
         }
     }
 }
