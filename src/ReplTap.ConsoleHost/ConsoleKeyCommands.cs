@@ -41,14 +41,16 @@ namespace ReplTap.ConsoleHost
 
         public Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>> GetInputKeyCommandMap()
         {
+            var emptyConsoleModifier = (ConsoleModifiers) 0;
+
             return new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>
             {
                 {
-                    (ConsoleKey.Tab, (ConsoleModifiers) 0),
+                    (ConsoleKey.Tab, emptyConsoleModifier),
                     async state => await Completions(state)
                 },
                 {
-                    (ConsoleKey.Backspace, (ConsoleModifiers) 0), Backspace
+                    (ConsoleKey.Backspace, emptyConsoleModifier), Backspace
                 },
                 {
                     (ConsoleKey.UpArrow, ConsoleModifiers.Alt), PreviousInput
@@ -57,7 +59,7 @@ namespace ReplTap.ConsoleHost
                     (ConsoleKey.DownArrow, ConsoleModifiers.Alt), NextInput
                 },
                 {
-                    (ConsoleKey.LeftArrow, (ConsoleModifiers) 0), MoveCursorLeft
+                    (ConsoleKey.LeftArrow, emptyConsoleModifier), MoveCursorLeft
                 },
             };
         }
