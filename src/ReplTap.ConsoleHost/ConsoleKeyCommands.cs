@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ReplTap.ConsoleHost.Extensions;
 
 namespace ReplTap.ConsoleHost
 {
@@ -35,9 +36,7 @@ namespace ReplTap.ConsoleHost
                 : state.Text?
                     .ToString()[..state.TextPosition];
 
-            state.Text?
-                .Clear()
-                .Append($"{startText}{inputChar}{endText}");
+            state.Text?.ReplaceWith($"{startText}{inputChar}{endText}");
 
             _console.CursorLeft = ++state.LinePosition;
         }
@@ -97,9 +96,7 @@ namespace ReplTap.ConsoleHost
             var startText = state.Text
                 .ToString()[..state.TextPosition];
 
-            state.Text
-                .Clear()
-                .Append(startText + endText);
+            state.Text.ReplaceWith($"{startText}{endText}");
 
             _console.MoveCursorLeft(state.LinePosition);
         }
@@ -122,9 +119,7 @@ namespace ReplTap.ConsoleHost
 
         private void WriteText(ConsoleState state, string? text)
         {
-            state.Text?
-                .Clear()
-                .Append(text);
+            state.Text?.ReplaceWith(text);
 
             var code = state.Text?.ToString() ?? "";
             var position = state.Prompt.Length + code.Length + 1;
