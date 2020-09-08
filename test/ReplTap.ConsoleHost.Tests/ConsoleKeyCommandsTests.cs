@@ -11,6 +11,30 @@ namespace ReplTap.ConsoleHost.Tests
     public class ConsoleKeyCommandsTests
     {
         [Test]
+        public void WriteChar_Should_Execute_Expected()
+        {
+            // arrange
+            var console = new Mock<IConsole>();
+            var keyCommands = new ConsoleKeyCommands(console.Object, null!);
+
+            var state = new ConsoleState
+            {
+                Text = new StringBuilder().Append("abcde"),
+                LinePosition = 4, // including prompt length of 2
+            };
+
+            var inputChar = 'z';
+
+            // act
+            keyCommands.WriteChar(state, inputChar);
+
+            // assert
+            console.Verify(c => c.Write("zcde"));
+            Assert.That(state.Text.ToString(), Is.EqualTo("abzcde"));
+            console.VerifySet(c => c.CursorLeft = 5);
+        }
+
+        [Test]
         public void Map_Command_Should_Write_All_Completions_When_Key_Tab()
         {
             // arrange
