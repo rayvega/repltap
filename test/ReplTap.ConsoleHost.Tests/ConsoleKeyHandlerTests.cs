@@ -13,6 +13,8 @@ namespace ReplTap.ConsoleHost.Tests
         public void Process_Should_Return_Input_When_Key_Enter()
         {
             // arrange
+
+            // read key
             var console = new Mock<IConsole>();
 
             console
@@ -27,31 +29,47 @@ namespace ReplTap.ConsoleHost.Tests
                 (' ', ConsoleKey.Enter),
             };
 
-            var setupSequence = console
+            var readKeySetupSequence = console
                 .SetupSequence(c => c.ReadKey(true));
 
             foreach (var (inputChar, consoleKey) in consoleKeys)
             {
                 var consoleKeyInfo = new ConsoleKeyInfo(inputChar, consoleKey, false, false, false);
 
-                setupSequence.Returns(consoleKeyInfo);
+                readKeySetupSequence.Returns(consoleKeyInfo);
             }
 
-            var inputHistory = new Mock<IInputHistory>();
-
+            // key commands
             var consoleKeyCommands = new Mock<IConsoleKeyCommands>();
 
             consoleKeyCommands
                 .Setup(c => c.GetInputKeyCommandMap())
                 .Returns(new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>());
 
+            var calls = 0;
+
+            consoleKeyCommands
+                .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
+                .Callback<ConsoleState, char>((s, c) =>
+                {
+                    var (inputChar, _) = consoleKeys[calls];
+                    s.Text?.Append(inputChar);
+                    calls++;
+                });
+
+            // key handler
             var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
+
+            var inputHistory = new Mock<IInputHistory>();
 
             // act
             var input = keyHandler.Process(Prompt.Standard, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
+
+            consoleKeyCommands
+                .Verify(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()), Times.Exactly(3));
         }
 
         [Test]
