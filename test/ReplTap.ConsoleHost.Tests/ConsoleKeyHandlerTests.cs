@@ -80,6 +80,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             var console = new Mock<IConsole>();
 
+            // read key
             console
                 .Setup(c => c.CursorLeft)
                 .Returns("> ".Length);
@@ -93,31 +94,50 @@ namespace ReplTap.ConsoleHost.Tests
                 (' ', ConsoleKey.Enter),
             };
 
-            var setupSequence = console
+            var readKeySetupSequence = console
                 .SetupSequence(c => c.ReadKey(true));
 
             foreach (var (inputChar, consoleKey) in consoleKeys)
             {
                 var consoleKeyInfo = new ConsoleKeyInfo(inputChar, consoleKey, false, false, false);
 
-                setupSequence.Returns(consoleKeyInfo);
+                readKeySetupSequence.Returns(consoleKeyInfo);
             }
 
-            var inputHistory = new Mock<IInputHistory>();
+            // key commands
+            var calls = 0;
 
-            var consoleKeyCommands = new Mock<IConsoleKeyCommands>();
             var isCommandCalled = false;
 
             var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>
             {
-                {(otherConsoleKey, (ConsoleModifiers) 0), state => { isCommandCalled = true; }}
+                {(otherConsoleKey, (ConsoleModifiers) 0), state =>
+                    {
+                        isCommandCalled = true;
+                        calls++;
+                    }
+                }
             };
+
+            var consoleKeyCommands = new Mock<IConsoleKeyCommands>();
 
             consoleKeyCommands
                 .Setup(c => c.GetInputKeyCommandMap())
                 .Returns(map);
 
+            consoleKeyCommands
+                .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
+                .Callback<ConsoleState, char>((s, c) =>
+                {
+                    var (inputChar, _) = consoleKeys[calls];
+                    s.Text?.Append(inputChar);
+                    calls++;
+                });
+
+            // key handler
             var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
+
+            var inputHistory = new Mock<IInputHistory>();
 
             // act
             var input = keyHandler.Process(Prompt.Standard, inputHistory.Object, null!);
