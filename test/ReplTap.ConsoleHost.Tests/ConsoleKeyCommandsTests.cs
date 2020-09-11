@@ -207,5 +207,33 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             Assert.That(state.LinePosition, Is.EqualTo(3));
         }
+
+
+        [Test]
+        public void Map_Command_Should_Move_Right_When_Key_Right_Arrow()
+        {
+            // arrange
+            var text = new StringBuilder();
+            text.Append("test code");
+
+            var state = new ConsoleState
+            {
+                Text = text,
+                LinePosition = 4,
+            };
+
+            var console = new Mock<IConsole>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
+            var key = (ConsoleKey.RightArrow, (ConsoleModifiers) 0);
+
+            // act
+            var map = consoleKeyCommands.GetInputKeyCommandMap();
+            var runCommand = map[key];
+            runCommand(state);
+
+            // assert
+            Assert.That(state.LinePosition, Is.EqualTo(5));
+        }
     }
 }

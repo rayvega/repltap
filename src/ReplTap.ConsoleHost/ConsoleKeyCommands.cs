@@ -61,6 +61,9 @@ namespace ReplTap.ConsoleHost
                 {
                     (ConsoleKey.LeftArrow, emptyConsoleModifier), MoveCursorLeft
                 },
+                {
+                    (ConsoleKey.RightArrow, emptyConsoleModifier), MoveCursorRight
+                },
             };
         }
 
@@ -137,6 +140,16 @@ namespace ReplTap.ConsoleHost
             }
 
             _console.MoveCursorLeft(--state.LinePosition);
+        }
+
+        private void MoveCursorRight(ConsoleState state)
+        {
+            if (state.IsEndOfTextPosition())
+            {
+                return;
+            }
+
+            _console.MoveCursorLeft(++state.LinePosition);
         }
 
         private void WriteFullLine(string prompt, string? code)

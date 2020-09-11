@@ -32,6 +32,8 @@ namespace ReplTap.ConsoleHost
             return TextPosition <= 0;
         }
 
+        public bool IsEndOfTextPosition() => TextPosition >= Text?.Length;
+
         public string Prompt { get; internal set; }
     }
 }
