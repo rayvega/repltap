@@ -16,10 +16,7 @@ namespace ReplTap.ConsoleHost
 
     public class ConsoleWrapper : IConsole
     {
-        public void Write(string? text)
-        {
-            Console.Write(text);
-        }
+        public void Write(string? text) => Console.Write(text);
 
         public void WriteLine(string text = "")
         {
@@ -33,15 +30,9 @@ namespace ReplTap.ConsoleHost
             Console.WriteLine(text);
         }
 
-        public void WriteLine(Exception exception)
-        {
-            Console.WriteLine(exception);
-        }
+        public void WriteLine(Exception exception) => Console.WriteLine(exception);
 
-        public ConsoleKeyInfo ReadKey(bool intercept)
-        {
-            return Console.ReadKey(intercept);
-        }
+        public ConsoleKeyInfo ReadKey(bool intercept) => Console.ReadKey(intercept);
 
         public void ClearLine()
         {
@@ -63,9 +54,6 @@ namespace ReplTap.ConsoleHost
             set => Console.CursorLeft = value;
         }
 
-        public void ResetColor()
-        {
-            Console.ResetColor();
-        }
+        public void ResetColor() => Console.ResetColor();
     }
 }
