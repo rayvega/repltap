@@ -12,7 +12,6 @@ namespace ReplTap.ConsoleHost
         int CursorLeft { get; set; }
         void ResetColor();
         void WriteLine(Exception exception);
-        void MoveCursorLeft(int position);
     }
 
     public class ConsoleWrapper : IConsole
@@ -67,11 +66,6 @@ namespace ReplTap.ConsoleHost
         public void ResetColor()
         {
             Console.ResetColor();
-        }
-
-        public void MoveCursorLeft(int position)
-        {
-            Console.CursorLeft = position;
         }
     }
 }

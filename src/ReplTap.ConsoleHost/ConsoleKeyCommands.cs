@@ -89,7 +89,7 @@ namespace ReplTap.ConsoleHost
                 return;
             }
 
-            _console.MoveCursorLeft(--state.LinePosition);
+            _console.CursorLeft = --state.LinePosition;
 
             var endText = state.Text.Slice((state.LinePosition - 1)..);
 
@@ -99,7 +99,7 @@ namespace ReplTap.ConsoleHost
 
             state.Text.ReplaceWith($"{startText}{endText}");
 
-            _console.MoveCursorLeft(state.LinePosition);
+            _console.CursorLeft = state.LinePosition;
         }
 
         private void NextInput(ConsoleState state)
@@ -128,7 +128,7 @@ namespace ReplTap.ConsoleHost
             _console.ClearLine();
             WriteFullLine(state.Prompt, code);
 
-            _console.MoveCursorLeft(position);
+            _console.CursorLeft = position;
             state.LinePosition = position;
         }
 
@@ -139,7 +139,7 @@ namespace ReplTap.ConsoleHost
                 return;
             }
 
-            _console.MoveCursorLeft(--state.LinePosition);
+            _console.CursorLeft = --state.LinePosition;
         }
 
         private void MoveCursorRight(ConsoleState state)
@@ -149,7 +149,7 @@ namespace ReplTap.ConsoleHost
                 return;
             }
 
-            _console.MoveCursorLeft(++state.LinePosition);
+            _console.CursorLeft = ++state.LinePosition;
         }
 
         private void WriteFullLine(string prompt, string? code)
