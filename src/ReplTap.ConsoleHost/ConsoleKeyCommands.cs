@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ReplTap.ConsoleHost.Extensions;
 
 namespace ReplTap.ConsoleHost
 {
     public interface IConsoleKeyCommands
     {
-        Dictionary<(ConsoleKey, ConsoleModifiers), Action<CommandParameters>> GetInputKeyCommandMap();
+        void WriteChar(ConsoleState state, char inputChar);
+        Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>> GetInputKeyCommandMap();
     }
 
     public class ConsoleKeyCommands : IConsoleKeyCommands
@@ -20,16 +22,35 @@ namespace ReplTap.ConsoleHost
             _completionsWriter = completionsWriter;
         }
 
-        public Dictionary<(ConsoleKey, ConsoleModifiers), Action<CommandParameters>> GetInputKeyCommandMap()
+        public void WriteChar(ConsoleState state, char inputChar)
         {
-            return new Dictionary<(ConsoleKey, ConsoleModifiers), Action<CommandParameters>>
+            var endText = state.IsTextEmpty() || state.TextPosition > state.Text?.Length
+                ? ""
+                : state.Text?.Slice(state.TextPosition..);
+
+            _console.Write($"{inputChar.ToString()}{endText}");
+
+            var startText = state.IsTextEmpty()
+                ? ""
+                : state.Text?.Slice(..state.TextPosition);
+
+            state.Text?.ReplaceWith($"{startText}{inputChar}{endText}");
+
+            _console.CursorLeft = ++state.LinePosition;
+        }
+
+        public Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>> GetInputKeyCommandMap()
+        {
+            var emptyConsoleModifier = (ConsoleModifiers) 0;
+
+            return new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>
             {
                 {
-                    (ConsoleKey.Tab, (ConsoleModifiers) 0),
-                    async parameters => await Completions(parameters)
+                    (ConsoleKey.Tab, emptyConsoleModifier),
+                    async state => await Completions(state)
                 },
                 {
-                    (ConsoleKey.Backspace, (ConsoleModifiers) 0), Backspace
+                    (ConsoleKey.Backspace, emptyConsoleModifier), Backspace
                 },
                 {
                     (ConsoleKey.UpArrow, ConsoleModifiers.Alt), PreviousInput
@@ -37,14 +58,17 @@ namespace ReplTap.ConsoleHost
                 {
                     (ConsoleKey.DownArrow, ConsoleModifiers.Alt), NextInput
                 },
+                {
+                    (ConsoleKey.LeftArrow, emptyConsoleModifier), MoveCursorLeft
+                },
             };
         }
 
-        private async Task Completions(CommandParameters parameters)
+        private async Task Completions(ConsoleState state)
         {
-            var text = parameters.Text;
-            var inputHistory = parameters.InputHistory;
-            var variables = parameters.Variables ?? new List<string>();
+            var text = state.Text;
+            var inputHistory = state.InputHistory;
+            var variables = state.Variables ?? new List<string>();
 
             var currentCode = text?.ToString();
 
@@ -52,59 +76,72 @@ namespace ReplTap.ConsoleHost
 
             await _completionsWriter.WriteAllCompletions(allCode, variables);
 
-            WriteFullLine(parameters.Prompt, currentCode);
+            WriteFullLine(state.Prompt, currentCode);
         }
 
-        private void Backspace(CommandParameters parameters)
+        private void Backspace(ConsoleState state)
         {
-            if (!(parameters.Text?.Length > 0))
+            if (state.IsStartOfTextPosition() || state.IsTextEmpty() || state.Text == null)
             {
                 return;
             }
 
-            parameters.Text.Length--;
+            _console.MoveCursorLeft(--state.LinePosition);
 
-            _console.MoveCursorLeft(--parameters.Position);
-            _console.Write(" ");
-            _console.MoveCursorLeft(parameters.Position);
+            var endText = state.Text.Slice((state.LinePosition - 1)..);
+
+            _console.Write($"{endText} ");
+
+            var startText = state.Text.Slice(..state.TextPosition);
+
+            state.Text.ReplaceWith($"{startText}{endText}");
+
+            _console.MoveCursorLeft(state.LinePosition);
         }
 
-        private void NextInput(CommandParameters parameters)
+        private void NextInput(ConsoleState state)
         {
-            var inputHistory = parameters.InputHistory;
+            var inputHistory = state.InputHistory;
             var input = inputHistory?.GetNextInput();
 
-            WriteInput(parameters, input);
+            WriteText(state, input);
         }
 
-        private void PreviousInput(CommandParameters parameters)
+        private void PreviousInput(ConsoleState state)
         {
-            var inputHistory = parameters.InputHistory;
+            var inputHistory = state.InputHistory;
             var input = inputHistory?.GetPreviousInput();
 
-            WriteInput(parameters, input);
+            WriteText(state, input);
         }
 
-        private void WriteInput(CommandParameters parameters, string? input)
+        private void WriteText(ConsoleState state, string? text)
         {
-            var text = parameters.Text;
+            state.Text?.ReplaceWith(text);
 
-            text?.Clear();
-            text?.Append(input);
-
-            var code = text?.ToString() ?? "";
-            var position = parameters.Prompt.Length + code.Length + 1;
+            var code = state.Text?.ToString() ?? "";
+            var position = state.Prompt.Length + code.Length + 1;
 
             _console.ClearLine();
-            WriteFullLine(parameters.Prompt, code);
+            WriteFullLine(state.Prompt, code);
+
             _console.MoveCursorLeft(position);
-            parameters.Position = position;
+            state.LinePosition = position;
+        }
+
+        private void MoveCursorLeft(ConsoleState state)
+        {
+            if (state.IsStartOfTextPosition())
+            {
+                return;
+            }
+
+            _console.MoveCursorLeft(--state.LinePosition);
         }
 
         private void WriteFullLine(string prompt, string? code)
         {
             _console.Write($"{prompt} {code}");
         }
-
     }
 }

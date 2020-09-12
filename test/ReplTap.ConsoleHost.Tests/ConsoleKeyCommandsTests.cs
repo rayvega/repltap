@@ -11,6 +11,30 @@ namespace ReplTap.ConsoleHost.Tests
     public class ConsoleKeyCommandsTests
     {
         [Test]
+        public void WriteChar_Should_Execute_Expected()
+        {
+            // arrange
+            var console = new Mock<IConsole>();
+            var keyCommands = new ConsoleKeyCommands(console.Object, null!);
+
+            var state = new ConsoleState
+            {
+                Text = new StringBuilder().Append("abcde"),
+                LinePosition = 4, // including prompt length of 2
+            };
+
+            var inputChar = 'z';
+
+            // act
+            keyCommands.WriteChar(state, inputChar);
+
+            // assert
+            console.Verify(c => c.Write("zcde"));
+            Assert.That(state.Text.ToString(), Is.EqualTo("abzcde"));
+            console.VerifySet(c => c.CursorLeft = 5);
+        }
+
+        [Test]
         public void Map_Command_Should_Write_All_Completions_When_Key_Tab()
         {
             // arrange
@@ -29,7 +53,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Select(i => $"test variable {i}")
                 .ToList();
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 Variables = variables,
@@ -44,7 +68,7 @@ namespace ReplTap.ConsoleHost.Tests
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
             var runCommand = map[key];
-            runCommand(parameters);
+            runCommand(state);
 
             // assert
             completionsWriter.Verify(
@@ -59,12 +83,14 @@ namespace ReplTap.ConsoleHost.Tests
             var text = new StringBuilder();
             text.Append("test code");
 
-            var parameters = new CommandParameters
+            var position = Prompt.Standard.Length + text.Length + 1;
+
+            var state = new ConsoleState
             {
                 Text = text,
                 Variables = null,
                 InputHistory = null,
-                Position = 3,
+                LinePosition = position,
             };
 
             var completionsWriter = new Mock<ICompletionsWriter>();
@@ -76,10 +102,10 @@ namespace ReplTap.ConsoleHost.Tests
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
             var runCommand = map[key];
-            runCommand(parameters);
+            runCommand(state);
 
             // assert
-            Assert.That(parameters.Text.ToString(), Is.EqualTo("test cod"));
+            Assert.That(state.Text.ToString(), Is.EqualTo("test cod"));
         }
 
         [Test]
@@ -97,7 +123,7 @@ namespace ReplTap.ConsoleHost.Tests
             var text = new StringBuilder();
             text.Append("test code");
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 Variables = null,
@@ -112,10 +138,10 @@ namespace ReplTap.ConsoleHost.Tests
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
             var runCommand = map[key];
-            runCommand(parameters);
+            runCommand(state);
 
             // assert
-            Assert.That(parameters.Text.ToString(), Is.EqualTo(expectedInputHistory));
+            Assert.That(state.Text.ToString(), Is.EqualTo(expectedInputHistory));
         }
 
         [Test]
@@ -133,7 +159,7 @@ namespace ReplTap.ConsoleHost.Tests
             var text = new StringBuilder();
             text.Append("test code");
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 Variables = null,
@@ -148,10 +174,38 @@ namespace ReplTap.ConsoleHost.Tests
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
             var runCommand = map[key];
-            runCommand(parameters);
+            runCommand(state);
 
             // assert
-            Assert.That(parameters.Text.ToString(), Is.EqualTo(expectedInputHistory));
+            Assert.That(state.Text.ToString(), Is.EqualTo(expectedInputHistory));
+        }
+
+
+        [Test]
+        public void Map_Command_Should_Move_Left_When_Key_Left_Arrow()
+        {
+            // arrange
+            var text = new StringBuilder();
+            text.Append("test code");
+
+            var state = new ConsoleState
+            {
+                Text = text,
+                LinePosition = 4,
+            };
+
+            var console = new Mock<IConsole>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
+            var key = (ConsoleKey.LeftArrow, (ConsoleModifiers) 0);
+
+            // act
+            var map = consoleKeyCommands.GetInputKeyCommandMap();
+            var runCommand = map[key];
+            runCommand(state);
+
+            // assert
+            Assert.That(state.LinePosition, Is.EqualTo(3));
         }
     }
 }

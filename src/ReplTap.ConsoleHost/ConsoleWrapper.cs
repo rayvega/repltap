@@ -4,11 +4,12 @@ namespace ReplTap.ConsoleHost
 {
     public interface IConsole
     {
-        void Write(string text);
+        void Write(string? text);
         void WriteLine(string text = "");
         ConsoleKeyInfo ReadKey(bool intercept);
         void ClearLine();
         ConsoleColor ForegroundColor { get; set; }
+        int CursorLeft { get; set; }
         void ResetColor();
         void WriteLine(Exception exception);
         void MoveCursorLeft(int position);
@@ -16,7 +17,7 @@ namespace ReplTap.ConsoleHost
 
     public class ConsoleWrapper : IConsole
     {
-        public void Write(string text)
+        public void Write(string? text)
         {
             Console.Write(text);
         }
@@ -55,6 +56,12 @@ namespace ReplTap.ConsoleHost
         {
             get => Console.ForegroundColor;
             set => Console.ForegroundColor = value;
+        }
+
+        public int CursorLeft
+        {
+            get => Console.CursorLeft;
+            set => Console.CursorLeft = value;
         }
 
         public void ResetColor()

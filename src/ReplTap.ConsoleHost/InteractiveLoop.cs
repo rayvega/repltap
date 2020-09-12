@@ -45,7 +45,7 @@ namespace ReplTap.ConsoleHost
                     _console.Write($"{_prompt} ");
                     var input = _consoleKeyHandler.Process(_prompt, _inputHistory, _variables);
                     codes.Append(input);
-                    _console.WriteLine($"{_prompt} {input}");
+                    _console.WriteLine();
 
                     var result = await _replEngine.Execute(codes.ToString());
 

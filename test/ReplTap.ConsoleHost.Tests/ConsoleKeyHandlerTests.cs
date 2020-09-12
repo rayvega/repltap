@@ -13,39 +13,63 @@ namespace ReplTap.ConsoleHost.Tests
         public void Process_Should_Return_Input_When_Key_Enter()
         {
             // arrange
+
+            // read key
             var console = new Mock<IConsole>();
+
+            console
+                .Setup(c => c.CursorLeft)
+                .Returns("> ".Length);
+
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
                 ('a', It.IsAny<ConsoleKey>()),
                 ('b', It.IsAny<ConsoleKey>()),
-                ('c', ConsoleKey.Enter),
+                ('c', It.IsAny<ConsoleKey>()),
+                (' ', ConsoleKey.Enter),
             };
 
-            var setupSequence = console
+            var readKeySetupSequence = console
                 .SetupSequence(c => c.ReadKey(true));
 
             foreach (var (inputChar, consoleKey) in consoleKeys)
             {
                 var consoleKeyInfo = new ConsoleKeyInfo(inputChar, consoleKey, false, false, false);
 
-                setupSequence.Returns(consoleKeyInfo);
+                readKeySetupSequence.Returns(consoleKeyInfo);
             }
 
-            var inputHistory = new Mock<IInputHistory>();
-
+            // key commands
             var consoleKeyCommands = new Mock<IConsoleKeyCommands>();
 
             consoleKeyCommands
                 .Setup(c => c.GetInputKeyCommandMap())
-                .Returns(new Dictionary<(ConsoleKey, ConsoleModifiers), Action<CommandParameters>>());
+                .Returns(new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>());
 
+            var calls = 0;
+
+            consoleKeyCommands
+                .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
+                .Callback<ConsoleState, char>((s, c) =>
+                {
+                    var (inputChar, _) = consoleKeys[calls];
+                    s.Text?.Append(inputChar);
+                    calls++;
+                });
+
+            // key handler
             var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
 
+            var inputHistory = new Mock<IInputHistory>();
+
             // act
-            var input = keyHandler.Process(It.IsAny<string>(), inputHistory.Object, null!);
+            var input = keyHandler.Process(Prompt.Standard, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
+
+            consoleKeyCommands
+                .Verify(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()), Times.Exactly(3));
         }
 
         [Test]
@@ -55,42 +79,68 @@ namespace ReplTap.ConsoleHost.Tests
             var otherConsoleKey = ConsoleKey.F24;
 
             var console = new Mock<IConsole>();
+
+            // read key
+            console
+                .Setup(c => c.CursorLeft)
+                .Returns("> ".Length);
+
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
                 ('a', It.IsAny<ConsoleKey>()),
                 ('b', It.IsAny<ConsoleKey>()),
                 ('c', otherConsoleKey),
-                ('d', ConsoleKey.Enter),
+                ('d', It.IsAny<ConsoleKey>()),
+                (' ', ConsoleKey.Enter),
             };
 
-            var setupSequence = console
+            var readKeySetupSequence = console
                 .SetupSequence(c => c.ReadKey(true));
 
             foreach (var (inputChar, consoleKey) in consoleKeys)
             {
                 var consoleKeyInfo = new ConsoleKeyInfo(inputChar, consoleKey, false, false, false);
 
-                setupSequence.Returns(consoleKeyInfo);
+                readKeySetupSequence.Returns(consoleKeyInfo);
             }
 
-            var inputHistory = new Mock<IInputHistory>();
+            // key commands
+            var calls = 0;
 
-            var consoleKeyCommands = new Mock<IConsoleKeyCommands>();
             var isCommandCalled = false;
 
-            var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<CommandParameters>>
+            var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>
             {
-                {(otherConsoleKey, (ConsoleModifiers) 0), parameters => { isCommandCalled = true; }}
+                {(otherConsoleKey, (ConsoleModifiers) 0), state =>
+                    {
+                        isCommandCalled = true;
+                        calls++;
+                    }
+                }
             };
+
+            var consoleKeyCommands = new Mock<IConsoleKeyCommands>();
 
             consoleKeyCommands
                 .Setup(c => c.GetInputKeyCommandMap())
                 .Returns(map);
 
+            consoleKeyCommands
+                .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
+                .Callback<ConsoleState, char>((s, c) =>
+                {
+                    var (inputChar, _) = consoleKeys[calls];
+                    s.Text?.Append(inputChar);
+                    calls++;
+                });
+
+            // key handler
             var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
 
+            var inputHistory = new Mock<IInputHistory>();
+
             // act
-            var input = keyHandler.Process(It.IsAny<string>(), inputHistory.Object, null!);
+            var input = keyHandler.Process(Prompt.Standard, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));

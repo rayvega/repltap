@@ -24,40 +24,42 @@ namespace ReplTap.ConsoleHost
         public string Process(string prompt, IInputHistory inputHistory, List<string> variables)
         {
             var text = new StringBuilder();
-            ConsoleKeyInfo input;
 
-            var parameters = new CommandParameters
+            var state = new ConsoleState
             {
                 Text = text,
                 InputHistory = inputHistory,
                 Variables = variables,
-                Position = Console.CursorLeft,
+                LinePosition = _console.CursorLeft,
                 Prompt = prompt,
             };
 
             var inputKeyCommandMap = _consoleKeyCommands.GetInputKeyCommandMap();
 
-            do
+            while (true)
             {
-                input = _console.ReadKey(intercept: true);
+                var input = _console.ReadKey(intercept: true);
+
+                if (input.Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
 
                 if (inputKeyCommandMap.TryGetValue((input.Key, input.Modifiers), out var runCommand))
                 {
-                    runCommand(parameters);
+                    runCommand(state);
                 }
                 else
                 {
-                    text.Append(input.KeyChar);
-                    Console.Write(input.KeyChar);
-                    parameters.Position++;
+                    _consoleKeyCommands.WriteChar(state, input.KeyChar);
                 }
-
-            } while (input.Key != ConsoleKey.Enter);
+            }
 
             // remove newline(s) from end to avoid cursor moving to start of line after navigating input history
-            var line = text.ToString().TrimEnd();
+            var line = state.Text.ToString().TrimEnd();
 
             return line;
         }
+
     }
 }
