@@ -9,7 +9,13 @@ namespace ReplTap
     {
         public static async Task Main()
         {
-            Console.WriteLine("repltap - C# interactive repl");
+            var version = typeof(Program)
+                .Assembly
+                .GetName()
+                .Version?
+                .ToString()[..^2];
+
+            Console.WriteLine($"repltap - C# interactive repl - v{version}");
 
             var provider = Configuration.GetServiceProvider();
             var interactiveLoop = provider.GetService<IInteractiveLoop>();
