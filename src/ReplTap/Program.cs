@@ -9,6 +9,13 @@ namespace ReplTap
     {
         public static async Task Main()
         {
+            if (Console.IsInputRedirected)
+            {
+                Console.WriteLine("Error! Either input is redirected from standard input or app doesn't have console. Unable to run console app.");
+
+                return;
+            }
+
             var version = typeof(Program)
                 .Assembly
                 .GetName()
