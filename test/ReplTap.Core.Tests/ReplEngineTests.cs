@@ -25,7 +25,7 @@ namespace ReplTap.Core.Tests
             var engine = new ReplEngine(inputCheck.Object, scriptOptionsBuilder.Object);
 
             // act
-            var result  = await engine.Execute(code);
+            var result = await engine.Execute(code);
 
             // assert
             Assert.That(result, Is.Not.Null);
@@ -49,8 +49,8 @@ namespace ReplTap.Core.Tests
             var engine = new ReplEngine(inputCheck.Object, scriptOptionsBuilder.Object);
 
             // act
-            var firstResult  = await engine.Execute(firstCode);
-            var secondResult  = await engine.Execute(secondCode);
+            var firstResult = await engine.Execute(firstCode);
+            var secondResult = await engine.Execute(secondCode);
 
             // assert
             Assert.That(firstResult.Output, Is.EqualTo(expectedFirstOutput));
@@ -76,9 +76,9 @@ namespace ReplTap.Core.Tests
             var engine = new ReplEngine(inputCheck.Object, scriptOptionsBuilder.Object);
 
             // act
-            var firstResult  = await engine.Execute(firstCode);
+            var firstResult = await engine.Execute(firstCode);
             var invalidResult = await engine.Execute(invalidCode);
-            var secondResult  = await engine.Execute(secondCode);
+            var secondResult = await engine.Execute(secondCode);
 
             // assert
             Assert.That(firstResult.Output, Is.EqualTo(expectedFirstResult));

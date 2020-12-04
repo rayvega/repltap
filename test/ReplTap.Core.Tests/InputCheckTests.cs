@@ -11,7 +11,6 @@ namespace ReplTap.Core.Tests
         [TestCase("test ; code", true)]
         [TestCase(";", true)]
         [TestCase("", false)]
-        [TestCase(null, false)]
         [TestCase("test code", false)]
         public void IsForceExecute_When_Has_Semicolon_Should_Return_Expected(string input, bool expectedIsForceExecute)
         {
