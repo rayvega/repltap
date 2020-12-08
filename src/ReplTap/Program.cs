@@ -27,6 +27,14 @@ namespace ReplTap
             var provider = Configuration.GetServiceProvider();
             var interactiveLoop = provider.GetService<IInteractiveLoop>();
 
+
+            if (interactiveLoop == null)
+            {
+                Console.Write("Error! Unable to initialize console app.");
+
+                return;
+            }
+
             await interactiveLoop.Run();
         }
     }

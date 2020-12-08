@@ -61,7 +61,7 @@ namespace ReplTap.Core.Tests.History
             }
 
             // act
-            foreach (var _ in Enumerable.Range(1, previousCount  ))
+            foreach (var _ in Enumerable.Range(1, previousCount))
             {
                 inputHistory.GetPreviousInput();
             }

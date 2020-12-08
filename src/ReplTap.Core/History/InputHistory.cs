@@ -48,14 +48,14 @@ namespace ReplTap.Core.History
         {
             if (IsEmpty() || _currentPosition == DefaultMinIndex)
             {
-               return "";
+                return "";
             }
 
             _currentPosition--;
 
             if (_currentPosition == DefaultMinIndex)
             {
-               return "";
+                return "";
             }
 
             var input = _history[_currentPosition];
@@ -67,14 +67,14 @@ namespace ReplTap.Core.History
         {
             if (IsEmpty() || _currentPosition == DefaultMaxIndex())
             {
-               return "";
+                return "";
             }
 
             _currentPosition++;
 
             if (_currentPosition == DefaultMaxIndex())
             {
-               return "";
+                return "";
             }
 
             var input = _history[_currentPosition];
