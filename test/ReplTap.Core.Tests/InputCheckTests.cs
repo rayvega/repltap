@@ -5,22 +5,6 @@ namespace ReplTap.Core.Tests
     [TestFixture]
     public class InputCheckTests
     {
-        [Test]
-        [TestCase("test code;", true)]
-        [TestCase(";test code", true)]
-        [TestCase("test ; code", true)]
-        [TestCase(";", true)]
-        [TestCase("", false)]
-        [TestCase("test code", false)]
-        public void IsForceExecute_When_Has_Semicolon_Should_Return_Expected(string input, bool expectedIsForceExecute)
-        {
-            var inputCheck = new InputCheck();
-
-            var isForceExecute = inputCheck.IsForceExecute(input);
-
-            Assert.That(isForceExecute, Is.EqualTo(expectedIsForceExecute));
-        }
-
         private static object[] _testCasesNewLine =
         {
             new object[] {"test code line 1 \r\r\r", true},

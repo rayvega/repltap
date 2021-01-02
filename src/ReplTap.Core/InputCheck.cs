@@ -9,10 +9,9 @@ namespace ReplTap.Core
     {
         public bool IsForceExecute(string input)
         {
-            var hasSemicolon = input.Contains(";");
             var hasMultipleNewlines = input.EndsWith("\r\r\r");
 
-            var isForceExecute = hasSemicolon || hasMultipleNewlines;
+            var isForceExecute = hasMultipleNewlines;
 
             return isForceExecute;
         }
