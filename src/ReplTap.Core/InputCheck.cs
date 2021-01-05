@@ -1,3 +1,5 @@
+using static System.Environment;
+
 namespace ReplTap.Core
 {
     public interface IInputCheck
@@ -9,7 +11,7 @@ namespace ReplTap.Core
     {
         public bool IsForceExecute(string input)
         {
-            var hasMultipleNewlines = input.EndsWith("\r\r\r");
+            var hasMultipleNewlines = input.EndsWith($"{NewLine}{NewLine}{NewLine}");
 
             var isForceExecute = hasMultipleNewlines;
 
