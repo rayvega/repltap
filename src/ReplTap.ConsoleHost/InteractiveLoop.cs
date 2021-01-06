@@ -76,7 +76,7 @@ namespace ReplTap.ConsoleHost
 
         private void CompleteInput(StringBuilder codes, IInputHistory inputHistory, List<string>? variables)
         {
-            inputHistory.Add(codes.ToString());
+            inputHistory.Add(codes.ToString().TrimEnd());
             codes.Clear();
             _variables = variables ?? _variables;
 

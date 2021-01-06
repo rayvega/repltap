@@ -55,8 +55,7 @@ namespace ReplTap.ConsoleHost
                 }
             }
 
-            // remove newline(s) from end to avoid cursor moving to start of line after navigating input history
-            var line = state.Text.ToString().TrimEnd();
+            var line = state.Text.ToString();
 
             return line;
         }
