@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using ReplTap.Core.History;
@@ -15,9 +16,20 @@ namespace ReplTap.ConsoleHost
             Variables = new List<string>();
         }
 
-        public string Prompt { get; internal set; }
+        public string Prompt { get; internal init; }
 
-        public StringBuilder? Text { get; set; }
+        public StringBuilder? Text { get; init; }
+
+        public string[] TextSplitLines
+        {
+            get
+            {
+                var code = Text?.ToString() ?? "";
+                var lines = code.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+
+                return lines;
+            }
+        }
 
         public int LinePosition { get; set; }
 
@@ -29,8 +41,8 @@ namespace ReplTap.ConsoleHost
 
         public bool IsEndOfTextPosition() => TextPosition >= Text?.Length;
 
-        public IInputHistory? InputHistory { get; set; }
+        public IInputHistory? InputHistory { get; init; }
 
-        public List<string>? Variables { get; set; }
+        public List<string>? Variables { get; init; }
     }
 }

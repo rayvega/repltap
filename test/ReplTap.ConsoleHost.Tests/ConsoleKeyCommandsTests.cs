@@ -112,7 +112,7 @@ namespace ReplTap.ConsoleHost.Tests
         public void Map_Command_Should_Return_Input_History_When_Key_Up_Arrow()
         {
             // arrange
-            var expectedInputHistory = "test input from history";
+            var expectedInputHistory = "test input from history\rline 2\rline3";
 
             var inputHistory = new Mock<IInputHistory>();
 
@@ -142,13 +142,14 @@ namespace ReplTap.ConsoleHost.Tests
 
             // assert
             Assert.That(state.Text.ToString(), Is.EqualTo(expectedInputHistory));
+            console.Verify(c => c.Write(It.IsAny<string>()), Times.Exactly(3));
         }
 
         [Test]
         public void Map_Command_Should_Return_Input_History_When_Key_Down_Arrow()
         {
             // arrange
-            var expectedInputHistory = "test input from history";
+            var expectedInputHistory = "test input from history\rline 2\rline3";
 
             var inputHistory = new Mock<IInputHistory>();
 
@@ -178,6 +179,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             // assert
             Assert.That(state.Text.ToString(), Is.EqualTo(expectedInputHistory));
+            console.Verify(c => c.Write(It.IsAny<string>()), Times.Exactly(3));
         }
 
 

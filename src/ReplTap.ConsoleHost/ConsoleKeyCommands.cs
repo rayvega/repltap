@@ -122,11 +122,30 @@ namespace ReplTap.ConsoleHost
         {
             state.Text?.ReplaceWith(text);
 
-            var code = state.Text?.ToString() ?? "";
-            var position = state.Prompt.Length + code.Length + 1;
+            var codeLines = state.TextSplitLines;
+            var lastLine = "";
 
             _console.ClearLine();
-            WriteFullLine(state.Prompt, code);
+
+            for (var index = 0; index < codeLines.Length; index++)
+            {
+                var line = codeLines[index];
+
+                var prompt = index == 0
+                    ? state.Prompt
+                    : Prompt.Continue;
+
+                // if not the last line keep adding newline before writing to console
+                var endOfLine = index == codeLines.Length - 1
+                    ? ""
+                    : Environment.NewLine;
+
+                WriteFullLine(prompt, $"{line}{endOfLine}");
+
+                lastLine = line;
+            }
+
+            var position = state.Prompt.Length + lastLine.Length + 1;
 
             _console.CursorLeft = position;
             state.LinePosition = position;
