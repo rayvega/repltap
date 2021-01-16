@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using ReplTap.Core;
 using ReplTap.Core.History;
+using static System.Environment;
 
 namespace ReplTap.ConsoleHost.Tests
 {
@@ -37,7 +38,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(input);
 
             replEngine
-                .Setup(r => r.Execute(input))
+                .Setup(r => r.Execute($"{input}{NewLine}"))
                 .ReturnsAsync(result);
 
             loop
@@ -83,7 +84,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(input);
 
             replEngine
-                .Setup(r => r.Execute(input))
+                .Setup(r => r.Execute($"{input}{NewLine}"))
                 .ReturnsAsync(result);
 
             loop
@@ -176,7 +177,7 @@ namespace ReplTap.ConsoleHost.Tests
             var expectedException = new Exception(errorOutput);
 
             replEngine
-                .Setup(r => r.Execute(input))
+                .Setup(r => r.Execute($"{input}{NewLine}"))
                 .Throws(expectedException);
 
             loop

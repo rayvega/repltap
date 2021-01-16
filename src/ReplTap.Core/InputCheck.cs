@@ -1,3 +1,5 @@
+using static System.Environment;
+
 namespace ReplTap.Core
 {
     public interface IInputCheck
@@ -9,10 +11,9 @@ namespace ReplTap.Core
     {
         public bool IsForceExecute(string input)
         {
-            var hasSemicolon = input.Contains(";");
-            var hasMultipleNewlines = input.EndsWith("\r\r\r");
+            var hasMultipleNewlines = input.EndsWith($"{NewLine}{NewLine}{NewLine}");
 
-            var isForceExecute = hasSemicolon || hasMultipleNewlines;
+            var isForceExecute = hasMultipleNewlines;
 
             return isForceExecute;
         }
