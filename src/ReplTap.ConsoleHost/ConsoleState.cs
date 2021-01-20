@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ReplTap.Core.History;
+using static System.Environment;
 using PromptValues = ReplTap.ConsoleHost.Prompt;
 
 namespace ReplTap.ConsoleHost
@@ -28,6 +30,25 @@ namespace ReplTap.ConsoleHost
                 var lines = code.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
 
                 return lines;
+            }
+        }
+
+        public string CurrentLineText
+        {
+            // note: current line text is the last line but this will change in the future
+            get => TextSplitLines.LastOrDefault() ?? "";
+            set
+            {
+                var lastLineIndex = Text!
+                    .ToString()
+                    .LastIndexOf(NewLine, StringComparison.Ordinal);
+
+                var text = lastLineIndex < 0
+                    ? ""
+                    : $"{Text.ToString()[..lastLineIndex]}{NewLine}";
+
+                Text.Clear();
+                Text.Append($"{text}{value}");
             }
         }
 
