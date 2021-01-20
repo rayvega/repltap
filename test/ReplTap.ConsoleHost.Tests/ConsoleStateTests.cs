@@ -11,7 +11,7 @@ namespace ReplTap.ConsoleHost.Tests
         {
             // arrange
             var state = new ConsoleState();
-            state.Text?.Append($"test code line 1{NewLine}test code line 2{NewLine}test code line 3");
+            state.Text.Append($"test code line 1{NewLine}test code line 2{NewLine}test code line 3");
 
             // act
             var lines = state.TextSplitLines;
@@ -31,7 +31,7 @@ namespace ReplTap.ConsoleHost.Tests
             var state = new ConsoleState();
 
             var expectedText = $"{startText}{endText}";
-            state.Text?.Append(expectedText);
+            state.Text.Append(expectedText);
 
             // act
             var line = state.CurrentLineText;
@@ -52,7 +52,7 @@ namespace ReplTap.ConsoleHost.Tests
             // arrange
             var state = new ConsoleState();
 
-            state.Text?.Append($"{startText}{endText}");
+            state.Text.Append($"{startText}{endText}");
 
             Assert.That(state.CurrentLineText, Is.EqualTo(endText));
 

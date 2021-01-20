@@ -20,13 +20,13 @@ namespace ReplTap.ConsoleHost
 
         public string Prompt { get; internal init; }
 
-        public StringBuilder? Text { get; init; }
+        public StringBuilder Text { get; init; }
 
         public string[] TextSplitLines
         {
             get
             {
-                var code = Text?.ToString() ?? "";
+                var code = Text.ToString();
                 var lines = code.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
 
                 return lines;
@@ -39,7 +39,7 @@ namespace ReplTap.ConsoleHost
             get => TextSplitLines.LastOrDefault() ?? "";
             set
             {
-                var lastLineIndex = Text!
+                var lastLineIndex = Text
                     .ToString()
                     .LastIndexOf(NewLine, StringComparison.Ordinal);
 
@@ -56,14 +56,14 @@ namespace ReplTap.ConsoleHost
 
         public int TextPosition => LinePosition - $"{Prompt} ".Length;
 
-        public bool IsTextEmpty() => Text?.Length <= 0;
+        public bool IsTextEmpty() => Text.Length <= 0;
 
         public bool IsStartOfTextPosition() => TextPosition <= 0;
 
-        public bool IsEndOfTextPosition() => TextPosition >= Text?.Length;
+        public bool IsEndOfTextPosition() => TextPosition >= Text.Length;
 
-        public IInputHistory? InputHistory { get; init; }
+        public IInputHistory InputHistory { get; init; }
 
-        public List<string>? Variables { get; init; }
+        public List<string> Variables { get; init; }
     }
 }

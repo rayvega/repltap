@@ -24,17 +24,17 @@ namespace ReplTap.ConsoleHost
 
         public void WriteChar(ConsoleState state, char inputChar)
         {
-            var endText = state.IsTextEmpty() || state.TextPosition > state.Text?.Length
+            var endText = state.IsTextEmpty() || state.TextPosition > state.Text.Length
                 ? ""
-                : state.Text?.Slice(state.TextPosition..);
+                : state.Text.Slice(state.TextPosition..);
 
             _console.Write($"{inputChar.ToString()}{endText}");
 
             var startText = state.IsTextEmpty()
                 ? ""
-                : state.Text?.Slice(..state.TextPosition);
+                : state.Text.Slice(..state.TextPosition);
 
-            state.Text?.ReplaceWith($"{startText}{inputChar}{endText}");
+            state.Text.ReplaceWith($"{startText}{inputChar}{endText}");
 
             _console.CursorLeft = ++state.LinePosition;
         }
@@ -71,11 +71,11 @@ namespace ReplTap.ConsoleHost
         {
             var text = state.Text;
             var inputHistory = state.InputHistory;
-            var variables = state.Variables ?? new List<string>();
+            var variables = state.Variables;
 
-            var currentCode = text?.ToString();
+            var currentCode = text.ToString();
 
-            var allCode = $"{inputHistory?.AllInputsAsString()}{Environment.NewLine}{currentCode}";
+            var allCode = $"{inputHistory.AllInputsAsString()}{Environment.NewLine}{currentCode}";
 
             await _completionsWriter.WriteAllCompletions(allCode, variables);
 
@@ -84,7 +84,7 @@ namespace ReplTap.ConsoleHost
 
         private void Backspace(ConsoleState state)
         {
-            if (state.IsStartOfTextPosition() || state.IsTextEmpty() || state.Text == null)
+            if (state.IsStartOfTextPosition() || state.IsTextEmpty())
             {
                 return;
             }
@@ -105,7 +105,7 @@ namespace ReplTap.ConsoleHost
         private void NextInput(ConsoleState state)
         {
             var inputHistory = state.InputHistory;
-            var input = inputHistory?.GetNextInput();
+            var input = inputHistory.GetNextInput();
 
             WriteText(state, input);
         }
@@ -113,14 +113,14 @@ namespace ReplTap.ConsoleHost
         private void PreviousInput(ConsoleState state)
         {
             var inputHistory = state.InputHistory;
-            var input = inputHistory?.GetPreviousInput();
+            var input = inputHistory.GetPreviousInput();
 
             WriteText(state, input);
         }
 
         private void WriteText(ConsoleState state, string? text)
         {
-            state.Text?.ReplaceWith(text);
+            state.Text.ReplaceWith(text);
 
             var codeLines = state.TextSplitLines;
             var lastLine = "";

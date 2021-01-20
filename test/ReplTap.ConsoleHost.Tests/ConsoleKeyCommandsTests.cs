@@ -88,8 +88,6 @@ namespace ReplTap.ConsoleHost.Tests
             var state = new ConsoleState
             {
                 Text = text,
-                Variables = null,
-                InputHistory = null,
                 LinePosition = position,
             };
 
@@ -126,7 +124,6 @@ namespace ReplTap.ConsoleHost.Tests
             var state = new ConsoleState
             {
                 Text = text,
-                Variables = null,
                 InputHistory = inputHistory.Object,
             };
 
@@ -163,7 +160,6 @@ namespace ReplTap.ConsoleHost.Tests
             var state = new ConsoleState
             {
                 Text = text,
-                Variables = null,
                 InputHistory = inputHistory.Object,
             };
 

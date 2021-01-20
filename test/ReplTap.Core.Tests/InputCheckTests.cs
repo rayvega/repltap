@@ -11,7 +11,7 @@ namespace ReplTap.Core.Tests
             new object[] {$"test code line 1 {NewLine}{NewLine}{NewLine}", true},
             new object[] {$"test code line 1{NewLine}{NewLine}{NewLine}", true},
             new object[] {$"test code line 1{NewLine}test code line 2{NewLine}{NewLine}{NewLine}", true},
-            new object[] {$"test code line 1", false},
+            new object[] {"test code line 1", false},
             new object[] {$"test code line 1 {NewLine}", false},
             new object[] {$"test code line 1 {NewLine}a{NewLine}", false},
             new object[] {$"test code line 1 {NewLine} {NewLine}", false},
