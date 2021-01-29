@@ -120,12 +120,27 @@ namespace ReplTap.ConsoleHost
 
         private void WriteText(ConsoleState state, string? text)
         {
+            // remove old lines
+            var oldCodeLines = state.TextSplitLines;
+
+            for (var index = oldCodeLines.Length - 1; index >= 0; index--)
+            {
+                _console.ClearLine();
+
+                // if a single line of code do not move up in console
+                if (oldCodeLines.Length == 1)
+                {
+                    break;
+                }
+
+                _console.CursorTop -= 1;
+            }
+
+            // add new lines
             state.Text.ReplaceWith(text);
 
             var codeLines = state.TextSplitLines;
             var lastLine = "";
-
-            _console.ClearLine();
 
             for (var index = 0; index < codeLines.Length; index++)
             {
