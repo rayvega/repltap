@@ -67,5 +67,33 @@ namespace ReplTap.ConsoleHost.Tests
             Assert.That(line, Is.EqualTo(expectedCurrentLineText));
             Assert.That(state.Text.ToString(), Is.EqualTo($"{startText}{expectedCurrentLineText}"));
         }
+
+        [Test]
+        [TestCase(8, true)]
+        [TestCase(7, true)]
+        [TestCase(6, false)]
+        [TestCase(5, false)]
+        [TestCase(4, false)]
+        [TestCase(3, false)]
+        [TestCase(2, false)]
+        [TestCase(1, false)]
+        [TestCase(0, false)]
+        [TestCase(-1, false)]
+        public void IsEndOfTextPosition_Should_Return_Expected(int linePosition, bool expectedIsEnd)
+        {
+            // arrange
+            var state = new ConsoleState
+            {
+                LinePosition = linePosition
+            };
+
+            state.Text.Append("line1\nline2\nline3");
+
+            // act
+            var isEndOfTextPosition = state.IsEndOfTextPosition();
+
+            // assert
+            Assert.That(isEndOfTextPosition, Is.EqualTo(expectedIsEnd));
+        }
     }
 }

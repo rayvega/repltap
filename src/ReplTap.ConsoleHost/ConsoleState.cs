@@ -60,7 +60,7 @@ namespace ReplTap.ConsoleHost
 
         public bool IsStartOfTextPosition() => TextPosition <= 0;
 
-        public bool IsEndOfTextPosition() => TextPosition >= Text.Length;
+        public bool IsEndOfTextPosition() => TextPosition >= CurrentLineText.Length;
 
         public IInputHistory InputHistory { get; init; }
 
