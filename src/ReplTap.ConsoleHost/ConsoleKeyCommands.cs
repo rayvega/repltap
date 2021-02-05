@@ -127,8 +127,8 @@ namespace ReplTap.ConsoleHost
             {
                 _console.ClearLine();
 
-                // if a single line of code do not move up in console
-                if (oldCodeLines.Length == 1)
+                // if a single or last line of code do not move up in console
+                if (index == 0)
                 {
                     break;
                 }
