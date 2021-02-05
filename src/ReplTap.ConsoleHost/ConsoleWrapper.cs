@@ -39,7 +39,7 @@ namespace ReplTap.ConsoleHost
         {
             // `SetCursorPosition()` no longer worked properly after migrating to dotnet 3.1
             Console.Write('\r');
-            Console.Write(new string(' ', Console.WindowWidth));
+            Console.Write(new string(' ', Console.WindowWidth - 1));
             Console.Write('\r');
         }
 
