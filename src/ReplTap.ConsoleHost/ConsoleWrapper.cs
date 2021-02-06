@@ -10,6 +10,7 @@ namespace ReplTap.ConsoleHost
         void ClearLine();
         ConsoleColor ForegroundColor { get; set; }
         int CursorLeft { get; set; }
+        int CursorTop { get; set; }
         void ResetColor();
         void WriteLine(Exception exception);
     }
@@ -38,7 +39,7 @@ namespace ReplTap.ConsoleHost
         {
             // `SetCursorPosition()` no longer worked properly after migrating to dotnet 3.1
             Console.Write('\r');
-            Console.Write(new string(' ', Console.WindowWidth));
+            Console.Write(new string(' ', Console.WindowWidth - 1));
             Console.Write('\r');
         }
 
@@ -52,6 +53,12 @@ namespace ReplTap.ConsoleHost
         {
             get => Console.CursorLeft;
             set => Console.CursorLeft = value;
+        }
+
+        public int CursorTop
+        {
+            get => Console.CursorTop;
+            set => Console.CursorTop = value;
         }
 
         public void ResetColor() => Console.ResetColor();

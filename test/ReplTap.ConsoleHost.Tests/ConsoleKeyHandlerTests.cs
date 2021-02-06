@@ -50,10 +50,10 @@ namespace ReplTap.ConsoleHost.Tests
 
             consoleKeyCommands
                 .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
-                .Callback<ConsoleState, char>((s, c) =>
+                .Callback<ConsoleState, char>((s, _) =>
                 {
                     var (inputChar, _) = consoleKeys[calls];
-                    s.Text?.Append(inputChar);
+                    s.Text.Append(inputChar);
                     calls++;
                 });
 
@@ -111,7 +111,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>
             {
-                {(otherConsoleKey, (ConsoleModifiers) 0), state =>
+                {(otherConsoleKey, (ConsoleModifiers) 0), _ =>
                     {
                         isCommandCalled = true;
                         calls++;
@@ -127,10 +127,10 @@ namespace ReplTap.ConsoleHost.Tests
 
             consoleKeyCommands
                 .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
-                .Callback<ConsoleState, char>((s, c) =>
+                .Callback<ConsoleState, char>((s, _) =>
                 {
                     var (inputChar, _) = consoleKeys[calls];
-                    s.Text?.Append(inputChar);
+                    s.Text.Append(inputChar);
                     calls++;
                 });
 

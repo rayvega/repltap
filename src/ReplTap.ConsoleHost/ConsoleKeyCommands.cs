@@ -24,17 +24,17 @@ namespace ReplTap.ConsoleHost
 
         public void WriteChar(ConsoleState state, char inputChar)
         {
-            var endText = state.IsTextEmpty() || state.TextPosition > state.Text?.Length
+            var endText = state.IsTextEmpty() || state.TextPosition > state.Text.Length
                 ? ""
-                : state.Text?.Slice(state.TextPosition..);
+                : state.CurrentLineText[state.TextPosition..];
 
             _console.Write($"{inputChar.ToString()}{endText}");
 
             var startText = state.IsTextEmpty()
                 ? ""
-                : state.Text?.Slice(..state.TextPosition);
+                : state.CurrentLineText[..state.TextPosition];
 
-            state.Text?.ReplaceWith($"{startText}{inputChar}{endText}");
+            state.CurrentLineText = $"{startText}{inputChar}{endText}";
 
             _console.CursorLeft = ++state.LinePosition;
         }
@@ -71,11 +71,11 @@ namespace ReplTap.ConsoleHost
         {
             var text = state.Text;
             var inputHistory = state.InputHistory;
-            var variables = state.Variables ?? new List<string>();
+            var variables = state.Variables;
 
-            var currentCode = text?.ToString();
+            var currentCode = text.ToString();
 
-            var allCode = $"{inputHistory?.AllInputsAsString()}{Environment.NewLine}{currentCode}";
+            var allCode = $"{inputHistory.AllInputsAsString()}{Environment.NewLine}{currentCode}";
 
             await _completionsWriter.WriteAllCompletions(allCode, variables);
 
@@ -84,20 +84,20 @@ namespace ReplTap.ConsoleHost
 
         private void Backspace(ConsoleState state)
         {
-            if (state.IsStartOfTextPosition() || state.IsTextEmpty() || state.Text == null)
+            if (state.IsStartOfTextPosition() || state.IsTextEmpty())
             {
                 return;
             }
 
             _console.CursorLeft = --state.LinePosition;
 
-            var endText = state.Text.Slice((state.LinePosition - 1)..);
+            var endText = state.CurrentLineText[(state.LinePosition - 1)..];
 
             _console.Write($"{endText} ");
 
-            var startText = state.Text.Slice(..state.TextPosition);
+            var startText = state.CurrentLineText[..state.TextPosition];
 
-            state.Text.ReplaceWith($"{startText}{endText}");
+            state.CurrentLineText = $"{startText}{endText}";
 
             _console.CursorLeft = state.LinePosition;
         }
@@ -105,7 +105,7 @@ namespace ReplTap.ConsoleHost
         private void NextInput(ConsoleState state)
         {
             var inputHistory = state.InputHistory;
-            var input = inputHistory?.GetNextInput();
+            var input = inputHistory.GetNextInput();
 
             WriteText(state, input);
         }
@@ -113,20 +113,54 @@ namespace ReplTap.ConsoleHost
         private void PreviousInput(ConsoleState state)
         {
             var inputHistory = state.InputHistory;
-            var input = inputHistory?.GetPreviousInput();
+            var input = inputHistory.GetPreviousInput();
 
             WriteText(state, input);
         }
 
         private void WriteText(ConsoleState state, string? text)
         {
-            state.Text?.ReplaceWith(text);
+            // remove old lines
+            var oldCodeLines = state.TextSplitLines;
 
-            var code = state.Text?.ToString() ?? "";
-            var position = state.Prompt.Length + code.Length + 1;
+            for (var index = oldCodeLines.Length - 1; index >= 0; index--)
+            {
+                _console.ClearLine();
 
-            _console.ClearLine();
-            WriteFullLine(state.Prompt, code);
+                // if a single or last line of code do not move up in console
+                if (index == 0)
+                {
+                    break;
+                }
+
+                _console.CursorTop -= 1;
+            }
+
+            // add new lines
+            state.Text.ReplaceWith(text);
+
+            var codeLines = state.TextSplitLines;
+            var lastLine = "";
+
+            for (var index = 0; index < codeLines.Length; index++)
+            {
+                var line = codeLines[index];
+
+                var prompt = index == 0
+                    ? state.Prompt
+                    : Prompt.Continue;
+
+                // if not the last line keep adding newline before writing to console
+                var endOfLine = index == codeLines.Length - 1
+                    ? ""
+                    : Environment.NewLine;
+
+                WriteFullLine(prompt, $"{line}{endOfLine}");
+
+                lastLine = line;
+            }
+
+            var position = state.Prompt.Length + lastLine.Length + 1;
 
             _console.CursorLeft = position;
             state.LinePosition = position;
