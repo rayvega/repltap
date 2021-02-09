@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ReplTap.ConsoleHost.Commands;
 using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost

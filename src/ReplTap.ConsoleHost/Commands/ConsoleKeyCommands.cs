@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ReplTap.ConsoleHost.Extensions;
 
-namespace ReplTap.ConsoleHost
+namespace ReplTap.ConsoleHost.Commands
 {
     public interface IConsoleKeyCommands
     {

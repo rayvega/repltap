@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using ReplTap.ConsoleHost;
+using ReplTap.ConsoleHost.Commands;
 using ReplTap.Core;
 using ReplTap.Core.Completions;
 using ReplTap.Core.History;

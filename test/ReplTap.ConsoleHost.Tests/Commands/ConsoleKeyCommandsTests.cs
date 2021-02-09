@@ -3,9 +3,10 @@ using System.Linq;
 using System.Text;
 using Moq;
 using NUnit.Framework;
+using ReplTap.ConsoleHost.Commands;
 using ReplTap.Core.History;
 
-namespace ReplTap.ConsoleHost.Tests
+namespace ReplTap.ConsoleHost.Tests.Commands
 {
     [TestFixture]
     public class ConsoleKeyCommandsTests
