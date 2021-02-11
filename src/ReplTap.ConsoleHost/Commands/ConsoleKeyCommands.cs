@@ -15,14 +15,16 @@ namespace ReplTap.ConsoleHost.Commands
     {
         private readonly IConsole _console;
         private readonly INavigateCommands _navigateCommands;
+        private readonly IEditCommands _editCommands;
         private readonly ICompletionsWriter _completionsWriter;
 
         public ConsoleKeyCommands(IConsole console, INavigateCommands navigateCommands,
-            ICompletionsWriter completionsWriter)
+            IEditCommands editCommands, ICompletionsWriter completionsWriter)
         {
             _console = console;
             _navigateCommands = navigateCommands;
             _completionsWriter = completionsWriter;
+            _editCommands = editCommands;
         }
 
         public void WriteChar(ConsoleState state, char inputChar)
@@ -53,7 +55,7 @@ namespace ReplTap.ConsoleHost.Commands
                     async state => await Completions(state)
                 },
                 {
-                    (ConsoleKey.Backspace, emptyConsoleModifier), Backspace
+                    (ConsoleKey.Backspace, emptyConsoleModifier), _editCommands.Backspace
                 },
                 {
                     (ConsoleKey.UpArrow, ConsoleModifiers.Alt), PreviousInput
@@ -83,26 +85,6 @@ namespace ReplTap.ConsoleHost.Commands
             await _completionsWriter.WriteAllCompletions(allCode, variables);
 
             WriteFullLine(state.Prompt, currentCode);
-        }
-
-        private void Backspace(ConsoleState state)
-        {
-            if (state.IsStartOfTextPosition() || state.IsTextEmpty())
-            {
-                return;
-            }
-
-            _console.CursorLeft = --state.LinePosition;
-
-            var endText = state.CurrentLineText[(state.LinePosition - 1)..];
-
-            _console.Write($"{endText} ");
-
-            var startText = state.CurrentLineText[..state.TextPosition];
-
-            state.CurrentLineText = $"{startText}{endText}";
-
-            _console.CursorLeft = state.LinePosition;
         }
 
         private void NextInput(ConsoleState state)
