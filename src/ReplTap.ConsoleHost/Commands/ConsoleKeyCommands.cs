@@ -14,11 +14,14 @@ namespace ReplTap.ConsoleHost.Commands
     public class ConsoleKeyCommands : IConsoleKeyCommands
     {
         private readonly IConsole _console;
+        private readonly INavigateCommands _navigateCommands;
         private readonly ICompletionsWriter _completionsWriter;
 
-        public ConsoleKeyCommands(IConsole console, ICompletionsWriter completionsWriter)
+        public ConsoleKeyCommands(IConsole console, INavigateCommands navigateCommands,
+            ICompletionsWriter completionsWriter)
         {
             _console = console;
+            _navigateCommands = navigateCommands;
             _completionsWriter = completionsWriter;
         }
 
@@ -59,10 +62,10 @@ namespace ReplTap.ConsoleHost.Commands
                     (ConsoleKey.DownArrow, ConsoleModifiers.Alt), NextInput
                 },
                 {
-                    (ConsoleKey.LeftArrow, emptyConsoleModifier), MoveCursorLeft
+                    (ConsoleKey.LeftArrow, emptyConsoleModifier), _navigateCommands.MoveCursorLeft
                 },
                 {
-                    (ConsoleKey.RightArrow, emptyConsoleModifier), MoveCursorRight
+                    (ConsoleKey.RightArrow, emptyConsoleModifier), _navigateCommands.MoveCursorRight
                 },
             };
         }
@@ -164,26 +167,6 @@ namespace ReplTap.ConsoleHost.Commands
 
             _console.CursorLeft = position;
             state.LinePosition = position;
-        }
-
-        private void MoveCursorLeft(ConsoleState state)
-        {
-            if (state.IsStartOfTextPosition())
-            {
-                return;
-            }
-
-            _console.CursorLeft = --state.LinePosition;
-        }
-
-        private void MoveCursorRight(ConsoleState state)
-        {
-            if (state.IsEndOfTextPosition())
-            {
-                return;
-            }
-
-            _console.CursorLeft = ++state.LinePosition;
         }
 
         private void WriteFullLine(string prompt, string? code)

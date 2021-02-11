@@ -16,7 +16,9 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         {
             // arrange
             var console = new Mock<IConsole>();
-            var keyCommands = new ConsoleKeyCommands(console.Object, null!);
+            var navigateCommands = new Mock<INavigateCommands>();
+
+            var keyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, null!);
 
             const int position = 4; // including prompt length of 2
 
@@ -65,8 +67,9 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             };
 
             var console = new Mock<IConsole>();
+            var navigateCommands = new Mock<INavigateCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, completionsWriter.Object);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, completionsWriter.Object);
             var key = (ConsoleKey.Tab, (ConsoleModifiers) 0);
 
             // act
@@ -98,7 +101,9 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             var completionsWriter = new Mock<ICompletionsWriter>();
             var console = new Mock<IConsole>();
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, completionsWriter.Object);
+            var navigateCommands = new Mock<INavigateCommands>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, completionsWriter.Object);
 
             var key = (ConsoleKey.Backspace, (ConsoleModifiers) 0);
 
@@ -136,8 +141,9 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             };
 
             var console = new Mock<IConsole>();
+            var navigateCommands = new Mock<INavigateCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, null!);
             var key = (ConsoleKey.UpArrow, ConsoleModifiers.Alt);
 
             // act
@@ -172,8 +178,9 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             };
 
             var console = new Mock<IConsole>();
+            var navigateCommands = new Mock<INavigateCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, null!);
             var key = (ConsoleKey.DownArrow, ConsoleModifiers.Alt);
 
             // act
@@ -191,18 +198,12 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void Map_Command_Should_Move_Left_When_Key_Left_Arrow()
         {
             // arrange
-            var text = new StringBuilder();
-            text.Append("test code");
-
-            var state = new ConsoleState
-            {
-                Text = text,
-                LinePosition = 4,
-            };
+            var state = new ConsoleState();
 
             var console = new Mock<IConsole>();
+            var navigateCommands = new Mock<INavigateCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, null!);
             var key = (ConsoleKey.LeftArrow, (ConsoleModifiers) 0);
 
             // act
@@ -211,50 +212,19 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             runCommand(state);
 
             // assert
-            Assert.That(state.LinePosition, Is.EqualTo(3));
-        }
-
-        [Test]
-        public void Map_Command_Should_Not_Move_Left_When_Key_Left_Arrow_And_Start_Of_Line()
-        {
-            // arrange
-            var originalLinePosition = Prompt.Standard.Length + 1;
-
-            var state = new ConsoleState
-            {
-                LinePosition = originalLinePosition,
-            };
-
-            var console = new Mock<IConsole>();
-
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
-            var key = (ConsoleKey.LeftArrow, (ConsoleModifiers) 0);
-
-            // act
-            var map = consoleKeyCommands.GetInputKeyCommandMap();
-            var runCommand = map[key];
-            runCommand(state);
-
-            // assert
-            Assert.That(state.LinePosition, Is.EqualTo(originalLinePosition));
+            navigateCommands.Verify(n => n.MoveCursorLeft(state), Times.Once);
         }
 
         [Test]
         public void Map_Command_Should_Move_Right_When_Key_Right_Arrow()
         {
             // arrange
-            var text = new StringBuilder();
-            text.Append("test code");
-
-            var state = new ConsoleState
-            {
-                Text = text,
-                LinePosition = 4,
-            };
+            var state = new ConsoleState();
 
             var console = new Mock<IConsole>();
+            var navigateCommands = new Mock<INavigateCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, null!);
             var key = (ConsoleKey.RightArrow, (ConsoleModifiers) 0);
 
             // act
@@ -263,36 +233,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             runCommand(state);
 
             // assert
-            Assert.That(state.LinePosition, Is.EqualTo(5));
-        }
-
-        [Test]
-        public void Map_Command_Should_Move_Not_Right_When_Key_Right_Arrow_And_End_Of_Line()
-        {
-            // arrange
-            var text = new StringBuilder();
-            text.Append("test code");
-
-            var originalLinePosition = Prompt.Standard.Length + text.Length + 1;
-
-            var state = new ConsoleState
-            {
-                Text = text,
-                LinePosition = originalLinePosition,
-            };
-
-            var console = new Mock<IConsole>();
-
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, null!);
-            var key = (ConsoleKey.RightArrow, (ConsoleModifiers) 0);
-
-            // act
-            var map = consoleKeyCommands.GetInputKeyCommandMap();
-            var runCommand = map[key];
-            runCommand(state);
-
-            // assert
-            Assert.That(state.LinePosition, Is.EqualTo(originalLinePosition));
+            navigateCommands.Verify(n => n.MoveCursorRight(state), Times.Once);
         }
     }
 }
