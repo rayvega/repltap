@@ -29,19 +29,7 @@ namespace ReplTap.ConsoleHost.Commands
 
         public void WriteChar(ConsoleState state, char inputChar)
         {
-            var endText = state.IsTextEmpty() || state.TextPosition > state.Text.Length
-                ? ""
-                : state.CurrentLineText[state.TextPosition..];
-
-            _console.Write($"{inputChar.ToString()}{endText}");
-
-            var startText = state.IsTextEmpty()
-                ? ""
-                : state.CurrentLineText[..state.TextPosition];
-
-            state.CurrentLineText = $"{startText}{inputChar}{endText}";
-
-            _console.CursorLeft = ++state.LinePosition;
+            _editCommands.WriteChar(state, inputChar);
         }
 
         public Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>> GetInputKeyCommandMap()

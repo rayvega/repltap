@@ -20,25 +20,14 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var editCommands = new Mock<IEditCommands>();
 
             var keyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object, null!);
-
-            const int position = 4; // including prompt length of 2
-
-            var state = new ConsoleState
-            {
-                Text = new StringBuilder().Append("line1\nabcde"),
-                LinePosition = position,
-            };
-
+            var state = new ConsoleState();
             var inputChar = 'z';
 
             // act
             keyCommands.WriteChar(state, inputChar);
 
             // assert
-            console.Verify(c => c.Write("zcde"));
-            Assert.That(state.Text.ToString(), Is.EqualTo("line1\nabzcde"));
-            Assert.That(state.LinePosition, Is.EqualTo(position + 1));
-            console.VerifySet(c => c.CursorLeft = position + 1);
+            editCommands.Verify(e => e.WriteChar(state, inputChar), Times.Once);
         }
 
         [Test]
