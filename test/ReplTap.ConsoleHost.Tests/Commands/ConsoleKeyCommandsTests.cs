@@ -18,8 +18,10 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
+            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var keyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object, null!);
+            var keyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object,
+                null!, inputHistoryCommands.Object);
             var state = new ConsoleState();
             var inputChar = 'z';
 
@@ -59,8 +61,10 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
+            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object, completionsWriter.Object);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+                editCommands.Object, completionsWriter.Object, inputHistoryCommands.Object);
             var key = (ConsoleKey.Tab, (ConsoleModifiers) 0);
 
             // act
@@ -84,8 +88,10 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
             var completionsWriter = new Mock<ICompletionsWriter>();
+            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object, completionsWriter.Object);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+                editCommands.Object, completionsWriter.Object, inputHistoryCommands.Object);
 
             var key = (ConsoleKey.Backspace, (ConsoleModifiers) 0);
 
@@ -102,28 +108,15 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void Map_Command_Should_Return_Input_History_When_Key_Up_Arrow()
         {
             // arrange
-            var expectedInputHistory = "test input from history\rline 2\rline3";
-
-            var inputHistory = new Mock<IInputHistory>();
-
-            inputHistory
-                .Setup(i => i.GetPreviousInput())
-                .Returns(expectedInputHistory);
-
-            var text = new StringBuilder();
-            text.Append("test code");
-
-            var state = new ConsoleState
-            {
-                Text = text,
-                InputHistory = inputHistory.Object,
-            };
+            var state = new ConsoleState();
 
             var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
+            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object, null!);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+                editCommands.Object, null!, inputHistoryCommands.Object);
             var key = (ConsoleKey.UpArrow, ConsoleModifiers.Alt);
 
             // act
@@ -132,36 +125,22 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             runCommand(state);
 
             // assert
-            Assert.That(state.Text.ToString(), Is.EqualTo(expectedInputHistory));
-            console.Verify(c => c.Write(It.IsAny<string>()), Times.Exactly(3));
+            inputHistoryCommands.Verify(i => i.PreviousInput(state), Times.Once);
         }
 
         [Test]
         public void Map_Command_Should_Return_Input_History_When_Key_Down_Arrow()
         {
             // arrange
-            var expectedInputHistory = "test input from history\rline 2\rline3";
-
-            var inputHistory = new Mock<IInputHistory>();
-
-            inputHistory
-                .Setup(i => i.GetNextInput())
-                .Returns(expectedInputHistory);
-
-            var text = new StringBuilder();
-            text.Append("test code");
-
-            var state = new ConsoleState
-            {
-                Text = text,
-                InputHistory = inputHistory.Object,
-            };
+            var state = new ConsoleState();
 
             var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
+            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object, null!);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+                editCommands.Object, null!, inputHistoryCommands.Object);
             var key = (ConsoleKey.DownArrow, ConsoleModifiers.Alt);
 
             // act
@@ -170,8 +149,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             runCommand(state);
 
             // assert
-            Assert.That(state.Text.ToString(), Is.EqualTo(expectedInputHistory));
-            console.Verify(c => c.Write(It.IsAny<string>()), Times.Exactly(3));
+            inputHistoryCommands.Verify(i => i.NextInput(state), Times.Once);
         }
 
 
@@ -184,8 +162,10 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
+            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object, null!);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+                editCommands.Object, null!, inputHistoryCommands.Object);
             var key = (ConsoleKey.LeftArrow, (ConsoleModifiers) 0);
 
             // act
@@ -206,8 +186,10 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
+            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object, null!);
+            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+                editCommands.Object, null!, inputHistoryCommands.Object);
             var key = (ConsoleKey.RightArrow, (ConsoleModifiers) 0);
 
             // act

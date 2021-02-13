@@ -21,6 +21,7 @@ namespace ReplTap
             service.AddSingleton<IConsoleKeyCommands, ConsoleKeyCommands>();
             service.AddSingleton<INavigateCommands, NavigateCommands>();
             service.AddSingleton<IEditCommands, EditCommands>();
+            service.AddSingleton<IInputHistoryCommands, InputHistoryCommands>();
             service.AddSingleton<IConsoleWriter, ConsoleWriter>();
             service.AddSingleton<ICompletionsWriter, CompletionsWriter>();
 

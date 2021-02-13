@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ReplTap.ConsoleHost.Extensions;
 
 namespace ReplTap.ConsoleHost.Commands
 {
@@ -17,13 +16,16 @@ namespace ReplTap.ConsoleHost.Commands
         private readonly INavigateCommands _navigateCommands;
         private readonly IEditCommands _editCommands;
         private readonly ICompletionsWriter _completionsWriter;
+        private readonly IInputHistoryCommands _inputHistoryCommands;
 
         public ConsoleKeyCommands(IConsole console, INavigateCommands navigateCommands,
-            IEditCommands editCommands, ICompletionsWriter completionsWriter)
+            IEditCommands editCommands, ICompletionsWriter completionsWriter,
+            IInputHistoryCommands inputHistoryCommands)
         {
             _console = console;
             _navigateCommands = navigateCommands;
             _completionsWriter = completionsWriter;
+            _inputHistoryCommands = inputHistoryCommands;
             _editCommands = editCommands;
         }
 
@@ -46,10 +48,10 @@ namespace ReplTap.ConsoleHost.Commands
                     (ConsoleKey.Backspace, emptyConsoleModifier), _editCommands.Backspace
                 },
                 {
-                    (ConsoleKey.UpArrow, ConsoleModifiers.Alt), PreviousInput
+                    (ConsoleKey.UpArrow, ConsoleModifiers.Alt), state => _inputHistoryCommands.PreviousInput(state)
                 },
                 {
-                    (ConsoleKey.DownArrow, ConsoleModifiers.Alt), NextInput
+                    (ConsoleKey.DownArrow, ConsoleModifiers.Alt), state => _inputHistoryCommands.NextInput(state)
                 },
                 {
                     (ConsoleKey.LeftArrow, emptyConsoleModifier), _navigateCommands.MoveCursorLeft
@@ -73,70 +75,6 @@ namespace ReplTap.ConsoleHost.Commands
             await _completionsWriter.WriteAllCompletions(allCode, variables);
 
             WriteFullLine(state.Prompt, currentCode);
-        }
-
-        private void NextInput(ConsoleState state)
-        {
-            var inputHistory = state.InputHistory;
-            var input = inputHistory.GetNextInput();
-
-            WriteText(state, input);
-        }
-
-        private void PreviousInput(ConsoleState state)
-        {
-            var inputHistory = state.InputHistory;
-            var input = inputHistory.GetPreviousInput();
-
-            WriteText(state, input);
-        }
-
-        private void WriteText(ConsoleState state, string? text)
-        {
-            // remove old lines
-            var oldCodeLines = state.TextSplitLines;
-
-            for (var index = oldCodeLines.Length - 1; index >= 0; index--)
-            {
-                _console.ClearLine();
-
-                // if a single or last line of code do not move up in console
-                if (index == 0)
-                {
-                    break;
-                }
-
-                _console.CursorTop -= 1;
-            }
-
-            // add new lines
-            state.Text.ReplaceWith(text);
-
-            var codeLines = state.TextSplitLines;
-            var lastLine = "";
-
-            for (var index = 0; index < codeLines.Length; index++)
-            {
-                var line = codeLines[index];
-
-                var prompt = index == 0
-                    ? state.Prompt
-                    : Prompt.Continue;
-
-                // if not the last line keep adding newline before writing to console
-                var endOfLine = index == codeLines.Length - 1
-                    ? ""
-                    : Environment.NewLine;
-
-                WriteFullLine(prompt, $"{line}{endOfLine}");
-
-                lastLine = line;
-            }
-
-            var position = state.Prompt.Length + lastLine.Length + 1;
-
-            _console.CursorLeft = position;
-            state.LinePosition = position;
         }
 
         private void WriteFullLine(string prompt, string? code)
