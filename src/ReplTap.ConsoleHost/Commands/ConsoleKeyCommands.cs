@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ReplTap.ConsoleHost.Commands
 {
@@ -12,21 +11,19 @@ namespace ReplTap.ConsoleHost.Commands
 
     public class ConsoleKeyCommands : IConsoleKeyCommands
     {
-        private readonly IConsole _console;
         private readonly INavigateCommands _navigateCommands;
         private readonly IEditCommands _editCommands;
-        private readonly ICompletionsWriter _completionsWriter;
+        private readonly ICompletionsCommands _completionsCommands;
         private readonly IInputHistoryCommands _inputHistoryCommands;
 
-        public ConsoleKeyCommands(IConsole console, INavigateCommands navigateCommands,
-            IEditCommands editCommands, ICompletionsWriter completionsWriter,
+        public ConsoleKeyCommands(INavigateCommands navigateCommands,
+            IEditCommands editCommands, ICompletionsCommands completionsCommands,
             IInputHistoryCommands inputHistoryCommands)
         {
-            _console = console;
             _navigateCommands = navigateCommands;
-            _completionsWriter = completionsWriter;
             _inputHistoryCommands = inputHistoryCommands;
             _editCommands = editCommands;
+            _completionsCommands = completionsCommands;
         }
 
         public void WriteChar(ConsoleState state, char inputChar)
@@ -42,7 +39,7 @@ namespace ReplTap.ConsoleHost.Commands
             {
                 {
                     (ConsoleKey.Tab, emptyConsoleModifier),
-                    async state => await Completions(state)
+                    async state => await _completionsCommands.Completions(state)
                 },
                 {
                     (ConsoleKey.Backspace, emptyConsoleModifier), _editCommands.Backspace
@@ -62,24 +59,5 @@ namespace ReplTap.ConsoleHost.Commands
             };
         }
 
-        private async Task Completions(ConsoleState state)
-        {
-            var text = state.Text;
-            var inputHistory = state.InputHistory;
-            var variables = state.Variables;
-
-            var currentCode = text.ToString();
-
-            var allCode = $"{inputHistory.AllInputsAsString()}{Environment.NewLine}{currentCode}";
-
-            await _completionsWriter.WriteAllCompletions(allCode, variables);
-
-            WriteFullLine(state.Prompt, currentCode);
-        }
-
-        private void WriteFullLine(string prompt, string? code)
-        {
-            _console.Write($"{prompt} {code}");
-        }
     }
 }

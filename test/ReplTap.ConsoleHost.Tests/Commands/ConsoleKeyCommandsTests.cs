@@ -1,10 +1,7 @@
 using System;
-using System.Linq;
-using System.Text;
 using Moq;
 using NUnit.Framework;
 using ReplTap.ConsoleHost.Commands;
-using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost.Tests.Commands
 {
@@ -15,12 +12,11 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void WriteChar_Should_Execute_Expected()
         {
             // arrange
-            var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
             var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var keyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object, editCommands.Object,
+            var keyCommands = new ConsoleKeyCommands(navigateCommands.Object, editCommands.Object,
                 null!, inputHistoryCommands.Object);
             var state = new ConsoleState();
             var inputChar = 'z';
@@ -36,35 +32,14 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void Map_Command_Should_Write_All_Completions_When_Key_Tab()
         {
             // arrange
-            var completionsWriter = new Mock<ICompletionsWriter>();
+            var state = new ConsoleState();
 
-            var text = new StringBuilder();
-            text.Append("test code");
-
-            var inputHistory = new Mock<IInputHistory>();
-            inputHistory
-                .Setup(i => i.AllInputsAsString())
-                .Returns("all test history inputs");
-
-            var variables = Enumerable
-                .Range(1, 3)
-                .Select(i => $"test variable {i}")
-                .ToList();
-
-            var state = new ConsoleState
-            {
-                Text = text,
-                Variables = variables,
-                InputHistory = inputHistory.Object,
-            };
-
-            var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
-            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
+            var completionsCommands = new Mock<ICompletionsCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
-                editCommands.Object, completionsWriter.Object, inputHistoryCommands.Object);
+            var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
+                editCommands.Object, completionsCommands.Object, null!);
             var key = (ConsoleKey.Tab, (ConsoleModifiers) 0);
 
             // act
@@ -73,9 +48,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             runCommand(state);
 
             // assert
-            completionsWriter.Verify(
-                p => p.WriteAllCompletions($"all test history inputs{Environment.NewLine}test code", variables),
-                Times.Once());
+            completionsCommands.Verify(e => e.Completions(state), Times.Once);
         }
 
         [Test]
@@ -84,14 +57,11 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             // arrange
             var state = new ConsoleState();
 
-            var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
-            var completionsWriter = new Mock<ICompletionsWriter>();
-            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
-                editCommands.Object, completionsWriter.Object, inputHistoryCommands.Object);
+            var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
+                editCommands.Object, null!, null!);
 
             var key = (ConsoleKey.Backspace, (ConsoleModifiers) 0);
 
@@ -110,12 +80,11 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             // arrange
             var state = new ConsoleState();
 
-            var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
             var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+            var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
                 editCommands.Object, null!, inputHistoryCommands.Object);
             var key = (ConsoleKey.UpArrow, ConsoleModifiers.Alt);
 
@@ -134,12 +103,11 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             // arrange
             var state = new ConsoleState();
 
-            var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
             var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+            var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
                 editCommands.Object, null!, inputHistoryCommands.Object);
             var key = (ConsoleKey.DownArrow, ConsoleModifiers.Alt);
 
@@ -159,12 +127,11 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             // arrange
             var state = new ConsoleState();
 
-            var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
             var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+            var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
                 editCommands.Object, null!, inputHistoryCommands.Object);
             var key = (ConsoleKey.LeftArrow, (ConsoleModifiers) 0);
 
@@ -183,12 +150,11 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             // arrange
             var state = new ConsoleState();
 
-            var console = new Mock<IConsole>();
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
             var inputHistoryCommands = new Mock<IInputHistoryCommands>();
 
-            var consoleKeyCommands = new ConsoleKeyCommands(console.Object, navigateCommands.Object,
+            var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
                 editCommands.Object, null!, inputHistoryCommands.Object);
             var key = (ConsoleKey.RightArrow, (ConsoleModifiers) 0);
 
