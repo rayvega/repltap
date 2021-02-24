@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using ReplTap.ConsoleHost;
+using ReplTap.ConsoleHost.Commands;
 using ReplTap.Core;
 using ReplTap.Core.Completions;
 using ReplTap.Core.History;
@@ -18,6 +19,10 @@ namespace ReplTap
             service.AddSingleton<IInputCheck, InputCheck>();
             service.AddSingleton<IConsoleKeyHandler, ConsoleKeyHandler>();
             service.AddSingleton<IConsoleKeyCommands, ConsoleKeyCommands>();
+            service.AddSingleton<INavigateCommands, NavigateCommands>();
+            service.AddSingleton<IEditCommands, EditCommands>();
+            service.AddSingleton<IInputHistoryCommands, InputHistoryCommands>();
+            service.AddSingleton<ICompletionsCommands, CompletionsCommands>();
             service.AddSingleton<IConsoleWriter, ConsoleWriter>();
             service.AddSingleton<ICompletionsWriter, CompletionsWriter>();
 

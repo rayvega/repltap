@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
+using ReplTap.ConsoleHost.Commands;
 using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost.Tests
