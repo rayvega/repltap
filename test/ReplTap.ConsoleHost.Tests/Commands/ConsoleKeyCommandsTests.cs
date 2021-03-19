@@ -121,7 +121,6 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             inputHistoryCommands.Verify(i => i.NextInput(state), Times.Once);
         }
 
-
         [Test]
         public void Map_Command_Should_Move_Left_When_Key_Left_Arrow()
         {
@@ -166,6 +165,29 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             // assert
             navigateCommands.Verify(n => n.MoveCursorRight(state), Times.Once);
+        }
+
+        [Test]
+        public void Map_Command_Should_Move_Up_When_Key_Up_Arrow()
+        {
+            // arrange
+            var state = new ConsoleState(new InputHistory());
+
+            var navigateCommands = new Mock<INavigateCommands>();
+            var editCommands = new Mock<IEditCommands>();
+            var inputHistoryCommands = new Mock<IInputHistoryCommands>();
+
+            var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
+                editCommands.Object, null!, inputHistoryCommands.Object);
+            var key = (ConsoleKey.UpArrow, (ConsoleModifiers) 0);
+
+            // act
+            var map = consoleKeyCommands.GetInputKeyCommandMap();
+            var runCommand = map[key];
+            runCommand(state);
+
+            // assert
+            navigateCommands.Verify(n => n.MoveCursorUp(state), Times.Once);
         }
     }
 }

@@ -1,3 +1,5 @@
+using System;
+
 namespace ReplTap.ConsoleHost.Commands
 {
     public interface INavigateCommands
@@ -5,6 +7,8 @@ namespace ReplTap.ConsoleHost.Commands
         void MoveCursorLeft(IConsoleState state);
 
         void MoveCursorRight(IConsoleState state);
+
+        void MoveCursorUp(IConsoleState state);
     }
 
     public class NavigateCommands : INavigateCommands
@@ -34,6 +38,11 @@ namespace ReplTap.ConsoleHost.Commands
             }
 
             _console.CursorLeft = ++state.ColPosition;
+        }
+
+        public void MoveCursorUp(IConsoleState state)
+        {
+            throw new NotImplementedException();
         }
     }
 }
