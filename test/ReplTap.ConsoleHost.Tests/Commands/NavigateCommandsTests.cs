@@ -104,5 +104,33 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             // assert
             Assert.That(state.ColPosition, Is.EqualTo(originalLinePosition));
         }
+
+
+        [Test]
+        public void Map_Command_Should_Move_Up_When_Key_Up_Arrow()
+        {
+            // arrange
+            var text = new StringBuilder();
+            text.Append("test code 1\ntest code 2");
+
+            var state = new ConsoleState(new InputHistory())
+            {
+                Text = text,
+                ColPosition = 4,
+                RowPosition = 2,
+            };
+
+            var console = new Mock<IConsole>();
+
+            var navigateCommands = new NavigateCommands(console.Object);
+
+            // act
+            navigateCommands.MoveCursorUp(state);
+
+            // assert
+            Assert.That(state.ColPosition, Is.EqualTo(4));
+            Assert.That(state.RowPosition, Is.EqualTo(1));
+        }
+
     }
 }

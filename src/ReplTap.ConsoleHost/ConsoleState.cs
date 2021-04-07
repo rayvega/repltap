@@ -15,6 +15,7 @@ namespace ReplTap.ConsoleHost
         string[] TextSplitLines { get; }
         string CurrentLineText { get; set; }
         int ColPosition { get; set; }
+        int RowPosition { get; set; }
         int TextColPosition { get; }
         IInputHistory InputHistory { get; init; }
         List<string> Variables { get; set; }
@@ -70,6 +71,8 @@ namespace ReplTap.ConsoleHost
         public int ColPosition { get; set; }
 
         public int TextColPosition => ColPosition - $"{Prompt} ".Length;
+
+        public int RowPosition { get; set; }
 
         public bool IsTextEmpty() => Text.Length <= 0;
 

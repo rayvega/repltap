@@ -1,5 +1,3 @@
-using System;
-
 namespace ReplTap.ConsoleHost.Commands
 {
     public interface INavigateCommands
@@ -42,7 +40,7 @@ namespace ReplTap.ConsoleHost.Commands
 
         public void MoveCursorUp(IConsoleState state)
         {
-            throw new NotImplementedException();
+            _console.CursorTop = --state.RowPosition;
         }
     }
 }

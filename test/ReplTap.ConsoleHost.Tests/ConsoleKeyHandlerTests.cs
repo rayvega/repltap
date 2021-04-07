@@ -24,6 +24,12 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(c => c.CursorLeft)
                 .Returns(expectedCursorLeft);
 
+            var expectedCursorTop = 5;
+
+            console
+                .Setup(c => c.CursorTop)
+                .Returns(expectedCursorTop);
+
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
                 ('a', It.IsAny<ConsoleKey>()),
@@ -93,6 +99,12 @@ namespace ReplTap.ConsoleHost.Tests
             console
                 .Setup(c => c.CursorLeft)
                 .Returns(expectedCursorLeft);
+
+            var expectedCursorTop = 5;
+
+            console
+                .Setup(c => c.CursorTop)
+                .Returns(expectedCursorTop);
 
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
