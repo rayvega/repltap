@@ -18,9 +18,11 @@ namespace ReplTap.ConsoleHost.Tests
             // read key
             var console = new Mock<IConsole>();
 
+            var expectedCursorLeft = $"{Prompt.Standard} ".Length;
+
             console
                 .Setup(c => c.CursorLeft)
-                .Returns("> ".Length);
+                .Returns(expectedCursorLeft);
 
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
@@ -51,11 +53,13 @@ namespace ReplTap.ConsoleHost.Tests
 
             consoleKeyCommands
                 .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
-                .Callback<ConsoleState, char>((s, _) =>
+                .Callback<ConsoleState, char>((state, _) =>
                 {
                     var (inputChar, _) = consoleKeys[calls];
-                    s.Text.Append(inputChar);
+                    state.Text.Append(inputChar);
                     calls++;
+
+                    Assert.That(state.ColPosition, Is.EqualTo(expectedCursorLeft));
                 });
 
             // key handler
@@ -82,9 +86,12 @@ namespace ReplTap.ConsoleHost.Tests
             var console = new Mock<IConsole>();
 
             // read key
+
+            var expectedCursorLeft = $"{Prompt.Standard} ".Length;
+
             console
                 .Setup(c => c.CursorLeft)
-                .Returns("> ".Length);
+                .Returns(expectedCursorLeft);
 
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
@@ -112,7 +119,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>
             {
-                {(otherConsoleKey, (ConsoleModifiers) 0), _ =>
+                {(otherConsoleKey, 0), _ =>
                     {
                         isCommandCalled = true;
                         calls++;
@@ -128,11 +135,13 @@ namespace ReplTap.ConsoleHost.Tests
 
             consoleKeyCommands
                 .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
-                .Callback<ConsoleState, char>((s, _) =>
+                .Callback<ConsoleState, char>((state, _) =>
                 {
                     var (inputChar, _) = consoleKeys[calls];
-                    s.Text.Append(inputChar);
+                    state.Text.Append(inputChar);
                     calls++;
+
+                    Assert.That(state.ColPosition, Is.EqualTo(expectedCursorLeft));
                 });
 
             // key handler
