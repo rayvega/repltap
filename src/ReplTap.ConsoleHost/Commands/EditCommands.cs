@@ -17,15 +17,15 @@ namespace ReplTap.ConsoleHost.Commands
 
         public void WriteChar(ConsoleState state, char inputChar)
         {
-            var endText = state.IsTextEmpty() || state.TextPosition > state.Text.Length
+            var endText = state.IsTextEmpty() || state.TextColPosition > state.Text.Length
                 ? ""
-                : state.CurrentLineText[state.TextPosition..];
+                : state.CurrentLineText[state.TextColPosition..];
 
             _console.Write($"{inputChar.ToString()}{endText}");
 
             var startText = state.IsTextEmpty()
                 ? ""
-                : state.CurrentLineText[..state.TextPosition];
+                : state.CurrentLineText[..state.TextColPosition];
 
             state.CurrentLineText = $"{startText}{inputChar}{endText}";
 
@@ -45,7 +45,7 @@ namespace ReplTap.ConsoleHost.Commands
 
             _console.Write($"{endText} ");
 
-            var startText = state.CurrentLineText[..state.TextPosition];
+            var startText = state.CurrentLineText[..state.TextColPosition];
 
             state.CurrentLineText = $"{startText}{endText}";
 
