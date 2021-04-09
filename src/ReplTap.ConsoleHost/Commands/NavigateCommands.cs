@@ -23,7 +23,7 @@ namespace ReplTap.ConsoleHost.Commands
                 return;
             }
 
-            _console.CursorLeft = --state.LinePosition;
+            _console.CursorLeft = --state.ColPosition;
         }
 
         public void MoveCursorRight(ConsoleState state)
@@ -33,7 +33,7 @@ namespace ReplTap.ConsoleHost.Commands
                 return;
             }
 
-            _console.CursorLeft = ++state.LinePosition;
+            _console.CursorLeft = ++state.ColPosition;
         }
     }
 }

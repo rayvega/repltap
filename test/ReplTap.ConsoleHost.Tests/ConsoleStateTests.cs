@@ -84,7 +84,7 @@ namespace ReplTap.ConsoleHost.Tests
             // arrange
             var state = new ConsoleState
             {
-                LinePosition = linePosition
+                ColPosition = linePosition
             };
 
             state.Text.Append("line1\nline2\nline3");

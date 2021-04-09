@@ -31,7 +31,7 @@ namespace ReplTap.ConsoleHost
                 Text = text,
                 InputHistory = inputHistory,
                 Variables = variables,
-                LinePosition = _console.CursorLeft,
+                ColPosition = _console.CursorLeft,
                 Prompt = prompt,
             };
 

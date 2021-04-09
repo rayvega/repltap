@@ -29,7 +29,7 @@ namespace ReplTap.ConsoleHost.Commands
 
             state.CurrentLineText = $"{startText}{inputChar}{endText}";
 
-            _console.CursorLeft = ++state.LinePosition;
+            _console.CursorLeft = ++state.ColPosition;
         }
 
         public void Backspace(ConsoleState state)
@@ -39,9 +39,9 @@ namespace ReplTap.ConsoleHost.Commands
                 return;
             }
 
-            _console.CursorLeft = --state.LinePosition;
+            _console.CursorLeft = --state.ColPosition;
 
-            var endText = state.CurrentLineText[(state.LinePosition - 1)..];
+            var endText = state.CurrentLineText[(state.ColPosition - 1)..];
 
             _console.Write($"{endText} ");
 
@@ -49,7 +49,7 @@ namespace ReplTap.ConsoleHost.Commands
 
             state.CurrentLineText = $"{startText}{endText}";
 
-            _console.CursorLeft = state.LinePosition;
+            _console.CursorLeft = state.ColPosition;
         }
 
     }

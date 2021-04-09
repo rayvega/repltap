@@ -52,9 +52,9 @@ namespace ReplTap.ConsoleHost
             }
         }
 
-        public int LinePosition { get; set; }
+        public int ColPosition { get; set; }
 
-        public int TextPosition => LinePosition - $"{Prompt} ".Length;
+        public int TextPosition => ColPosition - $"{Prompt} ".Length;
 
         public bool IsTextEmpty() => Text.Length <= 0;
 
