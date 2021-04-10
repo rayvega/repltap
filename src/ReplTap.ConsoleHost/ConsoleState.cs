@@ -52,15 +52,15 @@ namespace ReplTap.ConsoleHost
             }
         }
 
-        public int LinePosition { get; set; }
+        public int ColPosition { get; set; }
 
-        public int TextPosition => LinePosition - $"{Prompt} ".Length;
+        public int TextColPosition => ColPosition - $"{Prompt} ".Length;
 
         public bool IsTextEmpty() => Text.Length <= 0;
 
-        public bool IsStartOfTextPosition() => TextPosition <= 0;
+        public bool IsStartOfTextPosition() => TextColPosition <= 0;
 
-        public bool IsEndOfTextPosition() => TextPosition >= CurrentLineText.Length;
+        public bool IsEndOfTextPosition() => TextColPosition >= CurrentLineText.Length;
 
         public IInputHistory InputHistory { get; init; }
 

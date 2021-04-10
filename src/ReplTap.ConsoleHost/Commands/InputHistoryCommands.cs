@@ -80,7 +80,7 @@ namespace ReplTap.ConsoleHost.Commands
             var position = state.Prompt.Length + lastLine.Length + 1;
 
             _console.CursorLeft = position;
-            state.LinePosition = position;
+            state.ColPosition = position;
         }
     }
 }

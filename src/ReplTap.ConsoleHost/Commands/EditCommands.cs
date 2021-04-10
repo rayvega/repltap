@@ -17,19 +17,19 @@ namespace ReplTap.ConsoleHost.Commands
 
         public void WriteChar(ConsoleState state, char inputChar)
         {
-            var endText = state.IsTextEmpty() || state.TextPosition > state.Text.Length
+            var endText = state.IsTextEmpty() || state.TextColPosition > state.Text.Length
                 ? ""
-                : state.CurrentLineText[state.TextPosition..];
+                : state.CurrentLineText[state.TextColPosition..];
 
             _console.Write($"{inputChar.ToString()}{endText}");
 
             var startText = state.IsTextEmpty()
                 ? ""
-                : state.CurrentLineText[..state.TextPosition];
+                : state.CurrentLineText[..state.TextColPosition];
 
             state.CurrentLineText = $"{startText}{inputChar}{endText}";
 
-            _console.CursorLeft = ++state.LinePosition;
+            _console.CursorLeft = ++state.ColPosition;
         }
 
         public void Backspace(ConsoleState state)
@@ -39,17 +39,17 @@ namespace ReplTap.ConsoleHost.Commands
                 return;
             }
 
-            _console.CursorLeft = --state.LinePosition;
+            _console.CursorLeft = --state.ColPosition;
 
-            var endText = state.CurrentLineText[(state.LinePosition - 1)..];
+            var endText = state.CurrentLineText[(state.ColPosition - 1)..];
 
             _console.Write($"{endText} ");
 
-            var startText = state.CurrentLineText[..state.TextPosition];
+            var startText = state.CurrentLineText[..state.TextColPosition];
 
             state.CurrentLineText = $"{startText}{endText}";
 
-            _console.CursorLeft = state.LinePosition;
+            _console.CursorLeft = state.ColPosition;
         }
 
     }

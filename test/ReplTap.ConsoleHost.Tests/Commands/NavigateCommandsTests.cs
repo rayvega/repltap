@@ -18,7 +18,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var state = new ConsoleState
             {
                 Text = text,
-                LinePosition = 4,
+                ColPosition = 4,
             };
 
             var console = new Mock<IConsole>();
@@ -29,7 +29,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             navigateCommands.MoveCursorLeft(state);
 
             // assert
-            Assert.That(state.LinePosition, Is.EqualTo(3));
+            Assert.That(state.ColPosition, Is.EqualTo(3));
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             var state = new ConsoleState
             {
-                LinePosition = originalLinePosition,
+                ColPosition = originalLinePosition,
             };
 
             var console = new Mock<IConsole>();
@@ -51,7 +51,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             navigateCommands.MoveCursorLeft(state);
 
             // assert
-            Assert.That(state.LinePosition, Is.EqualTo(originalLinePosition));
+            Assert.That(state.ColPosition, Is.EqualTo(originalLinePosition));
         }
 
         [Test]
@@ -64,7 +64,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var state = new ConsoleState
             {
                 Text = text,
-                LinePosition = 4,
+                ColPosition = 4,
             };
 
             var console = new Mock<IConsole>();
@@ -75,11 +75,11 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             navigateCommands.MoveCursorRight(state);
 
             // assert
-            Assert.That(state.LinePosition, Is.EqualTo(5));
+            Assert.That(state.ColPosition, Is.EqualTo(5));
         }
 
         [Test]
-        public void Map_Command_Should_Move_Not_Right_When_Key_Right_Arrow_And_End_Of_Line()
+        public void Map_Command_Should_Not_Move_Right_When_Key_Right_Arrow_And_End_Of_Line()
         {
             // arrange
             var text = new StringBuilder();
@@ -90,7 +90,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var state = new ConsoleState
             {
                 Text = text,
-                LinePosition = originalLinePosition,
+                ColPosition = originalLinePosition,
             };
 
             var console = new Mock<IConsole>();
@@ -101,7 +101,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             navigateCommands.MoveCursorRight(state);
 
             // assert
-            Assert.That(state.LinePosition, Is.EqualTo(originalLinePosition));
+            Assert.That(state.ColPosition, Is.EqualTo(originalLinePosition));
         }
     }
 }

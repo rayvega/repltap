@@ -19,7 +19,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var state = new ConsoleState
             {
                 Text = new StringBuilder().Append("line1\nabcde"),
-                LinePosition = position,
+                ColPosition = position,
             };
 
             var inputChar = 'z';
@@ -31,7 +31,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             // assert
             console.Verify(c => c.Write("zcde"));
             Assert.That(state.Text.ToString(), Is.EqualTo("line1\nabzcde"));
-            Assert.That(state.LinePosition, Is.EqualTo(position + 1));
+            Assert.That(state.ColPosition, Is.EqualTo(position + 1));
             console.VerifySet(c => c.CursorLeft = position + 1);
         }
 
@@ -48,7 +48,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var state = new ConsoleState
             {
                 Text = text,
-                LinePosition = position,
+                ColPosition = position,
             };
 
             var console = new Mock<IConsole>();
@@ -60,7 +60,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             // assert
             console.Verify(c => c.Write(" "));
             Assert.That(state.Text.ToString(), Is.EqualTo("line1\ntest cod"));
-            Assert.That(state.LinePosition, Is.EqualTo(position - 1));
+            Assert.That(state.ColPosition, Is.EqualTo(position - 1));
             console.VerifySet(c => c.CursorLeft = position - 1);
         }
     }
