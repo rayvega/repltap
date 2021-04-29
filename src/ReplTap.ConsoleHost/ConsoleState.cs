@@ -18,7 +18,7 @@ namespace ReplTap.ConsoleHost
             Variables = new List<string>();
         }
 
-        public string Prompt { get; internal init; }
+        public string Prompt { get; internal set; }
 
         public StringBuilder Text { get; init; }
 
@@ -64,6 +64,6 @@ namespace ReplTap.ConsoleHost
 
         public IInputHistory InputHistory { get; init; }
 
-        public List<string> Variables { get; init; }
+        public List<string> Variables { get; set; }
     }
 }

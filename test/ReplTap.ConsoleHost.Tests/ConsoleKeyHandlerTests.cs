@@ -68,7 +68,7 @@ namespace ReplTap.ConsoleHost.Tests
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = keyHandler.Process(Prompt.Standard, inputHistory.Object, null!);
+            var input = keyHandler.Process(new ConsoleState(), Prompt.Standard, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
@@ -150,7 +150,7 @@ namespace ReplTap.ConsoleHost.Tests
             var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = keyHandler.Process(Prompt.Standard, inputHistory.Object, null!);
+            var input = keyHandler.Process(new ConsoleState(), Prompt.Standard, inputHistory.Object, null!);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));
