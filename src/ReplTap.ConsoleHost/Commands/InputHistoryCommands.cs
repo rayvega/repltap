@@ -5,8 +5,8 @@ namespace ReplTap.ConsoleHost.Commands
 {
     public interface IInputHistoryCommands
     {
-        void NextInput(ConsoleState state);
-        void PreviousInput(ConsoleState state);
+        void NextInput(IConsoleState state);
+        void PreviousInput(IConsoleState state);
     }
 
     public class InputHistoryCommands : IInputHistoryCommands
@@ -18,7 +18,7 @@ namespace ReplTap.ConsoleHost.Commands
             _console = console;
         }
 
-        public void NextInput(ConsoleState state)
+        public void NextInput(IConsoleState state)
         {
             var inputHistory = state.InputHistory;
             var input = inputHistory.GetNextInput();
@@ -26,7 +26,7 @@ namespace ReplTap.ConsoleHost.Commands
             WriteText(state, input);
         }
 
-        public void PreviousInput(ConsoleState state)
+        public void PreviousInput(IConsoleState state)
         {
             var inputHistory = state.InputHistory;
             var input = inputHistory.GetPreviousInput();
@@ -34,7 +34,7 @@ namespace ReplTap.ConsoleHost.Commands
             WriteText(state, input);
         }
 
-        private void WriteText(ConsoleState state, string? text)
+        private void WriteText(IConsoleState state, string? text)
         {
             // remove old lines
             var oldCodeLines = state.TextSplitLines;

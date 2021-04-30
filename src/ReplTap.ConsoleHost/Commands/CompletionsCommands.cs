@@ -5,7 +5,7 @@ namespace ReplTap.ConsoleHost.Commands
 {
     public interface ICompletionsCommands
     {
-        Task Completions(ConsoleState state);
+        Task Completions(IConsoleState state);
     }
 
     public class CompletionsCommands : ICompletionsCommands
@@ -19,7 +19,7 @@ namespace ReplTap.ConsoleHost.Commands
             _completionsWriter = completionsWriter;
         }
 
-        public async Task Completions(ConsoleState state)
+        public async Task Completions(IConsoleState state)
         {
             var text = state.Text;
             var inputHistory = state.InputHistory;

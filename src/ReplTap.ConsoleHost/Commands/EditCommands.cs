@@ -2,8 +2,8 @@ namespace ReplTap.ConsoleHost.Commands
 {
     public interface IEditCommands
     {
-        void WriteChar(ConsoleState state, char inputChar);
-        void Backspace(ConsoleState state);
+        void WriteChar(IConsoleState state, char inputChar);
+        void Backspace(IConsoleState state);
     }
 
     public class EditCommands : IEditCommands
@@ -15,7 +15,7 @@ namespace ReplTap.ConsoleHost.Commands
             _console = console;
         }
 
-        public void WriteChar(ConsoleState state, char inputChar)
+        public void WriteChar(IConsoleState state, char inputChar)
         {
             var endText = state.IsTextEmpty() || state.TextColPosition > state.Text.Length
                 ? ""
@@ -32,7 +32,7 @@ namespace ReplTap.ConsoleHost.Commands
             _console.CursorLeft = ++state.ColPosition;
         }
 
-        public void Backspace(ConsoleState state)
+        public void Backspace(IConsoleState state)
         {
             if (state.IsStartOfTextPosition() || state.IsTextEmpty())
             {

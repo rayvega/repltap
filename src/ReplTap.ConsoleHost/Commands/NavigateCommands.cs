@@ -2,9 +2,9 @@ namespace ReplTap.ConsoleHost.Commands
 {
     public interface INavigateCommands
     {
-        void MoveCursorLeft(ConsoleState state);
+        void MoveCursorLeft(IConsoleState state);
 
-        void MoveCursorRight(ConsoleState state);
+        void MoveCursorRight(IConsoleState state);
     }
 
     public class NavigateCommands : INavigateCommands
@@ -16,7 +16,7 @@ namespace ReplTap.ConsoleHost.Commands
             _console = console;
         }
 
-        public void MoveCursorLeft(ConsoleState state)
+        public void MoveCursorLeft(IConsoleState state)
         {
             if (state.IsStartOfTextPosition())
             {
@@ -26,7 +26,7 @@ namespace ReplTap.ConsoleHost.Commands
             _console.CursorLeft = --state.ColPosition;
         }
 
-        public void MoveCursorRight(ConsoleState state)
+        public void MoveCursorRight(IConsoleState state)
         {
             if (state.IsEndOfTextPosition())
             {

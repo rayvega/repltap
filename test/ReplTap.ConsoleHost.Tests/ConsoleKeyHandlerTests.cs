@@ -47,13 +47,13 @@ namespace ReplTap.ConsoleHost.Tests
 
             consoleKeyCommands
                 .Setup(c => c.GetInputKeyCommandMap())
-                .Returns(new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>());
+                .Returns(new Dictionary<(ConsoleKey, ConsoleModifiers), Action<IConsoleState>>());
 
             var calls = 0;
 
             consoleKeyCommands
-                .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
-                .Callback<ConsoleState, char>((state, _) =>
+                .Setup(c => c.WriteChar(It.IsAny<IConsoleState>(), It.IsAny<char>()))
+                .Callback<IConsoleState, char>((state, _) =>
                 {
                     var (inputChar, _) = consoleKeys[calls];
                     state.Text.Append(inputChar);
@@ -117,7 +117,7 @@ namespace ReplTap.ConsoleHost.Tests
 
             var isCommandCalled = false;
 
-            var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>
+            var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<IConsoleState>>
             {
                 {(otherConsoleKey, 0), _ =>
                     {
@@ -134,8 +134,8 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(map);
 
             consoleKeyCommands
-                .Setup(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()))
-                .Callback<ConsoleState, char>((state, _) =>
+                .Setup(c => c.WriteChar(It.IsAny<IConsoleState>(), It.IsAny<char>()))
+                .Callback<IConsoleState, char>((state, _) =>
                 {
                     var (inputChar, _) = consoleKeys[calls];
                     state.Text.Append(inputChar);

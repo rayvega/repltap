@@ -5,8 +5,8 @@ namespace ReplTap.ConsoleHost.Commands
 {
     public interface IConsoleKeyCommands
     {
-        void WriteChar(ConsoleState state, char inputChar);
-        Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>> GetInputKeyCommandMap();
+        void WriteChar(IConsoleState state, char inputChar);
+        Dictionary<(ConsoleKey, ConsoleModifiers), Action<IConsoleState>> GetInputKeyCommandMap();
     }
 
     public class ConsoleKeyCommands : IConsoleKeyCommands
@@ -26,16 +26,16 @@ namespace ReplTap.ConsoleHost.Commands
             _completionsCommands = completionsCommands;
         }
 
-        public void WriteChar(ConsoleState state, char inputChar)
+        public void WriteChar(IConsoleState state, char inputChar)
         {
             _editCommands.WriteChar(state, inputChar);
         }
 
-        public Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>> GetInputKeyCommandMap()
+        public Dictionary<(ConsoleKey, ConsoleModifiers), Action<IConsoleState>> GetInputKeyCommandMap()
         {
             var emptyConsoleModifier = (ConsoleModifiers) 0;
 
-            return new Dictionary<(ConsoleKey, ConsoleModifiers), Action<ConsoleState>>
+            return new Dictionary<(ConsoleKey, ConsoleModifiers), Action<IConsoleState>>
             {
                 {
                     (ConsoleKey.Tab, emptyConsoleModifier),
