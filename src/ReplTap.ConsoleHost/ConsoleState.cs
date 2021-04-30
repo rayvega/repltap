@@ -25,11 +25,11 @@ namespace ReplTap.ConsoleHost
 
     public class ConsoleState : IConsoleState
     {
-        public ConsoleState()
+        public ConsoleState(IInputHistory inputHistory)
         {
             Prompt = PromptValues.Standard;
             Text = new StringBuilder();
-            InputHistory = new InputHistory();
+            InputHistory = inputHistory;
             Variables = new List<string>();
         }
 

@@ -24,7 +24,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var text = new StringBuilder();
             text.Append("test code");
 
-            var state = new ConsoleState
+            var state = new ConsoleState(new InputHistory())
             {
                 Text = text,
                 InputHistory = inputHistory.Object,
@@ -56,7 +56,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var text = new StringBuilder();
             text.Append("test code");
 
-            var state = new ConsoleState
+            var state = new ConsoleState(new InputHistory())
             {
                 Text = text,
                 InputHistory = inputHistory.Object,

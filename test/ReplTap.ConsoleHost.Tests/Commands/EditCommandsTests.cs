@@ -2,6 +2,7 @@ using System.Text;
 using Moq;
 using NUnit.Framework;
 using ReplTap.ConsoleHost.Commands;
+using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost.Tests.Commands
 {
@@ -16,7 +17,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             const int position = 4; // including prompt length of 2
 
-            var state = new ConsoleState
+            var state = new ConsoleState(new InputHistory())
             {
                 Text = new StringBuilder().Append("line1\nabcde"),
                 ColPosition = position,
@@ -45,7 +46,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             var position = Prompt.Standard.Length + lineText.Length + 1;
 
-            var state = new ConsoleState
+            var state = new ConsoleState(new InputHistory())
             {
                 Text = text,
                 ColPosition = position,

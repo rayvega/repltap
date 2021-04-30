@@ -27,7 +27,7 @@ namespace ReplTap.ConsoleHost
         {
             var text = new StringBuilder();
 
-            var state = new ConsoleState
+            var state = new ConsoleState(new InputHistory())
             {
                 Text = text,
                 InputHistory = inputHistory,

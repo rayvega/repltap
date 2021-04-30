@@ -31,7 +31,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
                 .Select(i => $"test variable {i}")
                 .ToList();
 
-            var state = new ConsoleState
+            var state = new ConsoleState(new InputHistory())
             {
                 Text = text,
                 Variables = variables,
