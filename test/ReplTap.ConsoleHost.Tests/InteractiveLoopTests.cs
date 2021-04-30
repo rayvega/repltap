@@ -29,12 +29,13 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleWriter = new Mock<IConsoleWriter>();
             var replEngine = new Mock<IReplEngine>();
             var loop = new Mock<ILoop>();
+            var consoleState = new Mock<IConsoleState>();
 
             var inputHistory = new Mock<IInputHistory>();
             var variables = new List<string>();
 
             keyHandler
-                .Setup(c => c.Process(new ConsoleState(), It.IsAny<string>(), inputHistory.Object, variables))
+                .Setup(c => c.Process(consoleState.Object, It.IsAny<string>(), It.IsAny<InputHistory>(), variables))
                 .Returns(input);
 
             replEngine
@@ -46,8 +47,12 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(true)
                 .Returns(false);
 
+            consoleState
+                .Setup(c => c.InputHistory)
+                .Returns(inputHistory.Object);
+
             var interactiveLoop = new InteractiveLoop(console.Object,
-                keyHandler.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                keyHandler.Object, consoleWriter.Object, replEngine.Object, loop.Object, consoleState.Object);
 
             // act
             await interactiveLoop.Run();
@@ -76,11 +81,12 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleWriter = new Mock<IConsoleWriter>();
             var replEngine = new Mock<IReplEngine>();
             var loop = new Mock<ILoop>();
+            var consoleState = new Mock<IConsoleState>();
 
             var inputHistory = new Mock<IInputHistory>();
 
             keyHandler
-                .Setup(c => c.Process(new ConsoleState(), It.IsAny<string>(), inputHistory.Object, It.IsAny<List<string>>()))
+                .Setup(c => c.Process(consoleState.Object, It.IsAny<string>(), It.IsAny<IInputHistory>(), It.IsAny<List<string>>()))
                 .Returns(input);
 
             replEngine
@@ -92,8 +98,12 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(true)
                 .Returns(false);
 
+            consoleState
+                .Setup(c => c.InputHistory)
+                .Returns(inputHistory.Object);
+
             var interactiveLoop = new InteractiveLoop(console.Object,
-                keyHandler.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                keyHandler.Object, consoleWriter.Object, replEngine.Object, loop.Object, consoleState.Object);
 
             // act
             await interactiveLoop.Run();
@@ -114,9 +124,10 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleWriter = new Mock<IConsoleWriter>();
             var replEngine = new Mock<IReplEngine>();
             var loop = new Mock<ILoop>();
+            var consoleState = new Mock<IConsoleState>();
 
             consoleReader
-                .SetupSequence(c => c.Process(new ConsoleState(), It.IsAny<string>(), null, null))
+                .SetupSequence(c => c.Process(consoleState.Object, It.IsAny<string>(), It.IsAny<InputHistory>(), It.IsAny<List<string>>()))
                 .Returns("var ")
                 .Returns("testVariable = \"test value\";");
 
@@ -143,8 +154,17 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(true)
                 .Returns(false);
 
+            consoleState
+                .Setup(c => c.InputHistory)
+                .Returns(new Mock<IInputHistory>().Object);
+
+            consoleState
+                .SetupSequence(c => c.Prompt)
+                .Returns(Prompt.Standard)
+                .Returns(Prompt.Continue);
+
             var interactiveLoop = new InteractiveLoop(console.Object,
-                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                consoleReader.Object, consoleWriter.Object, replEngine.Object, loop.Object, consoleState.Object);
 
             // act
             await interactiveLoop.Run();
@@ -169,9 +189,10 @@ namespace ReplTap.ConsoleHost.Tests
             var consoleWriter = new Mock<IConsoleWriter>();
             var replEngine = new Mock<IReplEngine>();
             var loop = new Mock<ILoop>();
+            var consoleState = new Mock<IConsoleState>();
 
             keyHandler
-                .Setup(c => c.Process(new ConsoleState(), It.IsAny<string>(), null, It.IsAny<List<string>>()))
+                .Setup(c => c.Process(consoleState.Object, It.IsAny<string>(), It.IsAny<InputHistory>(), It.IsAny<List<string>>()))
                 .Returns(input);
 
             var expectedException = new Exception(errorOutput);
@@ -186,7 +207,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(false);
 
             var interactiveLoop = new InteractiveLoop(console.Object,
-                keyHandler.Object, consoleWriter.Object, replEngine.Object, loop.Object);
+                keyHandler.Object, consoleWriter.Object, replEngine.Object, loop.Object, consoleState.Object);
 
             // act && assert
             await interactiveLoop.Run();

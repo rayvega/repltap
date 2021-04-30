@@ -8,7 +8,7 @@ namespace ReplTap.ConsoleHost
 {
     public interface IConsoleKeyHandler
     {
-        string Process(ConsoleState consoleState, string prompt, IInputHistory inputHistory, List<string> variables);
+        string Process(IConsoleState consoleState, string prompt, IInputHistory inputHistory, List<string> variables);
     }
 
     public class ConsoleKeyHandler : IConsoleKeyHandler
@@ -22,7 +22,7 @@ namespace ReplTap.ConsoleHost
             _consoleKeyCommands = consoleKeyCommands;
         }
 
-        public string Process(ConsoleState consoleState, string prompt, IInputHistory inputHistory,
+        public string Process(IConsoleState consoleState, string prompt, IInputHistory inputHistory,
             List<string> variables)
         {
             var text = new StringBuilder();
