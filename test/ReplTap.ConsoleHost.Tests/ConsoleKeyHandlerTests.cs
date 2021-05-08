@@ -49,32 +49,33 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(c => c.GetInputKeyCommandMap())
                 .Returns(new Dictionary<(ConsoleKey, ConsoleModifiers), Action<IConsoleState>>());
 
+            var inputHistory = new Mock<IInputHistory>();
+
+            var state = new ConsoleState(inputHistory.Object);
+
             var calls = 0;
 
             consoleKeyCommands
-                .Setup(c => c.WriteChar(It.IsAny<IConsoleState>(), It.IsAny<char>()))
-                .Callback<IConsoleState, char>((state, _) =>
+                .Setup(c => c.WriteChar(state, It.IsAny<char>()))
+                .Callback<IConsoleState, char>((s, _) =>
                 {
                     var (inputChar, _) = consoleKeys[calls];
-                    state.Text.Append(inputChar);
+                    s.Text.Append(inputChar);
                     calls++;
-
-                    Assert.That(state.ColPosition, Is.EqualTo(expectedCursorLeft));
                 });
 
             // key handler
             var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
 
-            var inputHistory = new Mock<IInputHistory>();
 
             // act
-            var input = keyHandler.Process(new ConsoleState(new InputHistory()), Prompt.Standard, inputHistory.Object, null!);
+            var input = keyHandler.Process(state);
 
             // assert
             Assert.That(input, Is.EqualTo("abc"));
 
             consoleKeyCommands
-                .Verify(c => c.WriteChar(It.IsAny<ConsoleState>(), It.IsAny<char>()), Times.Exactly(3));
+                .Verify(c => c.WriteChar(state, It.IsAny<char>()), Times.Exactly(3));
         }
 
         [Test]
@@ -135,26 +136,50 @@ namespace ReplTap.ConsoleHost.Tests
 
             consoleKeyCommands
                 .Setup(c => c.WriteChar(It.IsAny<IConsoleState>(), It.IsAny<char>()))
-                .Callback<IConsoleState, char>((state, _) =>
+                .Callback<IConsoleState, char>((s, _) =>
                 {
                     var (inputChar, _) = consoleKeys[calls];
-                    state.Text.Append(inputChar);
+                    s.Text.Append(inputChar);
                     calls++;
-
-                    Assert.That(state.ColPosition, Is.EqualTo(expectedCursorLeft));
                 });
 
             // key handler
             var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
 
             var inputHistory = new Mock<IInputHistory>();
+            var state = new ConsoleState(inputHistory.Object);
 
             // act
-            var input = keyHandler.Process(new ConsoleState(new InputHistory()), Prompt.Standard, inputHistory.Object, null!);
+            var input = keyHandler.Process(state);
 
             // assert
             Assert.That(input, Is.EqualTo("abd"));
             Assert.IsTrue(isCommandCalled);
+        }
+
+        [Test]
+        public void Process_Should_Initially_Clear_Text_From_Console_State()
+        {
+            // arrange
+            var console = new Mock<IConsole>();
+            var consoleKeyCommands = new Mock<IConsoleKeyCommands>();
+            var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
+
+            var consoleKeyInfo = new ConsoleKeyInfo(' ', ConsoleKey.Enter, false, false, false);
+            console
+                .Setup(c => c.ReadKey(true))
+                .Returns(consoleKeyInfo);
+
+            var inputHistory = new Mock<IInputHistory>();
+            var state = new ConsoleState(inputHistory.Object);
+
+            state.Text.Append("test text that should be removed");
+
+            // act
+            keyHandler.Process(state);
+
+            // assert
+            Assert.That(state.Text.ToString(), Is.Empty);
         }
     }
 }

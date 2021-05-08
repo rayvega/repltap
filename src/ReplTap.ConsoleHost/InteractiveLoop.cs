@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using ReplTap.Core;
-using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost
 {
@@ -36,14 +35,14 @@ namespace ReplTap.ConsoleHost
         {
             var codes = new StringBuilder();
 
-            _consoleState.ColPosition = _console.CursorLeft;
-
             while (_loop.Continue())
             {
                 try
                 {
                     _console.Write($"{_consoleState.Prompt} ");
-                    var input = _consoleKeyHandler.Process(_consoleState, Prompt.Standard, new InputHistory(), new List<string>()); // *TODO*: remove these unnecessary params
+                    _consoleState.ColPosition = _console.CursorLeft;
+
+                    var input = _consoleKeyHandler.Process(_consoleState);
                     codes.AppendLine(input);
                     _console.WriteLine();
 

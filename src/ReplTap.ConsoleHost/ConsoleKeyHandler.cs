@@ -1,14 +1,11 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using ReplTap.ConsoleHost.Commands;
-using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost
 {
     public interface IConsoleKeyHandler
     {
-        string Process(IConsoleState consoleState, string prompt, IInputHistory inputHistory, List<string> variables);
+        string Process(IConsoleState consoleState);
     }
 
     public class ConsoleKeyHandler : IConsoleKeyHandler
@@ -22,19 +19,10 @@ namespace ReplTap.ConsoleHost
             _consoleKeyCommands = consoleKeyCommands;
         }
 
-        public string Process(IConsoleState consoleState, string prompt, IInputHistory inputHistory,
-            List<string> variables)
+        public string Process(IConsoleState state)
         {
-            var text = new StringBuilder();
-
-            var state = new ConsoleState(new InputHistory())
-            {
-                Text = text,
-                InputHistory = inputHistory,
-                Variables = variables,
-                ColPosition = _console.CursorLeft,
-                Prompt = prompt,
-            };
+            // reset text
+            state.Text.Clear();
 
             var inputKeyCommandMap = _consoleKeyCommands.GetInputKeyCommandMap();
 
