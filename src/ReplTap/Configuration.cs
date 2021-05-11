@@ -18,6 +18,7 @@ namespace ReplTap
             service.AddSingleton<ILoop, Loop>();
             service.AddSingleton<IInputCheck, InputCheck>();
             service.AddSingleton<IConsoleKeyHandler, ConsoleKeyHandler>();
+            service.AddSingleton<IConsoleState, ConsoleState>();
             service.AddSingleton<IConsoleKeyCommands, ConsoleKeyCommands>();
             service.AddSingleton<INavigateCommands, NavigateCommands>();
             service.AddSingleton<IEditCommands, EditCommands>();

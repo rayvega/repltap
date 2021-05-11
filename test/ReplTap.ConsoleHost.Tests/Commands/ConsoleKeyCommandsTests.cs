@@ -2,6 +2,7 @@ using System;
 using Moq;
 using NUnit.Framework;
 using ReplTap.ConsoleHost.Commands;
+using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost.Tests.Commands
 {
@@ -18,7 +19,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             var keyCommands = new ConsoleKeyCommands(navigateCommands.Object, editCommands.Object,
                 null!, inputHistoryCommands.Object);
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
             var inputChar = 'z';
 
             // act
@@ -32,7 +33,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void Map_Command_Should_Write_All_Completions_When_Key_Tab()
         {
             // arrange
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
 
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
@@ -55,7 +56,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void Map_Command_Should_Return_Smaller_Input_When_Key_Backspace()
         {
             // arrange
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
 
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
@@ -78,7 +79,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void Map_Command_Should_Return_Input_History_When_Key_Up_Arrow()
         {
             // arrange
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
 
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
@@ -101,7 +102,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void Map_Command_Should_Return_Input_History_When_Key_Down_Arrow()
         {
             // arrange
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
 
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
@@ -125,7 +126,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void Map_Command_Should_Move_Left_When_Key_Left_Arrow()
         {
             // arrange
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
 
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();
@@ -148,7 +149,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         public void Map_Command_Should_Move_Right_When_Key_Right_Arrow()
         {
             // arrange
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
 
             var navigateCommands = new Mock<INavigateCommands>();
             var editCommands = new Mock<IEditCommands>();

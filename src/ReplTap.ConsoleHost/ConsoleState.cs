@@ -8,17 +8,32 @@ using PromptValues = ReplTap.ConsoleHost.Prompt;
 
 namespace ReplTap.ConsoleHost
 {
-    public class ConsoleState
+    public interface IConsoleState
     {
-        public ConsoleState()
+        string Prompt { get; set; }
+        StringBuilder Text { get; init; }
+        string[] TextSplitLines { get; }
+        string CurrentLineText { get; set; }
+        int ColPosition { get; set; }
+        int TextColPosition { get; }
+        IInputHistory InputHistory { get; init; }
+        List<string> Variables { get; set; }
+        bool IsTextEmpty();
+        bool IsStartOfTextPosition();
+        bool IsEndOfTextPosition();
+    }
+
+    public class ConsoleState : IConsoleState
+    {
+        public ConsoleState(IInputHistory inputHistory)
         {
             Prompt = PromptValues.Standard;
             Text = new StringBuilder();
-            InputHistory = new InputHistory();
+            InputHistory = inputHistory;
             Variables = new List<string>();
         }
 
-        public string Prompt { get; internal init; }
+        public string Prompt { get; set; }
 
         public StringBuilder Text { get; init; }
 
@@ -64,6 +79,6 @@ namespace ReplTap.ConsoleHost
 
         public IInputHistory InputHistory { get; init; }
 
-        public List<string> Variables { get; init; }
+        public List<string> Variables { get; set; }
     }
 }

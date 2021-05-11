@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using ReplTap.Core.History;
 using static System.Environment;
 
 namespace ReplTap.ConsoleHost.Tests
@@ -10,7 +11,7 @@ namespace ReplTap.ConsoleHost.Tests
         public void TextSplitLines_Should_Return_Expected()
         {
             // arrange
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
             state.Text.Append($"test code line 1{NewLine}test code line 2{NewLine}test code line 3");
 
             // act
@@ -28,7 +29,7 @@ namespace ReplTap.ConsoleHost.Tests
         public void CurrentLineText_Should_Return_Expected(string startText, string endText)
         {
             // arrange
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
 
             var expectedText = $"{startText}{endText}";
             state.Text.Append(expectedText);
@@ -50,7 +51,7 @@ namespace ReplTap.ConsoleHost.Tests
         public void CurrentLineText_Should_Set_Expected(string startText, string endText)
         {
             // arrange
-            var state = new ConsoleState();
+            var state = new ConsoleState(new InputHistory());
 
             state.Text.Append($"{startText}{endText}");
 
@@ -82,7 +83,7 @@ namespace ReplTap.ConsoleHost.Tests
         public void IsEndOfTextPosition_Should_Return_Expected(int linePosition, bool expectedIsEnd)
         {
             // arrange
-            var state = new ConsoleState
+            var state = new ConsoleState(new InputHistory())
             {
                 ColPosition = linePosition
             };

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using ReplTap.Core;
-using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost
 {
@@ -19,19 +18,17 @@ namespace ReplTap.ConsoleHost
         private readonly IReplEngine _replEngine;
         private readonly IConsoleWriter _consoleWriter;
         private readonly ILoop _loop;
-        private readonly IInputHistory _inputHistory;
-        private List<string> _variables = new List<string>();
-        private string _prompt = Prompt.Standard;
+        private readonly IConsoleState _consoleState;
 
         public InteractiveLoop(IConsole console, IConsoleKeyHandler consoleKeyHandler, IConsoleWriter consoleWriter,
-            IReplEngine replEngine, ILoop loop, IInputHistory inputHistory)
+            IReplEngine replEngine, ILoop loop, IConsoleState consoleState)
         {
             _console = console;
             _consoleKeyHandler = consoleKeyHandler;
             _consoleWriter = consoleWriter;
             _replEngine = replEngine;
             _loop = loop;
-            _inputHistory = inputHistory;
+            _consoleState = consoleState;
         }
 
         public async Task Run()
@@ -42,8 +39,10 @@ namespace ReplTap.ConsoleHost
             {
                 try
                 {
-                    _console.Write($"{_prompt} ");
-                    var input = _consoleKeyHandler.Process(_prompt, _inputHistory, _variables);
+                    _console.Write($"{_consoleState.Prompt} ");
+                    _consoleState.ColPosition = _console.CursorLeft;
+
+                    var input = _consoleKeyHandler.Process(_consoleState);
                     codes.AppendLine(input);
                     _console.WriteLine();
 
@@ -52,15 +51,15 @@ namespace ReplTap.ConsoleHost
                     switch (result.State)
                     {
                         case OutputState.Continue:
-                            _prompt = Prompt.Continue;
+                            _consoleState.Prompt = Prompt.Continue;
                             break;
                         case OutputState.Error:
                             _consoleWriter.WriteError(result.Output ?? "");
-                            CompleteInput(codes, _inputHistory, result.Variables);
+                            CompleteInput(codes, _consoleState, result.Variables);
                             break;
                         default:
                             _consoleWriter.WriteOutput(result.Output ?? "");
-                            CompleteInput(codes, _inputHistory, result.Variables);
+                            CompleteInput(codes, _consoleState, result.Variables);
                             break;
                     }
                 }
@@ -70,17 +69,15 @@ namespace ReplTap.ConsoleHost
                     _consoleWriter.WriteError(exception);
                 }
             }
-
-            // ReSharper disable once FunctionNeverReturns
         }
 
-        private void CompleteInput(StringBuilder codes, IInputHistory inputHistory, List<string>? variables)
+        private void CompleteInput(StringBuilder codes, IConsoleState state, List<string>? variables)
         {
-            inputHistory.Add(codes.ToString().TrimEnd());
+            state.InputHistory.Add(codes.ToString().TrimEnd());
             codes.Clear();
-            _variables = variables ?? _variables;
+            state.Variables = variables ?? state.Variables;
 
-            _prompt = Prompt.Standard;
+            state.Prompt = Prompt.Standard;
         }
     }
 }
