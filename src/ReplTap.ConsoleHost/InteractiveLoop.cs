@@ -41,6 +41,7 @@ namespace ReplTap.ConsoleHost
                 {
                     _console.Write($"{_consoleState.Prompt} ");
                     _consoleState.ColPosition = _console.CursorLeft;
+                    _consoleState.RowPosition = _console.CursorTop;
 
                     var input = _consoleKeyHandler.Process(_consoleState);
                     codes.AppendLine(input);

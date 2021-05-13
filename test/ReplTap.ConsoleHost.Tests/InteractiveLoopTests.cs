@@ -23,11 +23,17 @@ namespace ReplTap.ConsoleHost.Tests
                 State = OutputState.Valid,
             };
 
-            var expectedColPosition = 3;
             var console = new Mock<IConsole>();
+
+            var expectedColPosition = 3;
             console
                 .Setup(c => c.CursorLeft)
                 .Returns(expectedColPosition);
+
+            var expectedRowPosition = 6;
+            console
+                .Setup(c => c.CursorTop)
+                .Returns(expectedRowPosition);
 
             var keyHandler = new Mock<IConsoleKeyHandler>();
             var consoleWriter = new Mock<IConsoleWriter>();
@@ -66,8 +72,8 @@ namespace ReplTap.ConsoleHost.Tests
 
             inputHistory.Verify(i => i.Add(It.IsAny<string>()));
 
-            consoleState
-                .VerifySet(c => c.ColPosition = expectedColPosition);
+            consoleState.VerifySet(c => c.ColPosition = expectedColPosition);
+            consoleState.VerifySet(c => c.RowPosition = expectedRowPosition);
         }
 
         [Test]
