@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using ReplTap.ConsoleHost.Commands;
@@ -12,7 +13,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
     public class CompletionsCommandsTests
     {
         [Test]
-        public void Map_Command_Should_Write_All_Completions_When_Key_Tab()
+        public async Task Map_Command_Should_Write_All_Completions_When_Key_TabAsync()
         {
             // arrange
             var console = new Mock<IConsole>();
@@ -41,7 +42,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var completionsCommands = new CompletionsCommands(console.Object, completionsWriter.Object);
 
             // act
-            completionsCommands.Completions(state);
+            await completionsCommands.Completions(state);
 
             // assert
             completionsWriter.Verify(
