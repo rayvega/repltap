@@ -74,6 +74,8 @@ namespace ReplTap.ConsoleHost.Tests
 
             consoleState.VerifySet(c => c.ColPosition = expectedColPosition);
             consoleState.VerifySet(c => c.RowPosition = expectedRowPosition);
+            consoleState.VerifySet(c => c.TextRowPosition = 0, "should reset to zero");
+            consoleState.VerifySet(c => c.TextRowPosition = 1, Times.Never, "should not increment");
         }
 
         [Test]
@@ -125,6 +127,9 @@ namespace ReplTap.ConsoleHost.Tests
             consoleWriter.Verify(c => c.WriteError(output), Times.Once);
 
             inputHistory.Verify(i => i.Add(It.IsAny<string>()));
+
+            consoleState.VerifySet(c => c.TextRowPosition = 0, "should reset to zero");
+            consoleState.VerifySet(c => c.TextRowPosition = 1, Times.Never, "should not increment");
         }
 
         [Test]

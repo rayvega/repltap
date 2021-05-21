@@ -79,6 +79,8 @@ namespace ReplTap.ConsoleHost
             state.Variables = variables ?? state.Variables;
 
             state.Prompt = Prompt.Standard;
+            _consoleState.TextRowPosition = 0;
+
         }
     }
 }
