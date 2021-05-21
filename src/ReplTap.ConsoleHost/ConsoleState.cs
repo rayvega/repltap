@@ -19,9 +19,11 @@ namespace ReplTap.ConsoleHost
         int TextColPosition { get; }
         IInputHistory InputHistory { get; init; }
         List<string> Variables { get; set; }
+        int TextRowPosition { get; set; }
         bool IsTextEmpty();
         bool IsStartOfTextPosition();
         bool IsEndOfTextPosition();
+        bool IsStartOfRowTextPosition();
     }
 
     public class ConsoleState : IConsoleState
@@ -72,6 +74,8 @@ namespace ReplTap.ConsoleHost
 
         public int TextColPosition => ColPosition - $"{Prompt} ".Length;
 
+        public int TextRowPosition { get; set; }
+
         public int RowPosition { get; set; }
 
         public bool IsTextEmpty() => Text.Length <= 0;
@@ -79,6 +83,8 @@ namespace ReplTap.ConsoleHost
         public bool IsStartOfTextPosition() => TextColPosition <= 0;
 
         public bool IsEndOfTextPosition() => TextColPosition >= CurrentLineText.Length;
+
+        public bool IsStartOfRowTextPosition() => TextRowPosition <= 0;
 
         public IInputHistory InputHistory { get; init; }
 

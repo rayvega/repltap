@@ -40,6 +40,12 @@ namespace ReplTap.ConsoleHost.Commands
 
         public void MoveCursorUp(IConsoleState state)
         {
+            if (state.IsStartOfRowTextPosition())
+            {
+                return;
+            }
+
+            --state.TextRowPosition;
             _console.CursorTop = --state.RowPosition;
         }
     }

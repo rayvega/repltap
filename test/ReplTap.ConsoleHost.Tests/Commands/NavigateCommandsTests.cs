@@ -117,7 +117,8 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             {
                 Text = text,
                 ColPosition = 4,
-                RowPosition = 2,
+                RowPosition = 9,
+                TextRowPosition = 2,
             };
 
             var console = new Mock<IConsole>();
@@ -129,7 +130,37 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             // assert
             Assert.That(state.ColPosition, Is.EqualTo(4));
-            Assert.That(state.RowPosition, Is.EqualTo(1));
+            Assert.That(state.RowPosition, Is.EqualTo(8));
+            Assert.That(state.TextRowPosition, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Map_Command_Should_Not_Move_Up_When_Key_Up_Arrow_And_At_Start_Of_Text_Area()
+        {
+            // arrange
+            var text = new StringBuilder();
+            text.Append("test code 1\ntest code 2");
+
+            var originalRowPosition = 1;
+
+            var state = new ConsoleState(new InputHistory())
+            {
+                Text = text,
+                ColPosition = 4,
+                RowPosition = originalRowPosition,
+                TextRowPosition = 0,
+            };
+
+            var console = new Mock<IConsole>();
+
+            var navigateCommands = new NavigateCommands(console.Object);
+
+            // act
+            navigateCommands.MoveCursorUp(state);
+
+            // assert
+            Assert.That(state.RowPosition, Is.EqualTo(originalRowPosition));
+            Assert.That(state.TextRowPosition, Is.EqualTo(0));
         }
 
     }
