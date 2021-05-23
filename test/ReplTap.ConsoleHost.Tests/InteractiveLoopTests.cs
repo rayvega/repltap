@@ -192,6 +192,9 @@ namespace ReplTap.ConsoleHost.Tests
 
             console.Verify(c => c.Write($"{Prompt.Continue} "), Times.Once());
             consoleWriter.Verify(c => c.WriteOutput(secondResult.Output), Times.Once());
+
+            consoleState.VerifySet(c => c.TextRowPosition = 1, Times.Once, "should increment");
+            consoleState.VerifySet(c => c.TextRowPosition = 0, Times.Once, "should reset to zero");
         }
 
         [Test]

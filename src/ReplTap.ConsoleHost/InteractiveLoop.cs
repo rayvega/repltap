@@ -53,6 +53,7 @@ namespace ReplTap.ConsoleHost
                     {
                         case OutputState.Continue:
                             _consoleState.Prompt = Prompt.Continue;
+                            _consoleState.TextRowPosition++;
                             break;
                         case OutputState.Error:
                             _consoleWriter.WriteError(result.Output ?? "");
