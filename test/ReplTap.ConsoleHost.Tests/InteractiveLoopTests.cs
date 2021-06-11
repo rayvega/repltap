@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using System;
+using System.Text;
 using Moq;
 using NUnit.Framework;
 using ReplTap.Core;
@@ -60,6 +61,15 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(c => c.InputHistory)
                 .Returns(inputHistory.Object);
 
+            var consoleStateText = new StringBuilder();
+            consoleStateText.Append("test text that should be cleared");
+
+            Assert.That(consoleStateText.ToString(), Is.Not.Empty);
+
+            consoleState
+                .Setup(c => c.Text)
+                .Returns(consoleStateText);
+
             var interactiveLoop = new InteractiveLoop(console.Object,
                 keyHandler.Object, consoleWriter.Object, replEngine.Object, loop.Object, consoleState.Object);
 
@@ -76,6 +86,7 @@ namespace ReplTap.ConsoleHost.Tests
             consoleState.VerifySet(c => c.RowPosition = expectedRowPosition);
             consoleState.VerifySet(c => c.TextRowPosition = 0, "should reset to zero");
             consoleState.VerifySet(c => c.TextRowPosition = 1, Times.Never, "should not increment");
+            Assert.That(consoleStateText.ToString(), Is.Empty);
         }
 
         [Test]

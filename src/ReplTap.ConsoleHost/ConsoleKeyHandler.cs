@@ -21,9 +21,6 @@ namespace ReplTap.ConsoleHost
 
         public string Process(IConsoleState state)
         {
-            // reset text
-            state.Text.Clear();
-
             var inputKeyCommandMap = _consoleKeyCommands.GetInputKeyCommandMap();
 
             while (true)
