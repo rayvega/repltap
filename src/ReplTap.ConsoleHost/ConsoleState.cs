@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using ReplTap.Core.History;
 using static System.Environment;
@@ -53,8 +52,7 @@ namespace ReplTap.ConsoleHost
 
         public string CurrentLineText
         {
-            // note: current line text is the last line but this will change in the future
-            get => TextSplitLines.LastOrDefault() ?? "";
+            get => TextSplitLines.Length < 1 ? "" : TextSplitLines[TextRowPosition];
             set
             {
                 var lastLineIndex = Text
