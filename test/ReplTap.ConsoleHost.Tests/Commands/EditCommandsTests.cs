@@ -2,7 +2,6 @@ using System.Text;
 using Moq;
 using NUnit.Framework;
 using ReplTap.ConsoleHost.Commands;
-using ReplTap.Core.History;
 
 namespace ReplTap.ConsoleHost.Tests.Commands
 {
@@ -15,53 +14,78 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             // arrange
             var console = new Mock<IConsole>();
 
-            const int position = 4; // including prompt length of 2
+            const int position = 1;
 
-            var state = new ConsoleState(new InputHistory())
-            {
-                Text = new StringBuilder().Append("line1\nabcde"),
-                ColPosition = position,
-            };
+            var builder = new StringBuilder("line1\nline2");
 
-            var inputChar = 'z';
+            var state = new Mock<IConsoleState>();
+
+            state
+                .Setup(s => s.CurrentLineText)
+                .Returns("line2");
+
+            state
+                .Setup(s => s.TextColPosition)
+                .Returns(position);
+
+            state
+                .Setup(s => s.Text)
+                .Returns(builder);
+
+            var colPosition = 5;
+
+            state
+                .Setup(s => s.ColPosition)
+                .Returns(colPosition);
+
             var editCommands = new EditCommands(console.Object);
 
             // act
-            editCommands.WriteChar(state, inputChar);
+            editCommands.WriteChar(state.Object, 'z');
 
             // assert
-            console.Verify(c => c.Write("zcde"));
-            Assert.That(state.Text.ToString(), Is.EqualTo("line1\nabzcde"));
-            Assert.That(state.ColPosition, Is.EqualTo(position + 1));
-            console.VerifySet(c => c.CursorLeft = position + 1);
+            console.Verify(c => c.Write("zine2"));
+            state.VerifySet(c => c.CurrentLineText = "lzine2");
+            console.VerifySet(c => c.CursorLeft = colPosition + 1);
         }
 
         [Test]
-        public void Map_Command_Should_Return_Smaller_Input_When_Key_Backspace()
+        [TestCase("test code", 9, " ", "test cod")]
+        [TestCase("test code", 8, "e ", "test coe")]
+        [TestCase("test code", 7, "de ", "test cde")]
+        public void Backspace_Execute_Expected(string lineText, int textPosition, 
+            string expectedWriteText, string expectedCurrentLineText)
         {
             // arrange
-            var lineText = "test code";
-            var text = new StringBuilder();
-            text.Append($"line1\n{lineText}");
+            var position = Prompt.Standard.Length + 1 + textPosition;
 
-            var position = Prompt.Standard.Length + lineText.Length + 1;
+            var state = new Mock<IConsoleState>();
 
-            var state = new ConsoleState(new InputHistory())
-            {
-                Text = text,
-                ColPosition = position,
-            };
+            state
+                .SetupSequence(s => s.ColPosition)
+                .Returns(position)
+                .Returns(position - 1)
+                .Returns(position - 1);
+
+            state
+                .Setup(s => s.CurrentLineText)
+                .Returns(lineText);
+
+            state
+                .Setup(s => s.TextColPosition)
+                .Returns(position - (Prompt.Standard.Length + 1) - 1);
 
             var console = new Mock<IConsole>();
+
             var editCommands = new EditCommands(console.Object);
 
             // act
-            editCommands.Backspace(state);
+            editCommands.Backspace(state.Object);
 
             // assert
-            console.Verify(c => c.Write(" "));
-            Assert.That(state.Text.ToString(), Is.EqualTo("line1\ntest cod"));
-            Assert.That(state.ColPosition, Is.EqualTo(position - 1));
+            console.VerifySet(c => c.CursorLeft = position - 1);
+            console.Verify(c => c.Write(expectedWriteText));
+            state.VerifySet(c => c.CurrentLineText = expectedCurrentLineText);
             console.VerifySet(c => c.CursorLeft = position - 1);
         }
     }
