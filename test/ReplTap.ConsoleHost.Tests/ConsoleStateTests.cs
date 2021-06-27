@@ -50,29 +50,28 @@ namespace ReplTap.ConsoleHost.Tests
         }
 
         [Test]
-        [TestCase("", "")]
-        [TestCase("", "old test current line")]
-        [TestCase("test current line 1\n", "old test current line 2")]
-        [TestCase("test current line 1\nold test current line 2\n", "old test current line 3")]
-        public void CurrentLineText_Should_Set_Expected_When_Last_Line(string startText, string endText)
+        [TestCase(0, "new test line\nline 2\nline3")]
+        [TestCase(1, "line 1\nnew test line\nline3")]
+        [TestCase(2, "line 1\nline 2\nnew test line")]
+        public void CurrentLineText_Should_Set_Expected(int textRowPosition, string allText)
         {
             // arrange
             var state = new ConsoleState(new InputHistory());
 
-            state.Text.Append($"{startText}{endText}");
+            var initialText = "line 1\nline 2\nline3";
+            state.Text.Append(initialText);
 
-            Assert.That(state.CurrentLineText, Is.EqualTo(endText));
-
-            var expectedCurrentLineText = "new current test line";
+            var expectedCurrentLineText = "new test line";
 
             // act
+            state.TextRowPosition = textRowPosition;
             state.CurrentLineText = expectedCurrentLineText;
 
             // assert
             var line = state.CurrentLineText;
 
+            Assert.That(state.Text.ToString(), Is.EqualTo(allText));
             Assert.That(line, Is.EqualTo(expectedCurrentLineText));
-            Assert.That(state.Text.ToString(), Is.EqualTo($"{startText}{expectedCurrentLineText}"));
         }
 
         [Test]

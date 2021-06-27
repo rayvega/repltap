@@ -53,7 +53,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
         [TestCase("test code", 9, " ", "test cod")]
         [TestCase("test code", 8, "e ", "test coe")]
         [TestCase("test code", 7, "de ", "test cde")]
-        public void Backspace_Execute_Expected(string lineText, int textPosition, 
+        public void Backspace_Execute_Expected(string lineText, int textPosition,
             string expectedWriteText, string expectedCurrentLineText)
         {
             // arrange

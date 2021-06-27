@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using ReplTap.Core.History;
 using static System.Environment;
@@ -52,19 +53,32 @@ namespace ReplTap.ConsoleHost
 
         public string CurrentLineText
         {
-            get => TextSplitLines.Length < 1 ? "" : TextSplitLines[TextRowPosition];
+            get
+            {
+                var lines = TextSplitLines;
+                var row = TextRowPosition;
+
+                var text = lines.Length < 1 || lines.Length <= row
+                    ? ""
+                    : lines[row];
+
+                return text;
+            }
             set
             {
-                var lastLineIndex = Text
-                    .ToString()
-                    .LastIndexOf(NewLine, StringComparison.Ordinal);
+                var lines = TextSplitLines.ToList();
+                var row = TextRowPosition;
 
-                var text = lastLineIndex < 0
-                    ? ""
-                    : $"{Text.ToString()[..lastLineIndex]}{NewLine}";
+                if (lines.Count < 1 || lines.Count <= row)
+                {
+                    lines.Add("");
+                }
+
+                lines[row] = value;
 
                 Text.Clear();
-                Text.Append($"{text}{value}");
+                var newText = lines.Aggregate((lineA, lineB) => $"{lineA}{NewLine}{lineB}");
+                Text.Append(newText);
             }
         }
 
