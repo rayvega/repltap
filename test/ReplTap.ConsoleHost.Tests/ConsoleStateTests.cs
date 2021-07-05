@@ -22,51 +22,56 @@ namespace ReplTap.ConsoleHost.Tests
         }
 
         [Test]
-        [TestCase("", "")]
-        [TestCase("", "old test current line")]
-        [TestCase("test current line 1\n", "old test current line 2")]
-        [TestCase("test current line 1\nold test current line 2\n", "old test current line 3")]
-        public void CurrentLineText_Should_Return_Expected(string startText, string endText)
+        [TestCase("line 1\nline 2\nline 3", 0, "line 1")]
+        [TestCase("line 1\nline 2\nline 3", 1, "line 2")]
+        [TestCase("line 1\nline 2\nline 3", 2, "line 3")]
+
+        [TestCase("", 0, "")]
+
+        [TestCase("a", 0, "a")]
+        [TestCase("ab", 0, "ab")]
+        [TestCase("a\n", 1, "")]
+        [TestCase("a\nb", 1, "b")]
+        public void CurrentLineText_Should_Return_Expected_Line_When_Row_Position(
+            string fullText, int textRowPosition, string expectedText)
         {
             // arrange
             var state = new ConsoleState(new InputHistory());
 
-            var expectedText = $"{startText}{endText}";
-            state.Text.Append(expectedText);
+            state.Text.Append(fullText);
+            state.TextRowPosition = textRowPosition;
 
             // act
             var line = state.CurrentLineText;
 
             // assert
-            Assert.That(line, Is.EqualTo(endText));
-            Assert.That(state.Text.ToString(), Is.EqualTo(expectedText));
+            Assert.That(line, Is.EqualTo(expectedText));
+            Assert.That(state.Text.ToString(), Is.EqualTo(fullText));
         }
 
-
         [Test]
-        [TestCase("", "")]
-        [TestCase("", "old test current line")]
-        [TestCase("test current line 1\n", "old test current line 2")]
-        [TestCase("test current line 1\nold test current line 2\n", "old test current line 3")]
-        public void CurrentLineText_Should_Set_Expected(string startText, string endText)
+        [TestCase(0, "new test line\nline 2\nline3")]
+        [TestCase(1, "line 1\nnew test line\nline3")]
+        [TestCase(2, "line 1\nline 2\nnew test line")]
+        public void CurrentLineText_Should_Set_Expected(int textRowPosition, string allText)
         {
             // arrange
             var state = new ConsoleState(new InputHistory());
 
-            state.Text.Append($"{startText}{endText}");
+            var initialText = "line 1\nline 2\nline3";
+            state.Text.Append(initialText);
 
-            Assert.That(state.CurrentLineText, Is.EqualTo(endText));
-
-            var expectedCurrentLineText = "new current test line";
+            var expectedCurrentLineText = "new test line";
 
             // act
+            state.TextRowPosition = textRowPosition;
             state.CurrentLineText = expectedCurrentLineText;
 
             // assert
             var line = state.CurrentLineText;
 
+            Assert.That(state.Text.ToString(), Is.EqualTo(allText));
             Assert.That(line, Is.EqualTo(expectedCurrentLineText));
-            Assert.That(state.Text.ToString(), Is.EqualTo($"{startText}{expectedCurrentLineText}"));
         }
 
         [Test]

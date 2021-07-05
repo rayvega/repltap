@@ -11,10 +11,10 @@ namespace ReplTap.ConsoleHost.Commands
 
     public class ConsoleKeyCommands : IConsoleKeyCommands
     {
-        private readonly INavigateCommands _navigateCommands;
-        private readonly IEditCommands _editCommands;
         private readonly ICompletionsCommands _completionsCommands;
+        private readonly IEditCommands _editCommands;
         private readonly IInputHistoryCommands _inputHistoryCommands;
+        private readonly INavigateCommands _navigateCommands;
 
         public ConsoleKeyCommands(INavigateCommands navigateCommands,
             IEditCommands editCommands, ICompletionsCommands completionsCommands,
@@ -56,8 +56,10 @@ namespace ReplTap.ConsoleHost.Commands
                 {
                     (ConsoleKey.RightArrow, emptyConsoleModifier), _navigateCommands.MoveCursorRight
                 },
+                {
+                    (ConsoleKey.UpArrow, emptyConsoleModifier), _navigateCommands.MoveCursorUp
+                }
             };
         }
-
     }
 }

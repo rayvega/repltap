@@ -15,12 +15,15 @@ namespace ReplTap.ConsoleHost
         string[] TextSplitLines { get; }
         string CurrentLineText { get; set; }
         int ColPosition { get; set; }
+        int RowPosition { get; set; }
         int TextColPosition { get; }
         IInputHistory InputHistory { get; init; }
         List<string> Variables { get; set; }
+        int TextRowPosition { get; set; }
         bool IsTextEmpty();
         bool IsStartOfTextPosition();
         bool IsEndOfTextPosition();
+        bool IsStartOfRowTextPosition();
     }
 
     public class ConsoleState : IConsoleState
@@ -50,20 +53,32 @@ namespace ReplTap.ConsoleHost
 
         public string CurrentLineText
         {
-            // note: current line text is the last line but this will change in the future
-            get => TextSplitLines.LastOrDefault() ?? "";
+            get
+            {
+                var lines = TextSplitLines;
+                var row = TextRowPosition;
+
+                var text = lines.Length < 1 || lines.Length <= row
+                    ? ""
+                    : lines[row];
+
+                return text;
+            }
             set
             {
-                var lastLineIndex = Text
-                    .ToString()
-                    .LastIndexOf(NewLine, StringComparison.Ordinal);
+                var lines = TextSplitLines.ToList();
+                var row = TextRowPosition;
 
-                var text = lastLineIndex < 0
-                    ? ""
-                    : $"{Text.ToString()[..lastLineIndex]}{NewLine}";
+                if (lines.Count < 1 || lines.Count <= row)
+                {
+                    lines.Add("");
+                }
+
+                lines[row] = value;
 
                 Text.Clear();
-                Text.Append($"{text}{value}");
+                var newText = lines.Aggregate((lineA, lineB) => $"{lineA}{NewLine}{lineB}");
+                Text.Append(newText);
             }
         }
 
@@ -71,11 +86,17 @@ namespace ReplTap.ConsoleHost
 
         public int TextColPosition => ColPosition - $"{Prompt} ".Length;
 
+        public int TextRowPosition { get; set; }
+
+        public int RowPosition { get; set; }
+
         public bool IsTextEmpty() => Text.Length <= 0;
 
         public bool IsStartOfTextPosition() => TextColPosition <= 0;
 
         public bool IsEndOfTextPosition() => TextColPosition >= CurrentLineText.Length;
+
+        public bool IsStartOfRowTextPosition() => TextRowPosition <= 0;
 
         public IInputHistory InputHistory { get; init; }
 

@@ -24,6 +24,12 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(c => c.CursorLeft)
                 .Returns(expectedCursorLeft);
 
+            var expectedCursorTop = 5;
+
+            console
+                .Setup(c => c.CursorTop)
+                .Returns(expectedCursorTop);
+
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
                 ('a', It.IsAny<ConsoleKey>()),
@@ -94,6 +100,12 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(c => c.CursorLeft)
                 .Returns(expectedCursorLeft);
 
+            var expectedCursorTop = 5;
+
+            console
+                .Setup(c => c.CursorTop)
+                .Returns(expectedCursorTop);
+
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
                 ('a', It.IsAny<ConsoleKey>()),
@@ -155,31 +167,6 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             Assert.That(input, Is.EqualTo("abd"));
             Assert.IsTrue(isCommandCalled);
-        }
-
-        [Test]
-        public void Process_Should_Initially_Clear_Text_From_Console_State()
-        {
-            // arrange
-            var console = new Mock<IConsole>();
-            var consoleKeyCommands = new Mock<IConsoleKeyCommands>();
-            var keyHandler = new ConsoleKeyHandler(console.Object, consoleKeyCommands.Object);
-
-            var consoleKeyInfo = new ConsoleKeyInfo(' ', ConsoleKey.Enter, false, false, false);
-            console
-                .Setup(c => c.ReadKey(true))
-                .Returns(consoleKeyInfo);
-
-            var inputHistory = new Mock<IInputHistory>();
-            var state = new ConsoleState(inputHistory.Object);
-
-            state.Text.Append("test text that should be removed");
-
-            // act
-            keyHandler.Process(state);
-
-            // assert
-            Assert.That(state.Text.ToString(), Is.Empty);
         }
     }
 }

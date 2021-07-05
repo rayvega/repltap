@@ -41,6 +41,7 @@ namespace ReplTap.ConsoleHost
                 {
                     _console.Write($"{_consoleState.Prompt} ");
                     _consoleState.ColPosition = _console.CursorLeft;
+                    _consoleState.RowPosition = _console.CursorTop;
 
                     var input = _consoleKeyHandler.Process(_consoleState);
                     codes.AppendLine(input);
@@ -52,6 +53,7 @@ namespace ReplTap.ConsoleHost
                     {
                         case OutputState.Continue:
                             _consoleState.Prompt = Prompt.Continue;
+                            _consoleState.TextRowPosition++;
                             break;
                         case OutputState.Error:
                             _consoleWriter.WriteError(result.Output ?? "");
@@ -78,6 +80,9 @@ namespace ReplTap.ConsoleHost
             state.Variables = variables ?? state.Variables;
 
             state.Prompt = Prompt.Standard;
+            state.TextRowPosition = 0;
+            state.Text.Clear();
+
         }
     }
 }

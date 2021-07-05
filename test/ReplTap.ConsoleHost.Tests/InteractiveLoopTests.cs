@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using System;
+using System.Text;
 using Moq;
 using NUnit.Framework;
 using ReplTap.Core;
@@ -23,11 +24,17 @@ namespace ReplTap.ConsoleHost.Tests
                 State = OutputState.Valid,
             };
 
-            var expectedColPosition = 3;
             var console = new Mock<IConsole>();
+
+            var expectedColPosition = 3;
             console
                 .Setup(c => c.CursorLeft)
                 .Returns(expectedColPosition);
+
+            var expectedRowPosition = 6;
+            console
+                .Setup(c => c.CursorTop)
+                .Returns(expectedRowPosition);
 
             var keyHandler = new Mock<IConsoleKeyHandler>();
             var consoleWriter = new Mock<IConsoleWriter>();
@@ -54,6 +61,15 @@ namespace ReplTap.ConsoleHost.Tests
                 .Setup(c => c.InputHistory)
                 .Returns(inputHistory.Object);
 
+            var consoleStateText = new StringBuilder();
+            consoleStateText.Append("test text that should be cleared");
+
+            Assert.That(consoleStateText.ToString(), Is.Not.Empty);
+
+            consoleState
+                .Setup(c => c.Text)
+                .Returns(consoleStateText);
+
             var interactiveLoop = new InteractiveLoop(console.Object,
                 keyHandler.Object, consoleWriter.Object, replEngine.Object, loop.Object, consoleState.Object);
 
@@ -66,8 +82,11 @@ namespace ReplTap.ConsoleHost.Tests
 
             inputHistory.Verify(i => i.Add(It.IsAny<string>()));
 
-            consoleState
-                .VerifySet(c => c.ColPosition = expectedColPosition);
+            consoleState.VerifySet(c => c.ColPosition = expectedColPosition);
+            consoleState.VerifySet(c => c.RowPosition = expectedRowPosition);
+            consoleState.VerifySet(c => c.TextRowPosition = 0, "should reset to zero");
+            consoleState.VerifySet(c => c.TextRowPosition = 1, Times.Never, "should not increment");
+            Assert.That(consoleStateText.ToString(), Is.Empty);
         }
 
         [Test]
@@ -119,6 +138,9 @@ namespace ReplTap.ConsoleHost.Tests
             consoleWriter.Verify(c => c.WriteError(output), Times.Once);
 
             inputHistory.Verify(i => i.Add(It.IsAny<string>()));
+
+            consoleState.VerifySet(c => c.TextRowPosition = 0, "should reset to zero");
+            consoleState.VerifySet(c => c.TextRowPosition = 1, Times.Never, "should not increment");
         }
 
         [Test]
@@ -181,6 +203,9 @@ namespace ReplTap.ConsoleHost.Tests
 
             console.Verify(c => c.Write($"{Prompt.Continue} "), Times.Once());
             consoleWriter.Verify(c => c.WriteOutput(secondResult.Output), Times.Once());
+
+            consoleState.VerifySet(c => c.TextRowPosition = 1, Times.Once, "should increment");
+            consoleState.VerifySet(c => c.TextRowPosition = 0, Times.Once, "should reset to zero");
         }
 
         [Test]
