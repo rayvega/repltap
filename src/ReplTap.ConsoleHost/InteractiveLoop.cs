@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using ReplTap.Core;
 
@@ -33,8 +32,6 @@ namespace ReplTap.ConsoleHost
 
         public async Task Run()
         {
-            var codes = new StringBuilder();
-
             while (_loop.Continue())
             {
                 try
@@ -44,10 +41,9 @@ namespace ReplTap.ConsoleHost
                     _consoleState.RowPosition = _console.CursorTop;
 
                     var input = _consoleKeyHandler.Process(_consoleState);
-                    codes.AppendLine(input);
                     _console.WriteLine();
 
-                    var result = await _replEngine.Execute(codes.ToString());
+                    var result = await _replEngine.Execute(input);
 
                     switch (result.State)
                     {
@@ -57,11 +53,11 @@ namespace ReplTap.ConsoleHost
                             break;
                         case OutputState.Error:
                             _consoleWriter.WriteError(result.Output ?? "");
-                            CompleteInput(codes, _consoleState, result.Variables);
+                            CompleteInput(_consoleState, result.Variables);
                             break;
                         default:
                             _consoleWriter.WriteOutput(result.Output ?? "");
-                            CompleteInput(codes, _consoleState, result.Variables);
+                            CompleteInput(_consoleState, result.Variables);
                             break;
                     }
                 }
@@ -73,10 +69,9 @@ namespace ReplTap.ConsoleHost
             }
         }
 
-        private void CompleteInput(StringBuilder codes, IConsoleState state, List<string>? variables)
+        private void CompleteInput(IConsoleState state, List<string>? variables)
         {
-            state.InputHistory.Add(codes.ToString().TrimEnd());
-            codes.Clear();
+            state.InputHistory.Add(state.Text.ToString().TrimEnd());
             state.Variables = variables ?? state.Variables;
 
             state.Prompt = Prompt.Standard;
