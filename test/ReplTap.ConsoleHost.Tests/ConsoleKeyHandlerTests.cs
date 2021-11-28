@@ -18,18 +18,6 @@ namespace ReplTap.ConsoleHost.Tests
             // read key
             var console = new Mock<IConsole>();
 
-            var expectedCursorLeft = $"{Prompt.Standard} ".Length;
-
-            console
-                .Setup(c => c.CursorLeft)
-                .Returns(expectedCursorLeft);
-
-            var expectedCursorTop = 5;
-
-            console
-                .Setup(c => c.CursorTop)
-                .Returns(expectedCursorTop);
-
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
                 ('a', It.IsAny<ConsoleKey>()),
@@ -59,6 +47,9 @@ namespace ReplTap.ConsoleHost.Tests
 
             var state = new ConsoleState(inputHistory.Object);
 
+            // add two pre-existing lines
+            state.Text.Append("123\n456\n");
+
             var calls = 0;
 
             consoleKeyCommands
@@ -78,10 +69,18 @@ namespace ReplTap.ConsoleHost.Tests
             var input = keyHandler.Process(state);
 
             // assert
-            Assert.That(input, Is.EqualTo("abc"));
+            Assert.That(input, Is.EqualTo("123\n456\nabc"), "should have added a third line of code");
 
             consoleKeyCommands
                 .Verify(c => c.WriteChar(state, It.IsAny<char>()), Times.Exactly(3));
+
+            console
+                .VerifySet(c =>
+                {
+                    var expectedTotalNumberOfLines = 3;
+
+                    c.CursorTop = expectedTotalNumberOfLines;
+                });
         }
 
         [Test]
@@ -93,19 +92,6 @@ namespace ReplTap.ConsoleHost.Tests
             var console = new Mock<IConsole>();
 
             // read key
-
-            var expectedCursorLeft = $"{Prompt.Standard} ".Length;
-
-            console
-                .Setup(c => c.CursorLeft)
-                .Returns(expectedCursorLeft);
-
-            var expectedCursorTop = 5;
-
-            console
-                .Setup(c => c.CursorTop)
-                .Returns(expectedCursorTop);
-
             var consoleKeys = new List<(char inputChar, ConsoleKey consoleKey)>
             {
                 ('a', It.IsAny<ConsoleKey>()),
@@ -167,6 +153,14 @@ namespace ReplTap.ConsoleHost.Tests
             // assert
             Assert.That(input, Is.EqualTo("abd"));
             Assert.IsTrue(isCommandCalled);
+
+            console
+                .VerifySet(c =>
+                {
+                    var expectedTotalNumberOfLines = 1;
+
+                    c.CursorTop = expectedTotalNumberOfLines;
+                });
         }
     }
 }
