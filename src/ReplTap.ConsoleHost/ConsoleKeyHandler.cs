@@ -29,6 +29,9 @@ namespace ReplTap.ConsoleHost
 
                 if (input.Key == ConsoleKey.Enter)
                 {
+                    // set current row position back to bottom of text area especially if multiline edit
+                    _console.CursorTop += state.TextSplitLines.Length;
+
                     break;
                 }
 

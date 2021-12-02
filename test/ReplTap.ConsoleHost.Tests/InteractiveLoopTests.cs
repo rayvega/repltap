@@ -5,7 +5,6 @@ using Moq;
 using NUnit.Framework;
 using ReplTap.Core;
 using ReplTap.Core.History;
-using static System.Environment;
 
 namespace ReplTap.ConsoleHost.Tests
 {
@@ -49,7 +48,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(input);
 
             replEngine
-                .Setup(r => r.Execute($"{input}{NewLine}"))
+                .Setup(r => r.Execute(input))
                 .ReturnsAsync(result);
 
             loop
@@ -115,7 +114,7 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(input);
 
             replEngine
-                .Setup(r => r.Execute($"{input}{NewLine}"))
+                .Setup(r => r.Execute(input))
                 .ReturnsAsync(result);
 
             loop
@@ -126,6 +125,10 @@ namespace ReplTap.ConsoleHost.Tests
             consoleState
                 .Setup(c => c.InputHistory)
                 .Returns(inputHistory.Object);
+
+            consoleState
+                .Setup(c => c.Text)
+                .Returns(new StringBuilder());
 
             var interactiveLoop = new InteractiveLoop(console.Object,
                 keyHandler.Object, consoleWriter.Object, replEngine.Object, loop.Object, consoleState.Object);
@@ -187,6 +190,10 @@ namespace ReplTap.ConsoleHost.Tests
                 .Returns(new Mock<IInputHistory>().Object);
 
             consoleState
+                .Setup(c => c.Text)
+                .Returns(new StringBuilder());
+
+            consoleState
                 .SetupSequence(c => c.Prompt)
                 .Returns(Prompt.Standard)
                 .Returns(Prompt.Continue);
@@ -229,7 +236,7 @@ namespace ReplTap.ConsoleHost.Tests
             var expectedException = new Exception(errorOutput);
 
             replEngine
-                .Setup(r => r.Execute($"{input}{NewLine}"))
+                .Setup(r => r.Execute(input))
                 .Throws(expectedException);
 
             loop
