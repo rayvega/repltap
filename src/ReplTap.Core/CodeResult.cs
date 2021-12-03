@@ -6,6 +6,6 @@ namespace ReplTap.Core
     {
         public string? Output { get; set; }
         public OutputState State { get; set; }
-        public List<string>? Variables { get; set; }
+        public List<string> Variables { get; set; } = new();
     }
 }

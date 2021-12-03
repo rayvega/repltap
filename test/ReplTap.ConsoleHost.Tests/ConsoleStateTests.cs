@@ -1,3 +1,5 @@
+using System.Linq;
+using Moq;
 using NUnit.Framework;
 using ReplTap.Core.History;
 using static System.Environment;
@@ -100,6 +102,35 @@ namespace ReplTap.ConsoleHost.Tests
 
             // assert
             Assert.That(isEndOfTextPosition, Is.EqualTo(expectedIsEnd));
+        }
+
+        [Test]
+        public void CompleteInput_Should_Run_As_Expected()
+        {
+            // arrange
+            var history = new Mock<IInputHistory>();
+
+            var state = new ConsoleState(history.Object);
+
+            var text = "test text";
+            state.Text.AppendLine(text);
+            state.Prompt = "some test prompt";
+            state.TextRowPosition = 123;
+
+            var variables = Enumerable
+                .Range(1, 3)
+                .Select(i => $"test-variable-{i}")
+                .ToList();
+
+            // act
+            state.CompleteInput(variables);
+
+            // assert
+            history.Verify(h => h.Add(text), "should add text to history and remove last line ending");
+            Assert.That(state.Variables, Is.EquivalentTo(variables));
+            Assert.That(state.Prompt, Is.EqualTo(Prompt.Standard));
+            Assert.That(state.TextRowPosition, Is.Zero);
+            Assert.That(state.Text.ToString(), Is.Empty);
         }
     }
 }
