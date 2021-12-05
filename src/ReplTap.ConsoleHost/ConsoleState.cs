@@ -24,6 +24,7 @@ namespace ReplTap.ConsoleHost
         bool IsStartOfTextPosition();
         bool IsEndOfTextPosition();
         bool IsStartOfRowTextPosition();
+        void CompleteInput(List<string> variables);
     }
 
     public class ConsoleState : IConsoleState
@@ -45,7 +46,7 @@ namespace ReplTap.ConsoleHost
             get
             {
                 var code = Text.ToString();
-                var lines = code.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None);
+                var lines = code.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
                 return lines;
             }
@@ -101,5 +102,15 @@ namespace ReplTap.ConsoleHost
         public IInputHistory InputHistory { get; init; }
 
         public List<string> Variables { get; set; }
+
+        public void CompleteInput(List<string> variables)
+        {
+            InputHistory.Add(Text.ToString().TrimEnd());
+            Variables = variables;
+
+            Prompt = PromptValues.Standard;
+            TextRowPosition = 0;
+            Text.Clear();
+        }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using ReplTap.Core;
 
@@ -53,11 +52,11 @@ namespace ReplTap.ConsoleHost
                             break;
                         case OutputState.Error:
                             _consoleWriter.WriteError(result.Output ?? "");
-                            CompleteInput(_consoleState, result.Variables);
+                            _consoleState.CompleteInput(result.Variables);
                             break;
                         default:
                             _consoleWriter.WriteOutput(result.Output ?? "");
-                            CompleteInput(_consoleState, result.Variables);
+                            _consoleState.CompleteInput(result.Variables);
                             break;
                     }
                 }
@@ -67,17 +66,6 @@ namespace ReplTap.ConsoleHost
                     _consoleWriter.WriteError(exception);
                 }
             }
-        }
-
-        private void CompleteInput(IConsoleState state, List<string>? variables)
-        {
-            state.InputHistory.Add(state.Text.ToString().TrimEnd());
-            state.Variables = variables ?? state.Variables;
-
-            state.Prompt = Prompt.Standard;
-            state.TextRowPosition = 0;
-            state.Text.Clear();
-
         }
     }
 }
