@@ -25,15 +25,8 @@ namespace ReplTap
             Console.WriteLine($"repltap - C# interactive repl - v{version}");
 
             var provider = Configuration.GetServiceProvider();
-            var interactiveLoop = provider.GetService<IInteractiveLoop>();
+            var interactiveLoop = provider.GetRequiredService<IInteractiveLoop>();
 
-
-            if (interactiveLoop == null)
-            {
-                Console.Write("Error! Unable to initialize console app.");
-
-                return;
-            }
 
             await interactiveLoop.Run();
         }
