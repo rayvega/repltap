@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using ReplTap.ConsoleHost;
 using ReplTap.ConsoleHost.Commands;
@@ -5,40 +6,39 @@ using ReplTap.Core;
 using ReplTap.Core.Completions;
 using ReplTap.Core.History;
 
-namespace ReplTap
+namespace ReplTap;
+
+public static class Configuration
 {
-    public static class Configuration
+    public static IServiceProvider GetServiceProvider()
     {
-        public static ServiceProvider GetServiceProvider()
-        {
-            var service = new ServiceCollection();
+        var service = new ServiceCollection();
 
-            service.AddSingleton<IConsole, ConsoleWrapper>();
-            service.AddSingleton<IInteractiveLoop, InteractiveLoop>();
-            service.AddSingleton<ILoop, Loop>();
-            service.AddSingleton<IInputCheck, InputCheck>();
-            service.AddSingleton<IConsoleKeyHandler, ConsoleKeyHandler>();
-            service.AddSingleton<IConsoleState, ConsoleState>();
-            service.AddSingleton<IConsoleKeyCommands, ConsoleKeyCommands>();
-            service.AddSingleton<INavigateCommands, NavigateCommands>();
-            service.AddSingleton<IEditCommands, EditCommands>();
-            service.AddSingleton<IInputHistoryCommands, InputHistoryCommands>();
-            service.AddSingleton<ICompletionsCommands, CompletionsCommands>();
-            service.AddSingleton<IConsoleWriter, ConsoleWriter>();
-            service.AddSingleton<ICompletionsWriter, CompletionsWriter>();
+        service.AddSingleton<IConsole, ConsoleWrapper>()
+            .AddSingleton<IInteractiveLoop, InteractiveLoop>()
+            .AddSingleton<ILoop, Loop>()
+            .AddSingleton<IInputCheck, InputCheck>()
+            .AddSingleton<IConsoleKeyHandler, ConsoleKeyHandler>()
+            .AddSingleton<IConsoleState, ConsoleState>()
+            .AddSingleton<IConsoleKeyCommands, ConsoleKeyCommands>()
+            .AddSingleton<INavigateCommands, NavigateCommands>()
+            .AddSingleton<IEditCommands, EditCommands>()
+            .AddSingleton<IInputHistoryCommands, InputHistoryCommands>()
+            .AddSingleton<ICompletionsCommands, CompletionsCommands>()
+            .AddSingleton<IConsoleWriter, ConsoleWriter>()
+            .AddSingleton<ICompletionsWriter, CompletionsWriter>()
 
-            service.AddSingleton<IInputHistory, InputHistory>();
-            service.AddSingleton<IReplEngine, ReplEngine>();
-            service.AddSingleton<IScriptOptionsBuilder, ScriptOptionsBuilder>();
-            service.AddSingleton<ICompletionsProvider, CompletionsProvider>();
-            service.AddSingleton<IVariablesFilter, VariablesFilter>();
-            service.AddSingleton<IRoslynCompletionsProvider, RoslynCompletionsProvider>();
-            service.AddSingleton<ICompletionsParser, CompletionsParser>();
-            service.AddSingleton<ICompletionsFilter, CompletionsFilter>();
+            .AddSingleton<IInputHistory, InputHistory>()
+            .AddSingleton<IReplEngine, ReplEngine>()
+            .AddSingleton<IScriptOptionsBuilder, ScriptOptionsBuilder>()
+            .AddSingleton<ICompletionsProvider, CompletionsProvider>()
+            .AddSingleton<IVariablesFilter, VariablesFilter>()
+            .AddSingleton<IRoslynCompletionsProvider, RoslynCompletionsProvider>()
+            .AddSingleton<ICompletionsParser, CompletionsParser>()
+            .AddSingleton<ICompletionsFilter, CompletionsFilter>();
 
-            var provider = service.BuildServiceProvider();
+        var provider = service.BuildServiceProvider();
 
-            return provider;
-        }
+        return provider;
     }
 }
