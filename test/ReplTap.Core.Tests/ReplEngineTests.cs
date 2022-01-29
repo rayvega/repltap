@@ -38,7 +38,7 @@ namespace ReplTap.Core.Tests
         public async Task Execute_Should_Return_Valid_State_When_Two_Inputs()
         {
             // arrange
-            const string expectedFirstOutput = null;
+            const string expectedFirstOutput = "";
             const string expectedSecondOutput = "test value";
 
             var firstCode = $"var testVariable = \"{expectedSecondOutput}\";";
@@ -64,7 +64,7 @@ namespace ReplTap.Core.Tests
         public async Task Execute_Should_Return_Continue_State_When_Invalid_Input()
         {
             // arrange
-            const string expectedFirstResult = null;
+            const string expectedFirstResult = "";
             const string expectedSecondResult = "test value";
 
             var firstCode = $"var testVariable = \"{expectedSecondResult}\";";
@@ -84,7 +84,7 @@ namespace ReplTap.Core.Tests
             Assert.That(firstResult.Output, Is.EqualTo(expectedFirstResult));
             Assert.That(firstResult.State, Is.EqualTo(OutputState.Valid));
 
-            Assert.That(invalidResult.Output, Is.EqualTo(null));
+            Assert.That(invalidResult.Output, Is.EqualTo(""));
             Assert.That(invalidResult.State, Is.EqualTo(OutputState.Continue));
 
             Assert.That(secondResult.Output, Is.EqualTo(expectedSecondResult));

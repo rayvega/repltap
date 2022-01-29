@@ -51,11 +51,11 @@ namespace ReplTap.ConsoleHost
                             _consoleState.TextRowPosition++;
                             break;
                         case OutputState.Error:
-                            _consoleWriter.WriteError(result.Output ?? "");
+                            _consoleWriter.WriteError(result.Output);
                             _consoleState.CompleteInput(result.Variables);
                             break;
                         default:
-                            _consoleWriter.WriteOutput(result.Output ?? "");
+                            _consoleWriter.WriteOutput(result.Output);
                             _consoleState.CompleteInput(result.Variables);
                             break;
                     }
