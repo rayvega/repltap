@@ -16,7 +16,7 @@ namespace ReplTap.Core.History
 
     public class InputHistory : IInputHistory
     {
-        private readonly List<string> _history = new List<string>();
+        private readonly List<string> _history = new();
 
         private const int DefaultMinIndex = -1;
 
