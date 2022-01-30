@@ -17,7 +17,7 @@ namespace ReplTap.Core.Tests
             var expectedVariable = "testVariable";
 
             var code = $"var {expectedVariable} = \"{expectedOutput}\"; testVariable";
-            var expectedVariables = new[] {expectedVariable};
+            var expectedVariables = new[] { expectedVariable };
 
             var inputCheck = new Mock<IInputCheck>();
             var scriptOptionsBuilder = new Mock<IScriptOptionsBuilder>();

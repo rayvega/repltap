@@ -10,12 +10,12 @@ namespace ReplTap.Core.Tests.Completions
     {
         private static object[] _testCompletions =
         {
-            new object[] {new[] {"abc", "mno", "abd", "klm", "acf"}, "a", new[] {"abc", "abd", "acf"}},
-            new object[] {new[] {"abc", "mno", "abd", "klm"}, "ab", new[] {"abc", "abd"}},
-            new object[] {new[] {"abc", "mno", "abd", "klm"}, "abc", new[] {"abc"}},
+            new object[] { new[] { "abc", "mno", "abd", "klm", "acf" }, "a", new[] { "abc", "abd", "acf" } },
+            new object[] { new[] { "abc", "mno", "abd", "klm" }, "ab", new[] { "abc", "abd" } },
+            new object[] { new[] { "abc", "mno", "abd", "klm" }, "abc", new[] { "abc" } },
 
-            new object[] {new[] {"abc", "mno", "abd", "klm", "acf"}, "", new[] {"abc", "mno", "abd", "klm", "acf"}},
-            new object[] {new[] {"abc", "mno", "abd", "klm", "acf"}, null, new[] {"abc", "mno", "abd", "klm", "acf"}},
+            new object[] { new[] { "abc", "mno", "abd", "klm", "acf" }, "", new[] { "abc", "mno", "abd", "klm", "acf" } },
+            new object[] { new[] { "abc", "mno", "abd", "klm", "acf" }, null, new[] { "abc", "mno", "abd", "klm", "acf" } },
         };
 
         [Test]

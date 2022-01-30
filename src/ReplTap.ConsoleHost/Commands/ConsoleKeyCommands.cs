@@ -33,13 +33,13 @@ namespace ReplTap.ConsoleHost.Commands
 
         public Dictionary<(ConsoleKey, ConsoleModifiers), Action<IConsoleState>> GetInputKeyCommandMap()
         {
-            var emptyConsoleModifier = (ConsoleModifiers) 0;
+            var emptyConsoleModifier = (ConsoleModifiers)0;
 
             return new Dictionary<(ConsoleKey, ConsoleModifiers), Action<IConsoleState>>
             {
                 {
                     (ConsoleKey.Tab, emptyConsoleModifier),
-                    async state => await _completionsCommands.Completions(state)
+                    state => _completionsCommands.Completions(state)
                 },
                 {
                     (ConsoleKey.Backspace, emptyConsoleModifier), _editCommands.Backspace

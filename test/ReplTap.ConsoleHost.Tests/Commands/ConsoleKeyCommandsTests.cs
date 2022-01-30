@@ -41,7 +41,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
                 editCommands.Object, completionsCommands.Object, null!);
-            var key = (ConsoleKey.Tab, (ConsoleModifiers) 0);
+            var key = (ConsoleKey.Tab, (ConsoleModifiers)0);
 
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
@@ -64,7 +64,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
                 editCommands.Object, null!, null!);
 
-            var key = (ConsoleKey.Backspace, (ConsoleModifiers) 0);
+            var key = (ConsoleKey.Backspace, (ConsoleModifiers)0);
 
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
@@ -133,7 +133,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
                 editCommands.Object, null!, inputHistoryCommands.Object);
-            var key = (ConsoleKey.LeftArrow, (ConsoleModifiers) 0);
+            var key = (ConsoleKey.LeftArrow, (ConsoleModifiers)0);
 
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
@@ -156,7 +156,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
                 editCommands.Object, null!, inputHistoryCommands.Object);
-            var key = (ConsoleKey.RightArrow, (ConsoleModifiers) 0);
+            var key = (ConsoleKey.RightArrow, (ConsoleModifiers)0);
 
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
@@ -179,7 +179,7 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 
             var consoleKeyCommands = new ConsoleKeyCommands(navigateCommands.Object,
                 editCommands.Object, null!, inputHistoryCommands.Object);
-            var key = (ConsoleKey.UpArrow, (ConsoleModifiers) 0);
+            var key = (ConsoleKey.UpArrow, (ConsoleModifiers)0);
 
             // act
             var map = consoleKeyCommands.GetInputKeyCommandMap();
