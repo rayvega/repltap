@@ -4,7 +4,7 @@ namespace ReplTap.ConsoleHost
 {
     public interface IConsole
     {
-        void Write(string? text);
+        void Write(string text);
         void WriteLine(string text = "");
         ConsoleKeyInfo ReadKey(bool intercept);
         void ClearLine();
@@ -17,7 +17,7 @@ namespace ReplTap.ConsoleHost
 
     public class ConsoleWrapper : IConsole
     {
-        public void Write(string? text) => Console.Write(text);
+        public void Write(string text) => Console.Write(text);
 
         public void WriteLine(string text = "")
         {

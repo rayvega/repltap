@@ -34,7 +34,7 @@ namespace ReplTap.ConsoleHost.Commands
             WriteFullLine(state.Prompt, currentCode);
         }
 
-        private void WriteFullLine(string prompt, string? code)
+        private void WriteFullLine(string prompt, string code)
         {
             _console.Write($"{prompt} {code}");
         }

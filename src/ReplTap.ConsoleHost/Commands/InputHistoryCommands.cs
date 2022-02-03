@@ -34,7 +34,7 @@ namespace ReplTap.ConsoleHost.Commands
             WriteText(state, input);
         }
 
-        private void WriteText(IConsoleState state, string? text)
+        private void WriteText(IConsoleState state, string text)
         {
             // remove old lines
             var oldCodeLines = state.TextSplitLines;

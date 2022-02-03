@@ -32,7 +32,7 @@ namespace ReplTap.Core
                     ? await CSharpScript.RunAsync(code, _scriptOptionsBuilder.Build())
                     : await _state.ContinueWithAsync(code);
 
-                result.Output = _state.ReturnValue?.ToString();
+                result.Output = _state.ReturnValue?.ToString() ?? string.Empty;
 
                 result.State = OutputState.Valid;
 
