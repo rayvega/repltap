@@ -27,14 +27,6 @@ namespace ReplTap.ConsoleHost
             {
                 var input = _console.ReadKey(intercept: true);
 
-                if (input.Key == ConsoleKey.Enter)
-                {
-                    // set current row position back to bottom of text area especially if multiline edit
-                    _console.CursorTop += state.TextSplitLines.Length;
-
-                    break;
-                }
-
                 if (inputKeyCommandMap.TryGetValue((input.Key, input.Modifiers), out var runCommand))
                 {
                     runCommand(state);
@@ -43,12 +35,19 @@ namespace ReplTap.ConsoleHost
                 {
                     _consoleKeyCommands.WriteChar(state, input.KeyChar);
                 }
+
+                if (input.Key == ConsoleKey.Enter)
+                {
+                    break;
+                }
             }
+
+            // set current row position back to bottom of text area especially if multiline edit
+            _console.CursorTop += state.TextSplitLines.Length;
 
             var line = state.Text.ToString();
 
             return line;
         }
-
     }
 }

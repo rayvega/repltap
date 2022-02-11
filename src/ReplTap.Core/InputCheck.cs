@@ -1,21 +1,20 @@
 using static System.Environment;
 
-namespace ReplTap.Core
+namespace ReplTap.Core;
+
+public interface IInputCheck
 {
-    public interface IInputCheck
+    bool IsForceExecute(string input);
+}
+
+public class InputCheck : IInputCheck
+{
+    public bool IsForceExecute(string input)
     {
-        bool IsForceExecute(string input);
-    }
+        var hasMultipleNewlines = input.EndsWith($"{NewLine}{NewLine}{NewLine}\r");
 
-    public class InputCheck : IInputCheck
-    {
-        public bool IsForceExecute(string input)
-        {
-            var hasMultipleNewlines = input.EndsWith($"{NewLine}{NewLine}{NewLine}");
+        var isForceExecute = hasMultipleNewlines;
 
-            var isForceExecute = hasMultipleNewlines;
-
-            return isForceExecute;
-        }
+        return isForceExecute;
     }
 }
