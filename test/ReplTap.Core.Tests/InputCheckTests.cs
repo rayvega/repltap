@@ -8,9 +8,12 @@ namespace ReplTap.Core.Tests
     {
         private static object[] _testCasesNewLine =
         {
-            new object[] { $"test code line 1 {NewLine}{NewLine}{NewLine}", true },
-            new object[] { $"test code line 1{NewLine}{NewLine}{NewLine}", true },
-            new object[] { $"test code line 1{NewLine}test code line 2{NewLine}{NewLine}{NewLine}", true },
+            // should force execute
+            new object[] { $"test code line 1 {NewLine}{NewLine}{NewLine}\r", true },
+            new object[] { $"test code line 1{NewLine}{NewLine}{NewLine}\r", true },
+            new object[] { $"test code line 1{NewLine}test code line 2{NewLine}{NewLine}{NewLine}\r", true },
+
+            // should not force execute
             new object[] { "test code line 1", false },
             new object[] { $"test code line 1 {NewLine}", false },
             new object[] { $"test code line 1 {NewLine}a{NewLine}", false },

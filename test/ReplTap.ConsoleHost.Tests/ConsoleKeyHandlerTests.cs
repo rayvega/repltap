@@ -23,7 +23,7 @@ namespace ReplTap.ConsoleHost.Tests
                 ('a', It.IsAny<ConsoleKey>()),
                 ('b', It.IsAny<ConsoleKey>()),
                 ('c', It.IsAny<ConsoleKey>()),
-                (' ', ConsoleKey.Enter),
+                ('\r', ConsoleKey.Enter),
             };
 
             var readKeySetupSequence = console
@@ -69,15 +69,15 @@ namespace ReplTap.ConsoleHost.Tests
             var input = keyHandler.Process(state);
 
             // assert
-            Assert.That(input, Is.EqualTo("123\n456\nabc"), "should have added a third line of code");
+            Assert.That(input, Is.EqualTo("123\n456\nabc\r"), "should have added a third line of code");
 
             consoleKeyCommands
-                .Verify(c => c.WriteChar(state, It.IsAny<char>()), Times.Exactly(3));
+                .Verify(c => c.WriteChar(state, It.IsAny<char>()), Times.Exactly(consoleKeys.Count));
 
             console
                 .VerifySet(c =>
                 {
-                    var expectedTotalNumberOfLines = 3;
+                    var expectedTotalNumberOfLines = consoleKeys.Count;
 
                     c.CursorTop = expectedTotalNumberOfLines;
                 });
@@ -98,7 +98,7 @@ namespace ReplTap.ConsoleHost.Tests
                 ('b', It.IsAny<ConsoleKey>()),
                 ('c', otherConsoleKey),
                 ('d', It.IsAny<ConsoleKey>()),
-                (' ', ConsoleKey.Enter),
+                ('\r', ConsoleKey.Enter),
             };
 
             var readKeySetupSequence = console
@@ -118,7 +118,8 @@ namespace ReplTap.ConsoleHost.Tests
 
             var map = new Dictionary<(ConsoleKey, ConsoleModifiers), Action<IConsoleState>>
             {
-                {(otherConsoleKey, 0), _ =>
+                {
+                    (otherConsoleKey, 0), _ =>
                     {
                         isCommandCalled = true;
                         calls++;
@@ -151,13 +152,13 @@ namespace ReplTap.ConsoleHost.Tests
             var input = keyHandler.Process(state);
 
             // assert
-            Assert.That(input, Is.EqualTo("abd"));
+            Assert.That(input, Is.EqualTo("abd\r"));
             Assert.IsTrue(isCommandCalled);
 
             console
                 .VerifySet(c =>
                 {
-                    var expectedTotalNumberOfLines = 1;
+                    var expectedTotalNumberOfLines = 2;
 
                     c.CursorTop = expectedTotalNumberOfLines;
                 });
