@@ -7,7 +7,6 @@ namespace ReplTap.ConsoleHost.Tests.Commands
 {
     public class EditCommandsTests
     {
-
         [Test]
         public void WriteChar_Should_Execute_Expected()
         {

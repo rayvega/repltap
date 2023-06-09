@@ -27,9 +27,7 @@ namespace ReplTap.ConsoleHost.Tests
         [TestCase("line 1\nline 2\nline 3", 0, "line 1")]
         [TestCase("line 1\nline 2\nline 3", 1, "line 2")]
         [TestCase("line 1\nline 2\nline 3", 2, "line 3")]
-
         [TestCase("", 0, "")]
-
         [TestCase("a", 0, "a")]
         [TestCase("ab", 0, "ab")]
         [TestCase("a\n", 1, "")]

@@ -20,7 +20,7 @@ namespace ReplTap.Core.Tests.Completions
             var completions = await completionsProvider.GetCompletions(code, new[] { "System" });
 
             // assert
-            var actual = completions.Items.Select(i => i.DisplayText);
+            var actual = completions.ItemsList.Select(i => i.DisplayText);
 
             Assert.That(actual, Is.SupersetOf(expectedCompletions));
         }

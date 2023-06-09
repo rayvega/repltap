@@ -11,14 +11,12 @@ namespace ReplTap.Core.Tests.Completions
         [TestCase(";c", ExpectedResult = "c")]
         [TestCase(";cd", ExpectedResult = "cd")]
         [TestCase(";c123", ExpectedResult = "c123")]
-
         [TestCase("b.c", ExpectedResult = "c")]
         [TestCase("ab.cd", ExpectedResult = "cd")]
         [TestCase("ab.Cd", ExpectedResult = "Cd")]
         [TestCase("a b.c", ExpectedResult = "c")]
         [TestCase("a b. c", ExpectedResult = "c")]
         [TestCase("a b.  c", ExpectedResult = "c")]
-
         [TestCase("a b,c", ExpectedResult = "c")]
         [TestCase("a b{c", ExpectedResult = "c")]
         [TestCase("a b}c", ExpectedResult = "c")]

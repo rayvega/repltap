@@ -27,7 +27,6 @@ public static class Configuration
             .AddSingleton<ICompletionsCommands, CompletionsCommands>()
             .AddSingleton<IConsoleWriter, ConsoleWriter>()
             .AddSingleton<ICompletionsWriter, CompletionsWriter>()
-
             .AddSingleton<IInputHistory, InputHistory>()
             .AddSingleton<IReplEngine, ReplEngine>()
             .AddSingleton<IScriptOptionsBuilder, ScriptOptionsBuilder>()

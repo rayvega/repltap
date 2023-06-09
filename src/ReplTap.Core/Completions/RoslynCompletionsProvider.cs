@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -58,9 +59,14 @@ namespace ReplTap.Core.Completions
 
             var completionService = CompletionService.GetService(scriptDocument);
 
+            if (completionService == null)
+            {
+                throw new Exception("unable to get completion service");
+            }
+
             var results = await completionService.GetCompletionsAsync(scriptDocument, position);
 
-            return results ?? CompletionList.Empty;
+            return results;
         }
     }
 }

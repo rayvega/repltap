@@ -162,6 +162,5 @@ namespace ReplTap.ConsoleHost.Tests.Commands
             Assert.That(state.RowPosition, Is.EqualTo(originalRowPosition));
             Assert.That(state.TextRowPosition, Is.EqualTo(0));
         }
-
     }
 }
