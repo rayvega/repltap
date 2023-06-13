@@ -42,7 +42,7 @@ namespace ReplTap.Core.Completions
             }
 
             var unfilteredCompletions = results
-                .Items
+                .ItemsList
                 .Select(item => item.DisplayText);
 
             // parse last token of code then filter completions by matching against that token

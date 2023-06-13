@@ -51,6 +51,5 @@ namespace ReplTap.ConsoleHost.Commands
 
             _console.CursorLeft = state.ColPosition;
         }
-
     }
 }
